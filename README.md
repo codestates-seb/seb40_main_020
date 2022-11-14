@@ -22,7 +22,6 @@
 
 - Git flow는 main과 dev 두 중요 브랜치와 dev밑에 front,back 그 밑에 feature 보조 브랜치로 이루어져 있다.
 
-![image](https://user-images.githubusercontent.com/107832252/197165437-9897778b-f1f1-420e-a02a-57bcd1a6b5f8.png)
 ![image](https://user-images.githubusercontent.com/107832252/201564387-465833c6-cdbd-48a2-a790-48c8a11b6e2b.png)
 
 
