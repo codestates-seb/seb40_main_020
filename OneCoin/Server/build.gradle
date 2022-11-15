@@ -36,6 +36,10 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.projectlombok:lombok:1.18.24'
 	testImplementation 'org.springframework.security:spring-security-test'
+
+	// mapstruct
+	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 }
 
 tasks.named('test') {
