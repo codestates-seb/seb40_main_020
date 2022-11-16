@@ -12,19 +12,19 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity
+@Entity(name = "users")
 public class User extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(length = 30, nullable = false)
+    @Column(nullable = false)
     private String displayName;
 
-    @Column(length = 50, nullable = false, updatable = false, unique = false)
+    @Column(nullable = false, updatable = false, unique = false)
     private String email;
 
-    @Column(length = 30, nullable = false)
+    @Column(nullable = false)
     private String password;
 
     // 추후 Attribute Converter 사용 고려 -> 사용
