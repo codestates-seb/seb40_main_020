@@ -1,3 +1,4 @@
+import SignUp from 'pages/SignUp/SignUp';
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
@@ -33,6 +34,14 @@ function App() {
 				<Route
 					path="/investments/wait_orders"
 					element={<Suspense fallback={<>...</>}>{<>미체결</>}</Suspense>}
+				/>
+				<Route
+					path="/signup"
+					element={
+						<Suspense fallback={<>...</>}>
+							<SignUp />
+						</Suspense>
+					}
 				/>
 			</Routes>
 		</>
