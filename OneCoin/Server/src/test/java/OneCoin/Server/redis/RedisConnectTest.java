@@ -1,5 +1,7 @@
 package OneCoin.Server.redis;
 
+import OneCoin.Server.coin.entity.Coin;
+import OneCoin.Server.coin.repository.CoinRepository;
 import OneCoin.Server.order.entity.RedisOrder;
 import OneCoin.Server.order.repository.RedisOrderRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -19,6 +21,9 @@ public class RedisConnectTest {
 
     @Autowired
     private RedisOrderRepository redisOrderRepository;
+
+    @Autowired
+    private CoinRepository coinRepository;
 
     @AfterEach
     void clear() {
@@ -43,5 +48,26 @@ public class RedisConnectTest {
         // then
         RedisOrder findRedisOrder = redisOrderRepository.findById(1L).orElseThrow();
         assertThat(findRedisOrder.getOrderId()).isEqualTo(1L);
+    }
+
+    @Test
+    @DisplayName("연관관계 매핑은 모든 필드를 key-value로 가진다.")
+    void mappingTest() {
+        // given
+        RedisOrder redisOrder = new RedisOrder();
+        redisOrder.setOrderId(1L);
+        redisOrder.setLimit(new BigDecimal("20000"));
+        redisOrder.setAmount(new BigDecimal("100"));
+        redisOrder.setOrderTime(LocalDateTime.now());
+
+        Coin coin = coinRepository.findById(1L).orElseThrow();
+        redisOrder.setCoin(coin);
+
+        // when
+        redisOrderRepository.save(redisOrder);
+
+        // then
+        RedisOrder findRedisOrder = redisOrderRepository.findById(1L).orElseThrow();
+        assertThat(findRedisOrder.getCoin().getCoinName()).isEqualTo("비트코인");
     }
 }
