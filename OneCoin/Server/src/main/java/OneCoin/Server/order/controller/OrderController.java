@@ -27,4 +27,11 @@ public class OrderController {
         RedisOrderDto.PostResponse redisPostResponse = mapper.redisOrderToRedisPostResponse(redisOrder);
         return new ResponseEntity(redisPostResponse, HttpStatus.CREATED);
     }
+
+    @PostMapping("/bid")
+    public ResponseEntity postBidOrder(@Valid @RequestBody RedisOrderDto.Post redisPostDto) {
+        RedisOrder redisOrder = orderService.createOrder(mapper.redisPostDtoToRedisOrder(redisPostDto));
+        RedisOrderDto.PostResponse redisPostResponse = mapper.redisOrderToRedisPostResponse(redisOrder);
+        return new ResponseEntity(redisPostResponse, HttpStatus.CREATED);
+    }
 }
