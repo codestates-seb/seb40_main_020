@@ -7,8 +7,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -33,13 +31,9 @@ public class RedisOrder {
 
     private LocalDateTime orderTime = LocalDateTime.now();
 
-    private boolean askOrBid;
+    private boolean askOrBid; // (ask:True, bid:False)
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    private Long userId; // TODO USER로 매핑
+    private Long userId; // TODO USER로 변경
 
-    @ManyToOne
-    @JoinColumn(name = "COIN_ID")
     private Coin coin;
 }
