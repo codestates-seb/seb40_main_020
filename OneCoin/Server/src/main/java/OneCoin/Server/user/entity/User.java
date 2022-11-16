@@ -27,7 +27,7 @@ public class User extends Auditable {
     @Column(length = 30, nullable = false)
     private String password;
 
-    // 추후 Attribute Converter 사용 고려
+    // 추후 Attribute Converter 사용 고려 -> 사용
     @Column
     @Enumerated(EnumType.STRING)
     private Platform platform;
@@ -35,7 +35,7 @@ public class User extends Auditable {
     @Column(nullable = false)
     private long balance;
 
-    // 추후 Attribute Converter 사용하거나 테이블 분리도 고려
+    // 추후 Attribute Converter 사용하거나 테이블 분리도 고려 -> 테이블 병합, 컨버터 사용
     @Column
     @Enumerated(EnumType.STRING)
     private Role userRole;
