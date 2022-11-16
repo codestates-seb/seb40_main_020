@@ -1,4 +1,5 @@
 import SignUp from 'pages/SignUp/SignUp';
+import Login from 'pages/Login/Login';
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
@@ -40,6 +41,14 @@ function App() {
 					element={
 						<Suspense fallback={<>...</>}>
 							<SignUp />
+						</Suspense>
+					}
+				/>
+				<Route
+					path="/login"
+					element={
+						<Suspense fallback={<>...</>}>
+							<Login />
 						</Suspense>
 					}
 				/>
