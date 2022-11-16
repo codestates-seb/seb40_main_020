@@ -1,6 +1,5 @@
 package OneCoin.Server.order.entity;
 
-import OneCoin.Server.audit.CreatedOnlyAuditable;
 import OneCoin.Server.coin.entity.Coin;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,11 +10,12 @@ import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @RedisHash("order")
-public class RedisOrder extends CreatedOnlyAuditable {
+public class RedisOrder {
 
     @Id
     private Long orderId;
@@ -27,7 +27,11 @@ public class RedisOrder extends CreatedOnlyAuditable {
     private BigDecimal stopLimit;
 
     @Column(nullable = false)
-    private BigDecimal amount;
+    private BigDecimal amount; // 미체결량
+
+    private BigDecimal completedAmount; // 체결량
+
+    private LocalDateTime orderTime = LocalDateTime.now();
 
     private boolean askOrBid;
 
