@@ -11,8 +11,15 @@ public class OrderService {
 
     private final RedisOrderRepository redisOrderRepository;
 
-    public RedisOrder createOrder(RedisOrder redisOrder) {
+    public RedisOrder createAskOrder(RedisOrder redisOrder) {
         // TODO User mapping
+        redisOrder.setAskOrBid(true);
+        return redisOrderRepository.save(redisOrder);
+    }
+
+    public RedisOrder createBidOrder(RedisOrder redisOrder) {
+        // TODO User mapping
+
         return redisOrderRepository.save(redisOrder);
     }
 }
