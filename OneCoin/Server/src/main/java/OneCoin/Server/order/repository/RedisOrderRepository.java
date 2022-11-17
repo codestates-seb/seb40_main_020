@@ -7,6 +7,5 @@ import java.util.List;
 
 public interface RedisOrderRepository extends CrudRepository<RedisOrder, Long> {
 
-    @Override
     List<RedisOrder> findAll();
 }
