@@ -50,7 +50,7 @@ export const InputContainer = styled.div`
 	flex-direction: column;
 	align-self: center;
 	/* margin-bottom: 15px; */
-	height: 70px;
+	height: 60px;
 `;
 
 export const StyledDiv = styled.div`
@@ -60,4 +60,15 @@ export const StyledDiv = styled.div`
 	font-size: 24px;
 	height: 43px;
 	margin-bottom: 10px;
+`;
+
+export const MentDiv = styled.div`
+	display: flex;
+	justify-content: center;
+`;
+
+export const MentSpan = styled.span`
+	margin-top: 40px;
+	/* margin-right: 40px; */
+	width: 90px;
 `;

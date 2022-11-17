@@ -1,5 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import {
 	LoginBox,
 	Form,
@@ -8,6 +9,8 @@ import {
 	SubmitButton,
 	InputContainer,
 	StyledDiv,
+	MentDiv,
+	MentSpan,
 } from './style';
 
 type EnterForm = {
@@ -16,13 +19,16 @@ type EnterForm = {
 };
 
 function Login() {
+	const navigate = useNavigate();
 	const {
 		register,
 		handleSubmit,
+		watch,
 		formState: { errors },
 	} = useForm<EnterForm>({
 		mode: 'onChange',
 	});
+	console.log(watch());
 	const onLogin = async () => {
 		console.log();
 	};
@@ -53,7 +59,7 @@ function Login() {
 					<Input
 						placeholder="이메일을 입력해주세요"
 						type={'email'}
-						id="Email"
+						id="email"
 						{...register('email', {
 							required: true,
 							pattern: /^\S+@\S+$/i,
@@ -93,6 +99,10 @@ function Login() {
 				</InputContainer>
 				<SubmitButton type="submit">로그인</SubmitButton>
 				{/* {error && <Errormsg>⚠ {error}</Errormsg>} */}
+				<MentDiv>
+					<MentSpan onClick={() => navigate('/signup')}>회원가입</MentSpan>
+					<MentSpan onClick={() => navigate('/')}>비밀번호 찾기</MentSpan>
+				</MentDiv>
 			</Form>
 		</LoginBox>
 	);
