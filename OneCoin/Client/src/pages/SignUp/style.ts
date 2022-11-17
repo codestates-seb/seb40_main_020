@@ -48,7 +48,7 @@ export const InputContainer = styled.div`
 	flex-direction: column;
 	align-self: center;
 	/* margin-bottom: 15px; */
-	height: 70px;
+	height: 60px;
 `;
 
 export const Form = styled.form`
