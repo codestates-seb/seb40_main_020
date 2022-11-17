@@ -1,7 +1,9 @@
-import SignUp from 'pages/SignUp/SignUp';
-import Login from 'pages/Login/Login';
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import SignUp from 'pages/SignUp/SignUp';
+import Login from 'pages/Login/Login';
+import FindPassword from 'pages/FindPassword/FindPassword';
+import ResetPassword from 'pages/FindPassword/ResetPassword';
 
 // const Exchange = lazy(() => import('./pages/Exchange'));
 
@@ -49,6 +51,22 @@ function App() {
 					element={
 						<Suspense fallback={<>...</>}>
 							<Login />
+						</Suspense>
+					}
+				/>
+				<Route
+					path="/findpassword"
+					element={
+						<Suspense fallback={<>...</>}>
+							<FindPassword />
+						</Suspense>
+					}
+				/>
+				<Route
+					path="/resetpassword"
+					element={
+						<Suspense fallback={<>...</>}>
+							<ResetPassword />
 						</Suspense>
 					}
 				/>
