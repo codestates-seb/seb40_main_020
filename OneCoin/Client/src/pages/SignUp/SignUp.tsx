@@ -48,6 +48,7 @@ function SignUp() {
 								minLength: 2,
 								maxLength: 16,
 								pattern: /^[a-zA-Z]+$/,
+								//ㄱ-ㅎ|가-힣|a-z|A-Z 한글,영어
 							})}
 						/>
 						{errors.displayName && errors.displayName.type === 'required' && (
