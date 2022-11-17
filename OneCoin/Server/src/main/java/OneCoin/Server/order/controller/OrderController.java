@@ -20,17 +20,10 @@ public class OrderController {
     private final OrderService orderService;
     private final OrderMapper mapper;
 
-    @PostMapping("/ask")
-    public ResponseEntity postAskOrder(@Valid @RequestBody RedisOrderDto.Post redisPostDto) {
-        RedisOrder redisOrder = orderService.createAskOrder(mapper.redisPostDtoToRedisOrder(redisPostDto));
-        RedisOrderDto.PostResponse redisPostResponse = mapper.redisOrderToRedisPostResponse(redisOrder);
-
-        return new ResponseEntity(new SingleResponseDto<>(redisPostResponse) , HttpStatus.CREATED);
-    }
-
-    @PostMapping("/bid")
-    public ResponseEntity postBidOrder(@Valid @RequestBody RedisOrderDto.Post redisPostDto) {
-        RedisOrder redisOrder = orderService.createBidOrder(mapper.redisPostDtoToRedisOrder(redisPostDto));
+    @PostMapping
+    public ResponseEntity postOrder(@Valid @RequestBody RedisOrderDto.Post redisPostDto) {
+        RedisOrder mappingRedisOrder = mapper.redisPostDtoToRedisOrder(redisPostDto);
+        RedisOrder redisOrder = orderService.createOrder(mappingRedisOrder, redisPostDto.getCode());
         RedisOrderDto.PostResponse redisPostResponse = mapper.redisOrderToRedisPostResponse(redisOrder);
 
         return new ResponseEntity(new SingleResponseDto<>(redisPostResponse), HttpStatus.CREATED);
