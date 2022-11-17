@@ -19,7 +19,7 @@ public interface UserMapper {
         user.setPassword(requestBody.getPassword());
         user.setPlatform(Platform.ORIGIN);
         user.setBalance(0L);
-        user.setUserRole(Role.ROLE_USER);
+        user.setUserRole(Role.ROLE_USER);   // default : ROLE_USER
 
         return user;
     }
