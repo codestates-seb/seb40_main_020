@@ -3,9 +3,7 @@ package OneCoin.Server.order.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 public class RedisOrderDto {
@@ -15,21 +13,18 @@ public class RedisOrderDto {
         @NotBlank
         private String code;
 
-        @PositiveOrZero
         private double limit;
 
-        @PositiveOrZero
         private double market;
 
         @PositiveOrZero
         private double stopLimit;
 
-        @NotEmpty
-        @PositiveOrZero
+        @Positive
         private double amount;
 
-        @NotEmpty
-        private boolean askOrBid;
+        @NotNull
+        private Boolean askOrBid;
     }
 
     @Getter
