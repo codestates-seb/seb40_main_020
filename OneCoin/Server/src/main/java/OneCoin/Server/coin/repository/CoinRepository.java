@@ -3,7 +3,9 @@ package OneCoin.Server.coin.repository;
 import OneCoin.Server.coin.entity.Coin;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface CoinRepository extends JpaRepository<Coin, Long> {
 
-    Coin findByCode(String code);
+    Optional<Coin> findByCode(String code);
 }
