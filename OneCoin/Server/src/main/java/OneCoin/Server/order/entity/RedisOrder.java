@@ -1,8 +1,7 @@
 package OneCoin.Server.order.entity;
 
 import OneCoin.Server.coin.entity.Coin;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
@@ -12,6 +11,9 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @RedisHash("order")
 public class RedisOrder {
 

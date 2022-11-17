@@ -10,15 +10,15 @@ import java.math.BigDecimal;
 public class StubData {
 
     public static class MockRedisOrder {
-        @SneakyThrows
-        public static RedisOrder getMockEntity() {
-            RedisOrder redisOrder = new RedisOrder();
-            redisOrder.setOrderId(1L);
-            redisOrder.setLimit(new BigDecimal("333333"));
-            redisOrder.setAmount(new BigDecimal("600"));
-            redisOrder.setCoin(StubData.MockCoin.getMockEntity());
 
-            return redisOrder;
+        public static RedisOrder getMockEntity() {
+            return RedisOrder
+                    .builder()
+                    .orderId(1L)
+                    .limit(new BigDecimal("333333"))
+                    .amount(new BigDecimal("600"))
+                    .coin(MockCoin.getMockEntity())
+                    .build();
         }
     }
 
