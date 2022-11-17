@@ -1,5 +1,6 @@
 package OneCoin.Server.order.controller;
 
+import OneCoin.Server.dto.SingleResponseDto;
 import OneCoin.Server.order.dto.RedisOrderDto;
 import OneCoin.Server.order.entity.RedisOrder;
 import OneCoin.Server.order.mapper.OrderMapper;
@@ -24,7 +25,7 @@ public class OrderController {
         RedisOrder redisOrder = orderService.createAskOrder(mapper.redisPostDtoToRedisOrder(redisPostDto));
         RedisOrderDto.PostResponse redisPostResponse = mapper.redisOrderToRedisPostResponse(redisOrder);
 
-        return new ResponseEntity(redisPostResponse, HttpStatus.CREATED);
+        return new ResponseEntity(new SingleResponseDto<>(redisPostResponse) , HttpStatus.CREATED);
     }
 
     @PostMapping("/bid")
@@ -32,6 +33,6 @@ public class OrderController {
         RedisOrder redisOrder = orderService.createBidOrder(mapper.redisPostDtoToRedisOrder(redisPostDto));
         RedisOrderDto.PostResponse redisPostResponse = mapper.redisOrderToRedisPostResponse(redisOrder);
 
-        return new ResponseEntity(redisPostResponse, HttpStatus.CREATED);
+        return new ResponseEntity(new SingleResponseDto<>(redisPostResponse), HttpStatus.CREATED);
     }
 }
