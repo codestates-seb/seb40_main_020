@@ -1,4 +1,4 @@
-package OneCoin.Server.redis.redisOrder;
+package OneCoin.Server.redis.redisRepository;
 
 import OneCoin.Server.helper.StubData;
 import OneCoin.Server.order.entity.RedisOrder;
