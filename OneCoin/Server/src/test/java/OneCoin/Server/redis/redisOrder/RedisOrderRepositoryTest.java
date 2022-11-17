@@ -3,7 +3,6 @@ package OneCoin.Server.redis.redisOrder;
 import OneCoin.Server.helper.StubData;
 import OneCoin.Server.order.entity.RedisOrder;
 import OneCoin.Server.order.repository.RedisOrderRepository;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +24,6 @@ public class RedisOrderRepositoryTest {
     private RedisOrderRepository redisOrderRepository;
 
     @BeforeEach
-    @SneakyThrows
     void saveEntity() {
         RedisOrder redisOrder = StubData.MockRedisOrder.getMockEntity();
         redisOrderRepository.save(redisOrder);
