@@ -1,9 +1,6 @@
 package OneCoin.Server.chat.chatRoom.entity;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public class ChatRoom {
