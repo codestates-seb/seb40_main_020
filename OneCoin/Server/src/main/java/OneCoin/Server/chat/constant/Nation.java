@@ -1,4 +1,4 @@
-package OneCoin.Server.chat.util;
+package OneCoin.Server.chat.constant;
 
 import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;

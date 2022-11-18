@@ -1,6 +1,6 @@
 package OneCoin.Server.chat.chatRoom.service;
 
-import OneCoin.Server.chat.util.Nation;
+import OneCoin.Server.chat.constant.Nation;
 import OneCoin.Server.chat.chatRoom.entity.ChatRoom;
 import OneCoin.Server.chat.chatRoom.repository.ChatRoomRepository;
 import OneCoin.Server.exception.BusinessLogicException;
