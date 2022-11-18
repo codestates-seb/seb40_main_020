@@ -9,6 +9,8 @@ const GlobalStyle = createGlobalStyle`
     --gray: hsl(210,8%,45%);
     --lightgray: hsl(210,8%,75%);
     --yellow: #F5D042;
+    --red: #E35047;
+    --blue: #1660CC;
     --contentBg: #fafafa;
     --borderColor: #d9d9d9;
     --red: #E92222;
