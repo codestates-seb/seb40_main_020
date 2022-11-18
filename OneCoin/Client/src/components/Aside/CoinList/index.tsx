@@ -37,9 +37,11 @@ function CoinList({ symbolHandler }: Props) {
 			{ type: 'orderbook', codes: coinCodes },
 		];
 		socketAPI(codes);
+	}, []);
 
+	useEffect(() => {
 		const coinPriceInterval = setInterval(() => {
-			setCoinlist(newcoinlist);
+			setCoinlist([...newcoinlist]);
 		}, 1000);
 		return () => clearInterval(coinPriceInterval);
 	}, []);
