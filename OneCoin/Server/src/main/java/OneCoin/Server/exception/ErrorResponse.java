@@ -1,6 +1,5 @@
-package OneCoin.Server.response;
+package OneCoin.Server.exception;
 
-import OneCoin.Server.exception.ExceptionCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
