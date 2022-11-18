@@ -1,10 +1,18 @@
 package OneCoin.Server.chat.chatMessage.entity;
 
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
+
 import javax.persistence.Column;
-import javax.persistence.Id;
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+@RedisHash(value = "chatMessage", timeToLive = -1L)
 public class ChatMessage {
     @Id
     @Column(unique = true, nullable = false, updatable = false)
@@ -15,6 +23,11 @@ public class ChatMessage {
     private LocalDateTime chatAt;
     @Column(nullable = false, updatable = false)
     private Long userId;
+    @Indexed
     @Column(nullable = false, updatable = false)
     private Long chatRoomId;
+    @Column(nullable = false, updatable = false)
+    private String userDisplayName;
+    @Column(nullable = false, updatable = false)
+    private String userEmail;
 }
