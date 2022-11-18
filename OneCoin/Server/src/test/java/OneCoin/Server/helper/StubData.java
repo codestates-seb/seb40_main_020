@@ -19,28 +19,27 @@ public class StubData {
                     .limit(new BigDecimal("333333"))
                     .amount(new BigDecimal("113"))
                     .askBid(true)
-                    .coin(MockCoin.getMockEntity(1L, "KRW-BTC", "비트코인"))
+                    .code("KRW-BTC")
                     .build();
         }
 
         public static RedisOrder getMockEntity(long orderId, String limit,
-                                               String amount, boolean askBid,
-                                               long coinId, String code, String coinName) {
+                                               String amount, boolean askBid, String code) {
             return RedisOrder
                     .builder()
                     .orderId(orderId)
                     .limit(new BigDecimal(limit))
                     .amount(new BigDecimal(amount))
                     .askBid(askBid)
-                    .coin(MockCoin.getMockEntity(coinId, code, coinName))
+                    .code(code)
                     .build();
         }
 
         public static List<RedisOrder> getMockEntities() {
-            RedisOrder mockEntity1 = MockRedisOrder.getMockEntity(2L, "333333", "100", false, 1L, "KRW-BTC", "비트코인");
-            RedisOrder mockEntity2 = MockRedisOrder.getMockEntity(3L, "333333", "200", true, 2L, "KRW-ETH", "이더리움");
-            RedisOrder mockEntity3 = MockRedisOrder.getMockEntity(4L, "555555", "300", true, 2L,"KRW-ETH", "이더리움");
-            RedisOrder mockEntity4 = MockRedisOrder.getMockEntity(5L, "555555", "400", false, 3L,"KRW-XRP", "리플");
+            RedisOrder mockEntity1 = MockRedisOrder.getMockEntity(2L, "333333", "100", false, "KRW-BTC");
+            RedisOrder mockEntity2 = MockRedisOrder.getMockEntity(3L, "333333", "200", true, "KRW-ETH");
+            RedisOrder mockEntity3 = MockRedisOrder.getMockEntity(4L, "555555", "300", true, "KRW-ETH");
+            RedisOrder mockEntity4 = MockRedisOrder.getMockEntity(5L, "555555", "400", false,"KRW-XRP");
 
             return List.of(mockEntity1, mockEntity2, mockEntity3, mockEntity4);
         }

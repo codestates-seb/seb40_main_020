@@ -1,6 +1,5 @@
 package OneCoin.Server.order.service;
 
-import OneCoin.Server.coin.entity.Coin;
 import OneCoin.Server.coin.service.CoinService;
 import OneCoin.Server.order.entity.RedisOrder;
 import OneCoin.Server.order.repository.RedisOrderRepository;
@@ -16,17 +15,17 @@ public class OrderService {
     private final RedisOrderRepository redisOrderRepository;
     private final CoinService coinService;
 
-    // TODO User mapping
     public RedisOrder createOrder(RedisOrder redisOrder, String code) {
-        Coin orderedCoin = coinService.findCoin(code);
-        if (redisOrder.isAskOrBid()) {
+        // TODO User mapping
+        coinService.findVerifiedCoin(code);
+        if (redisOrder.isAskBid()) { // 매도
             // 예외 확인
         }
-        if (!redisOrder.isAskOrBid()) {
+        if (!redisOrder.isAskBid()) { // 매수
             // 예외 확인
         }
 
-        redisOrder.setCoin(orderedCoin);
+        redisOrder.setCode(code);
         return redisOrderRepository.save(redisOrder);
     }
 }

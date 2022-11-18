@@ -1,5 +1,6 @@
 package OneCoin.Server.redis.redisRepository;
 
+import OneCoin.Server.coin.entity.Coin;
 import OneCoin.Server.helper.StubData;
 import OneCoin.Server.order.entity.RedisOrder;
 import OneCoin.Server.order.repository.RedisOrderRepository;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.data.redis.DataRedisTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,8 +39,10 @@ public class RedisOrderRepositoryTest {
     @Test
     @DisplayName("List 타입으로 반환한다.")
     void findAllTest() {
+        // when
         List<RedisOrder> redisOrders = redisOrderRepository.findAll();
 
-        assertThat("비트코인").isEqualTo(redisOrders.get(0).getCoin().getCoinName());
+        // then
+        assertThat("KRW-BTC").isEqualTo(redisOrders.get(0).getCode());
     }
 }

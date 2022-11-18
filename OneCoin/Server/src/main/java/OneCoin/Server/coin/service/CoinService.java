@@ -22,8 +22,10 @@ public class CoinService {
         return findVerifiedCoin(code);
     }
 
-    private Coin findVerifiedCoin(String code) {
+    public Coin findVerifiedCoin(String code) {
         Optional<Coin> optionalCoin = coinRepository.findByCode(code);
         return optionalCoin.orElseThrow(() -> new BusinessLogicException(ExceptionCode.COIN_NOT_EXISTS));
     }
+
+    // TODO 관리자가 코인 등록
 }

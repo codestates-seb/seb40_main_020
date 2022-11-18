@@ -3,6 +3,7 @@ package OneCoin.Server.order.entity;
 import OneCoin.Server.coin.entity.Coin;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Reference;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
@@ -41,5 +42,5 @@ public class RedisOrder {
     private Long userId; // TODO USER로 변경
 
     @Indexed
-    private Coin coin;
+    private String code;
 }
