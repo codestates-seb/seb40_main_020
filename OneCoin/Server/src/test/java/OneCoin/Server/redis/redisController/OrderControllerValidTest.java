@@ -36,7 +36,7 @@ public class OrderControllerValidTest {
         String content = gson.toJson(redisPostDto);
 
         mockMvc.perform(
-                        post("/api/order")
+                        post("/api/order/KRW-BTC")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content)
@@ -54,7 +54,7 @@ public class OrderControllerValidTest {
         String content = gson.toJson(redisPostDto);
 
         mockMvc.perform(
-                        post("/api/order")
+                        post("/api/order/KRW-BTC")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content)
@@ -71,7 +71,7 @@ public class OrderControllerValidTest {
         String content = gson.toJson(redisPostDto);
 
         mockMvc.perform(
-                        post("/api/order")
+                        post("/api/order/KRW-BTC")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content)

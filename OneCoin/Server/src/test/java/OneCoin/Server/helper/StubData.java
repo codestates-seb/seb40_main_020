@@ -28,7 +28,6 @@ public class StubData {
     public static class MockRedisPostDto {
         public static RedisOrderDto.Post getMockRedisPost() {
             RedisOrderDto.Post redisPostDto = new RedisOrderDto.Post();
-            redisPostDto.setCode("KRW-BTC");
             redisPostDto.setLimit(12345000);
             redisPostDto.setAmount(66);
             redisPostDto.setAskOrBid(0);

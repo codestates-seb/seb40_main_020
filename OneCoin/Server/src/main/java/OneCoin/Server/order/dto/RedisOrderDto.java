@@ -13,8 +13,6 @@ public class RedisOrderDto {
     @Setter
     @MustHaveLimitOrMarket(limit = "limit", market = "market")
     public static class Post {
-        @NotBlank
-        private String code;
 
         @PositiveOrZero(message = "음수 값은 허용하지 않습니다.")
         private double limit;
