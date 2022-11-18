@@ -10,7 +10,10 @@ public enum ExceptionCode {
     NOT_ENOUGH_AMOUNT(400, "Not enough coin amount"),
     NOT_ENOUGH_BALANCE(400, "Not enough your balance"),
     NO_EXISTS_ORDER(400, "No exists order."),
-    NOT_YOUR_ORDER(400, "It's not your order.");
+    NOT_YOUR_ORDER(400, "It's not your order."),
+    USER_NOT_FOUND(404, "User not found"),
+    USER_EXISTS(409, "User already exists");
+
 
     private final int code;
     private final String description;
