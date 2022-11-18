@@ -23,7 +23,7 @@ public class ChatController {
         if(message.getType().equals(MessageType.ENTER)) {
             message.setMessage(message.getSender()+"님이 입장하였습니다");
         }
-        template.convertAndSend("/topic/room/" + message.getRoomId(),message);
+        template.convertAndSend("/topic/rooms/" + message.getRoomId(),message);
     }
 
     private void verifyRoom(long roomId) {
