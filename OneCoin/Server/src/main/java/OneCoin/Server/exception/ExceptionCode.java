@@ -13,7 +13,8 @@ public enum ExceptionCode {
     NOT_YOUR_ORDER(400, "It's not your order."),
     NO_SUCH_NATION(404, "There is no such nation resistered"),
     NO_SUCH_CHAT_ROOM(404, "There is no such chat room"),
-    CHAT_ROOM_NAME_EXISTS(409, "A chat room with the name already exists");
+    CHAT_ROOM_NAME_EXISTS(409, "A chat room with the name already exists"),
+    FAIL_TO_SERIALIZE(500, "직렬화에 실패했습니다.");
 
     private final int code;
     private final String description;
