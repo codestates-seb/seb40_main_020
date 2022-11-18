@@ -36,7 +36,7 @@ public class RedisOrder {
     private LocalDateTime orderTime = LocalDateTime.now();
 
     @Indexed
-    private boolean askOrBid; // (ask:True, bid:False)
+    private boolean askBid; // (ask:True, bid:False)
 
     private Long userId; // TODO USER로 변경
 

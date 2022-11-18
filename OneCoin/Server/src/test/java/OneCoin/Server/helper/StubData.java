@@ -18,20 +18,20 @@ public class StubData {
                     .orderId(1L)
                     .limit(new BigDecimal("333333"))
                     .amount(new BigDecimal("113"))
-                    .askOrBid(true)
+                    .askBid(true)
                     .coin(MockCoin.getMockEntity(1L, "KRW-BTC", "비트코인"))
                     .build();
         }
 
         public static RedisOrder getMockEntity(long orderId, String limit,
-                                               String amount, boolean askOrBid,
+                                               String amount, boolean askBid,
                                                long coinId, String code, String coinName) {
             return RedisOrder
                     .builder()
                     .orderId(orderId)
                     .limit(new BigDecimal(limit))
                     .amount(new BigDecimal(amount))
-                    .askOrBid(askOrBid)
+                    .askBid(askBid)
                     .coin(MockCoin.getMockEntity(coinId, code, coinName))
                     .build();
         }
@@ -51,7 +51,7 @@ public class StubData {
             RedisOrderDto.Post redisPostDto = new RedisOrderDto.Post();
             redisPostDto.setLimit(12345000);
             redisPostDto.setAmount(66);
-            redisPostDto.setAskOrBid(0);
+            redisPostDto.setAskBid(0);
 
             return redisPostDto;
         }

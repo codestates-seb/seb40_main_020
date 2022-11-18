@@ -28,7 +28,7 @@ public class RedisOrderDto {
 
         @NotNull(message = "빈 필드는 허용하지 않습니다.")
         @Range(min = 0, max = 1, message = "0 또는 1만 허용합니다.")
-        private Integer askOrBid;
+        private Integer askBid;
     }
 
     @Getter
@@ -42,7 +42,7 @@ public class RedisOrderDto {
     public static class GetResponse {
         private String code;
         private LocalDateTime orderTime;
-        private boolean askOrBid;
+        private boolean askBid;
         private String limit;
         private String market; // 시장가에도 전부 체결되지 않을 가능성
         private String stopLimit;
