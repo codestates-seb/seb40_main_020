@@ -2,8 +2,8 @@ package OneCoin.Server.order.controller;
 
 
 import OneCoin.Server.helper.StubData;
-import OneCoin.Server.order.dto.RedisOrderDto;
-import OneCoin.Server.order.entity.RedisOrder;
+import OneCoin.Server.order.dto.OrderDto;
+import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.service.OrderService;
 import com.google.gson.Gson;
 import lombok.SneakyThrows;
@@ -40,12 +40,12 @@ public class OrderControllerTest {
     @DisplayName("slice test: 매수/매도 주문")
     void postOrderTest() {
         // given
-        RedisOrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
+        OrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
         String content = gson.toJson(redisPostDto);
 
-        RedisOrder redisOrder = StubData.MockRedisOrder.getMockEntity();
-        given(orderService.createOrder(Mockito.any(RedisOrder.class), Mockito.anyString()))
-                .willReturn(redisOrder);
+        Order order = StubData.MockRedisOrder.getMockEntity();
+        given(orderService.createOrder(Mockito.any(Order.class), Mockito.anyString()))
+                .willReturn(order);
 
         // when
         mockMvc.perform(
@@ -55,6 +55,6 @@ public class OrderControllerTest {
                                 .content(content)
                 )
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data.orderId").value(redisOrder.getOrderId()));
+                .andExpect(jsonPath("$.data.orderId").value(order.getOrderId()));
     }
 }

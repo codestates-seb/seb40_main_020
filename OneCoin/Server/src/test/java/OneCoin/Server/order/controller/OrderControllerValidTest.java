@@ -1,7 +1,7 @@
 package OneCoin.Server.order.controller;
 
 import OneCoin.Server.helper.StubData;
-import OneCoin.Server.order.dto.RedisOrderDto;
+import OneCoin.Server.order.dto.OrderDto;
 import com.google.gson.Gson;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +31,7 @@ public class OrderControllerValidTest {
     @Test
     @DisplayName("valid test: @MustHaveLimitOrMarket 테스트, 두 필드 모두 0이면 에러가 발생한다.")
     void validTest1() {
-        RedisOrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
+        OrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
         redisPostDto.setLimit(0);
         String content = gson.toJson(redisPostDto);
 
@@ -49,7 +49,7 @@ public class OrderControllerValidTest {
     @Test
     @DisplayName("valid test: @MustHaveLimitOrMarket 테스트, 두 필드 모두 값이 있으면 에러가 발생한다.")
     void validTest2() {
-        RedisOrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
+        OrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
         redisPostDto.setMarket(100);
         String content = gson.toJson(redisPostDto);
 
@@ -67,7 +67,7 @@ public class OrderControllerValidTest {
     @Test
     @DisplayName("valid test: @MustHaveLimitOrMarket 테스트, 두 필드 중 하나만 값이 있으면 에러가 발생하지 않는다.")
     void validTest3() {
-        RedisOrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
+        OrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
         String content = gson.toJson(redisPostDto);
 
         mockMvc.perform(

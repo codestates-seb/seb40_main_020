@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @RedisHash("order")
-public class RedisOrder {
+public class Order {
 
     @Id
     private Long orderId;

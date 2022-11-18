@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.Range;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
-public class RedisOrderDto {
+public class OrderDto {
     @Getter
     @Setter
     @MustHaveLimitOrMarket(limit = "limit", market = "market")

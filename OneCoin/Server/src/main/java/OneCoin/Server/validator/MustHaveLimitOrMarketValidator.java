@@ -1,6 +1,6 @@
 package OneCoin.Server.validator;
 
-import OneCoin.Server.order.dto.RedisOrderDto;
+import OneCoin.Server.order.dto.OrderDto;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintValidator;
@@ -8,7 +8,7 @@ import javax.validation.ConstraintValidatorContext;
 import java.lang.reflect.Field;
 
 @Slf4j
-public class MustHaveLimitOrMarketValidator implements ConstraintValidator<MustHaveLimitOrMarket, RedisOrderDto.Post> {
+public class MustHaveLimitOrMarketValidator implements ConstraintValidator<MustHaveLimitOrMarket, OrderDto.Post> {
     private String limit;
     private String  market;
 
@@ -20,7 +20,7 @@ public class MustHaveLimitOrMarketValidator implements ConstraintValidator<MustH
     }
 
     @Override
-    public boolean isValid(RedisOrderDto.Post redisOrderPost, ConstraintValidatorContext context) {
+    public boolean isValid(OrderDto.Post redisOrderPost, ConstraintValidatorContext context) {
         double limitOrder = getFieldValue(redisOrderPost, limit);
         double marketOrder = getFieldValue(redisOrderPost, market);
         if ((limitOrder == 0 && marketOrder == 0) || // 두 필드 모두 값이 없을 경우
@@ -30,7 +30,7 @@ public class MustHaveLimitOrMarketValidator implements ConstraintValidator<MustH
         return true;
     }
 
-    private double getFieldValue(RedisOrderDto.Post redisOrderPost, String fieldName) { // reflection
+    private double getFieldValue(OrderDto.Post redisOrderPost, String fieldName) { // reflection
         Class<?> clazz = redisOrderPost.getClass();
         Field orderField;
         try {

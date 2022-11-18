@@ -1,7 +1,7 @@
 package OneCoin.Server.order.mapper;
 
-import OneCoin.Server.order.dto.RedisOrderDto;
-import OneCoin.Server.order.entity.RedisOrder;
+import OneCoin.Server.order.dto.OrderDto;
+import OneCoin.Server.order.entity.Order;
 import org.mapstruct.Mapper;
 
 import java.math.BigDecimal;
@@ -9,12 +9,12 @@ import java.math.BigDecimal;
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
 
-    default RedisOrder redisPostDtoToRedisOrder(RedisOrderDto.Post redisPostDto) {
+    default Order redisPostDtoToRedisOrder(OrderDto.Post redisPostDto) {
         if (redisPostDto == null) {
             return null;
         }
 
-        return RedisOrder.builder()
+        return Order.builder()
                         .limit(new BigDecimal(String.valueOf(redisPostDto.getLimit())))
                         .market(new BigDecimal(String.valueOf(redisPostDto.getMarket())))
                         .stopLimit(new BigDecimal(String.valueOf(redisPostDto.getStopLimit())))
@@ -23,5 +23,5 @@ public interface OrderMapper {
                         .build();
     }
 
-    RedisOrderDto.PostResponse redisOrderToRedisPostResponse(RedisOrder redisOrder);
+    OrderDto.PostResponse redisOrderToRedisPostResponse(Order order);
 }

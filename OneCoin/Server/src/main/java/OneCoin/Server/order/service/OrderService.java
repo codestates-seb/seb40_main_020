@@ -1,8 +1,9 @@
 package OneCoin.Server.order.service;
 
+import OneCoin.Server.coin.entity.Coin;
 import OneCoin.Server.coin.service.CoinService;
-import OneCoin.Server.order.entity.RedisOrder;
-import OneCoin.Server.order.repository.RedisOrderRepository;
+import OneCoin.Server.order.entity.Order;
+import OneCoin.Server.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,20 +13,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OrderService {
 
-    private final RedisOrderRepository redisOrderRepository;
+    private final OrderRepository orderRepository;
     private final CoinService coinService;
 
-    public RedisOrder createOrder(RedisOrder redisOrder, String code) {
+    public Order createOrder(Order order, String code) {
         // TODO User mapping
-        coinService.findVerifiedCoin(code);
-        if (redisOrder.isAskBid()) { // 매도
-            // 예외 확인
+        Coin coin = coinService.findVerifiedCoin(code);
+        if (order.isAskBid()) { // 매도
         }
-        if (!redisOrder.isAskBid()) { // 매수
+        if (!order.isAskBid()) { // 매수
             // 예외 확인
         }
 
-        redisOrder.setCode(code);
-        return redisOrderRepository.save(redisOrder);
+        order.setCode(code);
+        return orderRepository.save(order);
     }
 }
