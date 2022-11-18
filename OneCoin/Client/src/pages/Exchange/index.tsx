@@ -99,7 +99,7 @@ function Exchange() {
 				<Hold />
 			</div>
 			<div className="aside-wrapper">
-				<Aside symbolHandler={symbolHandler} />
+				<Aside symbolHandler={symbolHandler} isLeftSidebar={true} />
 			</div>
 		</ExchangeComponent>
 	);

@@ -1,8 +1,10 @@
 import styled from 'styled-components';
 
-export const AsideComponent = styled.div`
+export const AsideComponent = styled.aside<{ isShow: boolean }>`
+	display: ${(props) => !props.isShow && 'none'};
 	width: 397px;
-	height: 1140px;
+	max-height: 1140px;
+	min-height: 100vh;
 	border: 1px solid var(--borderColor);
 	background: #fff;
 	.aside-title {

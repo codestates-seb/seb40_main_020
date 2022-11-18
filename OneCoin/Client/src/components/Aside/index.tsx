@@ -6,9 +6,10 @@ import { useRecoilValue, useRecoilState } from 'recoil';
 
 interface Props {
 	symbolHandler: (item: { coin: string; code: string; symbol: string }) => void;
+	isLeftSidebar?: boolean;
 }
 
-function Aside({ symbolHandler }: Props) {
+function Aside({ symbolHandler, isLeftSidebar }: Props) {
 	const mainTitleMenu = ['코인', '랭킹'];
 	const [title, setTitle] = useState('코인');
 	const titleClickHandler = (item: string) => setTitle(item);
@@ -52,7 +53,7 @@ function Aside({ symbolHandler }: Props) {
 	}, []);
 
 	return (
-		<AsideComponent>
+		<AsideComponent isShow={isLeftSidebar ?? false}>
 			<div className="aside-title">
 				{mainTitleMenu.map((v, i) => (
 					<div
