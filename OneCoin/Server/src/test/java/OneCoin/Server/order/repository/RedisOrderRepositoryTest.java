@@ -1,8 +1,7 @@
-package OneCoin.Server.redis.redisRepository;
+package OneCoin.Server.order.repository;
 
 import OneCoin.Server.helper.StubData;
 import OneCoin.Server.order.entity.RedisOrder;
-import OneCoin.Server.order.repository.RedisOrderRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,16 +32,6 @@ public class RedisOrderRepositoryTest {
     @AfterEach
     void deleteAll() {
         redisOrderRepository.deleteAll();
-    }
-
-    @Test
-    @DisplayName("List 타입으로 반환한다.")
-    void findAllTest() {
-        // when
-        List<RedisOrder> redisOrders = redisOrderRepository.findAll();
-
-        // then
-        assertThat("KRW-BTC").isEqualTo(redisOrders.get(0).getCode());
     }
 
     @Test
