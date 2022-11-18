@@ -4,6 +4,7 @@ import OneCoin.Server.coin.entity.Coin;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 import javax.persistence.Column;
 import java.math.BigDecimal;
@@ -20,10 +21,13 @@ public class RedisOrder {
     @Id
     private Long orderId;
 
+    @Indexed
     private BigDecimal limit;
 
+    @Indexed
     private BigDecimal market;
 
+    @Indexed
     private BigDecimal stopLimit;
 
     @Column(nullable = false)
@@ -31,9 +35,11 @@ public class RedisOrder {
 
     private LocalDateTime orderTime = LocalDateTime.now();
 
+    @Indexed
     private boolean askOrBid; // (ask:True, bid:False)
 
     private Long userId; // TODO USER로 변경
 
+    @Indexed
     private Coin coin;
 }
