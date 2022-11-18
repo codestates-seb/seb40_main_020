@@ -1,11 +1,18 @@
 package OneCoin.Server.user.service;
 
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
+import OneCoin.Server.exception.BusinessLogicException;
+import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Transactional
 @Service
@@ -48,7 +55,7 @@ public class UserService {
      */
     @Transactional
     public User updateUser(User user) {
-        User findUser = userRepository.findById(user.getUserId()).orElseThrow();
+        User findUser = findVerifiedUser(user.getUserId());
 
         findUser.setDisplayName(user.getDisplayName());
         findUser.setEmail(user.getEmail());
@@ -56,6 +63,49 @@ public class UserService {
         findUser.setBalance(user.getBalance());
 
         return userRepository.save(findUser);
+    }
+
+    /**
+     * <pre>
+     *     단일 회원 정보 가져오기
+     * </pre>
+     */
+    @Transactional(readOnly = true)
+    public User findUser(long userId) {
+        return findVerifiedUser(userId);
+    }
+
+    /**
+     * <pre>
+     *     회원 정보 리스트 가져오기
+     * </pre>
+     */
+    @Transactional(readOnly = true)
+    public Page<User> findUsers(int page, int size) {
+        return userRepository.findAll(PageRequest.of(page, size, Sort.by("userId")));
+    }
+
+    /**
+     * <pre>
+     *     회원 정보 삭제
+     * </pre>
+     */
+    @Transactional
+    public void deleteUser(long userId) {
+        User findUser = findVerifiedUser(userId);
+        userRepository.delete(findUser);
+    }
+
+    /**
+     * <pre>
+     *     userId로 단일 회원 정보 가져오기
+     * </pre>
+     */
+    @Transactional(readOnly = true)
+    public User findVerifiedUser(long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        User findUser = optionalUser.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+        return findUser;
     }
 
     /**

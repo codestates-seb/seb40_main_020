@@ -1,11 +1,13 @@
 package OneCoin.Server.user.controller;
 
+import OneCoin.Server.dto.PageResponseDto;
 import OneCoin.Server.dto.SingleResponseDto;
 import OneCoin.Server.user.dto.UserDto;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.mapper.UserMapper;
 import OneCoin.Server.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -50,15 +53,22 @@ public class UserController {
         );
     }
 
-    // 권한 테스트용 (admin only)
+    // 모든 회원 정보
     @GetMapping
-    public ResponseEntity getUsers(){
-        return new ResponseEntity<>(new SingleResponseDto<>("admin only!"), HttpStatus.OK);
+    public ResponseEntity getUsers(@Positive @RequestParam int page,
+                                   @Positive @RequestParam int size){
+        Page<User> userPage = userService.findUsers(page - 1, size);
+        List<User> users = userPage.getContent();
+        return new ResponseEntity<>(
+                new PageResponseDto<>(userMapper.usersToUserResponses(users),
+                        userPage),
+                HttpStatus.OK);
     }
 
-    // 권한 테스트용 (all access)
+    // 단일 회원 정보
     @GetMapping("/{user-id}")
     public ResponseEntity getUser(@PathVariable("user-id") @Positive long userId){
-        return new ResponseEntity<>(new SingleResponseDto<>("access!"), HttpStatus.OK);
+        User user = userService.findUser(userId);
+        return new ResponseEntity<>(new SingleResponseDto<>(userMapper.userToUserResponse(user)), HttpStatus.OK);
     }
 }
