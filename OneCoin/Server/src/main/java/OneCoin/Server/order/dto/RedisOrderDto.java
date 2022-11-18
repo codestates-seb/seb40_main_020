@@ -1,5 +1,6 @@
 package OneCoin.Server.order.dto;
 
+import OneCoin.Server.validator.MustHaveLimitOrMarket;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
@@ -10,18 +11,21 @@ import java.time.LocalDateTime;
 public class RedisOrderDto {
     @Getter
     @Setter
-    public static class Post { // TODO limit market 둘다 null일 때 유효성 검증 구현
+    @MustHaveLimitOrMarket(limit = "limit", market = "market")
+    public static class Post {
         @NotBlank
         private String code;
 
+        @PositiveOrZero(message = "음수 값은 허용하지 않습니다.")
         private double limit;
 
+        @PositiveOrZero(message = "음수 값은 허용하지 않습니다.")
         private double market;
 
-        @PositiveOrZero
+        @PositiveOrZero(message = "음수 값은 허용하지 않습니다.")
         private double stopLimit;
 
-        @Positive
+        @Positive(message = "필드가 비어있거나 0 또는 음수 값은 허용하지 않습니다.")
         private double amount;
 
         @NotNull(message = "빈 필드는 허용하지 않습니다.")
