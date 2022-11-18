@@ -1,5 +1,5 @@
 import React from 'react';
-import { BALANCE_INFO_LIST } from 'utills/constants';
+import { BALANCE_INFO_LIST } from 'utills/constants/investments';
 import { Wrapper, MenuList, MenuItem } from './style';
 
 const TabInfo = () => {
