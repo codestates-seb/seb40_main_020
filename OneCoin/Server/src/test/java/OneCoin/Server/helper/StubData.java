@@ -39,9 +39,10 @@ public class StubData {
             RedisOrder mockEntity1 = MockRedisOrder.getMockEntity(2L, "333333", "100", false, "KRW-BTC");
             RedisOrder mockEntity2 = MockRedisOrder.getMockEntity(3L, "333333", "200", true, "KRW-ETH");
             RedisOrder mockEntity3 = MockRedisOrder.getMockEntity(4L, "555555", "300", true, "KRW-ETH");
-            RedisOrder mockEntity4 = MockRedisOrder.getMockEntity(5L, "555555", "400", false,"KRW-XRP");
+            RedisOrder mockEntity4 = MockRedisOrder.getMockEntity(5L, "333333", "400", true, "KRW-ETH");
+            RedisOrder mockEntity5 = MockRedisOrder.getMockEntity(6L, "555555", "500", false,"KRW-XRP");
 
-            return List.of(mockEntity1, mockEntity2, mockEntity3, mockEntity4);
+            return List.of(mockEntity1, mockEntity2, mockEntity3, mockEntity4, mockEntity5);
         }
     }
 
