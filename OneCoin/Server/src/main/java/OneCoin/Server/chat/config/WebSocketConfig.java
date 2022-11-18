@@ -13,7 +13,6 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-    private final StompHandler stompHandler;
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // (/ws/chat)엔드포인트로 들어온 http 을 웹소켓 통신으로 전환한다.
@@ -30,10 +29,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // /topic으로 시작하면 구독하는 것
         // 일단 여기서는 스프링에서 기본적으로 제공하는 simple broker를 사용하는데 나중에 kafka로 바꿀 예정
         registry.enableSimpleBroker("/topic");
-    }
-
-    @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(stompHandler);
     }
 }
