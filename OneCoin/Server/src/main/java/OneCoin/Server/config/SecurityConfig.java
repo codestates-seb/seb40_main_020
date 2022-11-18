@@ -1,14 +1,20 @@
 package OneCoin.Server.config;
 
 import OneCoin.Server.config.auth.filter.JwtAuthenticationFilter;
+import OneCoin.Server.config.auth.filter.JwtVerificationFilter;
+import OneCoin.Server.config.auth.handler.UserAuthenticationFailureHandler;
+import OneCoin.Server.config.auth.handler.UserAuthenticationSuccessHandler;
 import OneCoin.Server.config.auth.jwt.JwtTokenizer;
+import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,9 +28,11 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
     private final JwtTokenizer jwtTokenizer;
+    private final CustomAuthorityUtils customAuthorityUtils;
 
-    public SecurityConfig(JwtTokenizer jwtTokenizer) {
+    public SecurityConfig(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils) {
         this.jwtTokenizer = jwtTokenizer;
+        this.customAuthorityUtils = customAuthorityUtils;
     }
 
     @Bean
@@ -34,12 +42,19 @@ public class SecurityConfig {
                 .and()
                 .csrf().disable()        // 일단 disable
                 .cors(Customizer.withDefaults())    // corsConfigurationSource 에서 설정
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)     // 세션 생성하지 않음
+                .and()
                 .formLogin().disable()
                 .httpBasic().disable()   // jwt 쓸거니 비활성화
-                .apply(new CustomFilterConfigurer())
+                .apply(new CustomFilterConfigurer())    // 커스텀 필터 적용
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().permitAll()                // 일단 허용
+                        .antMatchers(HttpMethod.POST, "/*/users").permitAll()
+                        .antMatchers(HttpMethod.PATCH, "/*/users/**").hasRole("ROLE_USER")
+                        .antMatchers(HttpMethod.GET, "/*/users").hasRole("ROLE_ADMIN")
+                        .antMatchers(HttpMethod.GET, "/*/users/**").hasAnyRole("ROLE_USER", "ROLE_ADMIN")
+                        .antMatchers(HttpMethod.DELETE, "/*/users/**").hasRole("ROLE_USER")
+//                        .anyRequest().permitAll()                // 일단 허용
                 );
         return http.build();
     }
@@ -61,7 +76,7 @@ public class SecurityConfig {
         return source;
     }
 
-    // JwtAuthenticationFilter 를 등록
+    // 커스텀 필터 설정
     public class CustomFilterConfigurer extends AbstractHttpConfigurer<CustomFilterConfigurer, HttpSecurity> {
         @Override
         public void configure(HttpSecurity builder) throws Exception {
@@ -70,7 +85,15 @@ public class SecurityConfig {
             JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer);  // JwtAuthenticationFilter 를 생성하면서 JwtAuthenticationFilter 에서 사용되는 AuthenticationManager 와 JwtTokenizer 를 DI
             jwtAuthenticationFilter.setFilterProcessesUrl("/auth/login");          // 로그인 url 변경
 
-            builder.addFilter(jwtAuthenticationFilter);  // 커스텀한 필터를 필터 체인에 추가
+            // 성공, 실패 핸들러 추가, 일반적으로 인증을 위한 필터마다 성공, 실패 구현 클래스를 각각 생성할거라 DI 하지 않아도 무방
+            jwtAuthenticationFilter.setAuthenticationSuccessHandler(new UserAuthenticationSuccessHandler());
+            jwtAuthenticationFilter.setAuthenticationFailureHandler(new UserAuthenticationFailureHandler());
+
+            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, customAuthorityUtils);
+
+            // 커스텀한 필터를 필터 체인에 추가
+            builder.addFilter(jwtAuthenticationFilter)
+                    . addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
         }
     }
 }

@@ -46,7 +46,19 @@ public class UserController {
         User updatedUser = userService.updateUser(user);
 
         return new ResponseEntity<>(
-                new SingleResponseDto<>(userMapper.userToUserResponse(updatedUser)), HttpStatus.CREATED
+                new SingleResponseDto<>(userMapper.userToUserResponse(updatedUser)), HttpStatus.OK
         );
+    }
+
+    // 권한 테스트용 (admin only)
+    @GetMapping
+    public ResponseEntity getUsers(){
+        return new ResponseEntity<>(new SingleResponseDto<>("admin only!"), HttpStatus.OK);
+    }
+
+    // 권한 테스트용 (all access)
+    @GetMapping("/{user-id}")
+    public ResponseEntity getUser(@PathVariable("user-id") @Positive long userId){
+        return new ResponseEntity<>(new SingleResponseDto<>("access!"), HttpStatus.OK);
     }
 }
