@@ -1,10 +1,8 @@
+import Layout from 'components/Layout';
 import React from 'react';
 import { Link } from 'react-router-dom';
-
 import Lottie from 'react-lottie-player';
 import Slider from 'react-slick';
-
-import Layout from 'components/Layout';
 import exchangeJson from '../../assets/images/exchange.json';
 import chatJson from '../../assets/images/chat.json';
 

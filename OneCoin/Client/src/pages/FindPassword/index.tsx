@@ -1,3 +1,4 @@
+import Layout from 'components/Layout';
 import React from 'react';
 import {
 	FindPasswordBox,
@@ -10,7 +11,7 @@ import {
 
 function FindPassword() {
 	return (
-		<div>
+		<Layout isLeftSidebar={false}>
 			<FindPasswordBox>
 				<Form>
 					<StyledDiv>비밀번호 찾기</StyledDiv>
@@ -20,7 +21,7 @@ function FindPassword() {
 					<SubmitButton>인증메일 보내기</SubmitButton>
 				</Form>
 			</FindPasswordBox>
-		</div>
+		</Layout>
 	);
 }
 
