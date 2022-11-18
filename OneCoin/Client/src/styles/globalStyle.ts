@@ -13,6 +13,8 @@ const GlobalStyle = createGlobalStyle`
     --blue: #1660CC;
     --contentBg: #fafafa;
     --borderColor: #d9d9d9;
+    --red: #E92222;
+    --blue: #123EDB;
     background-color: var(--contentBg);
   }
   body.dark {
