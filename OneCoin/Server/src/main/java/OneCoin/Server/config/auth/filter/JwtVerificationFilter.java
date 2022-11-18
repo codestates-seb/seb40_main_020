@@ -3,6 +3,8 @@ package OneCoin.Server.config.auth.filter;
 import OneCoin.Server.config.auth.jwt.JwtTokenizer;
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
 import OneCoin.Server.user.entity.Role;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,8 +36,19 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        Map<String, Object> claims = verifyJws(request);
-        setAuthenticationToContext(claims);
+//        Map<String, Object> claims = verifyJws(request);
+//        setAuthenticationToContext(claims);
+
+        try {
+            Map<String, Object> claims = verifyJws(request);
+            setAuthenticationToContext(claims);
+        } catch (SignatureException se) {
+            request.setAttribute("exception", se);
+        } catch (ExpiredJwtException ee) {
+            request.setAttribute("exception", ee);
+        } catch (Exception e) {
+            request.setAttribute("exception", e);
+        }
 
         // JWT 검증과 Authentication 객체를 저장 완료였으므로 다음 필터 실행
         filterChain.doFilter(request, response);
