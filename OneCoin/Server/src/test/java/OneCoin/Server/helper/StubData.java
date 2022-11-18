@@ -31,7 +31,7 @@ public class StubData {
             redisPostDto.setCode("KRW-BTC");
             redisPostDto.setLimit(12345000);
             redisPostDto.setAmount(66);
-            redisPostDto.setAskOrBid(false);
+            redisPostDto.setAskOrBid(0);
 
             return redisPostDto;
         }

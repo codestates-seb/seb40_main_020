@@ -2,6 +2,7 @@ package OneCoin.Server.order.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
@@ -23,8 +24,9 @@ public class RedisOrderDto {
         @Positive
         private double amount;
 
-        @NotNull
-        private Boolean askOrBid;
+        @NotNull(message = "빈 필드는 허용하지 않습니다.")
+        @Range(min = 0, max = 1, message = "0 또는 1만 허용합니다.")
+        private Integer askOrBid;
     }
 
     @Getter
