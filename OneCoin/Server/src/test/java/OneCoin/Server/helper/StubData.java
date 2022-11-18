@@ -11,16 +11,27 @@ import java.math.BigDecimal;
 public class StubData {
 
     public static class MockRedisOrder {
-
         public static RedisOrder getMockEntity() {
             return RedisOrder
                     .builder()
                     .orderId(1L)
                     .limit(new BigDecimal("333333"))
-                    .market(new BigDecimal("0.0"))
-                    .stopLimit(new BigDecimal("0.0"))
-                    .amount(new BigDecimal("600"))
-                    .coin(MockCoin.getMockEntity())
+                    .amount(new BigDecimal("113"))
+                    .askOrBid(true)
+                    .coin(MockCoin.getMockEntity(1L, "KRW-BTC", "비트코인"))
+                    .build();
+        }
+
+        public static RedisOrder getMockEntity(long orderId, String limit,
+                                               String amount, boolean askOrBid,
+                                               long coinId, String code, String coinName) {
+            return RedisOrder
+                    .builder()
+                    .orderId(orderId)
+                    .limit(new BigDecimal(limit))
+                    .amount(new BigDecimal(amount))
+                    .askOrBid(askOrBid)
+                    .coin(MockCoin.getMockEntity(coinId, code, coinName))
                     .build();
         }
     }
@@ -39,10 +50,10 @@ public class StubData {
 
     public static class MockCoin {
         @SneakyThrows
-        public static Coin getMockEntity() {
+        public static Coin getMockEntity(long coinId, String code, String coinName) {
             Constructor<Coin> constructor = Coin.class.getDeclaredConstructor(Long.class, String.class, String.class);
             constructor.setAccessible(true);
-            Coin coin = constructor.newInstance(1L, "KRW-BTC", "비트코인");
+            Coin coin = constructor.newInstance(coinId, code, coinName);
 
             return coin;
         }
