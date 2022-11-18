@@ -101,18 +101,18 @@ function Aside({ symbolHandler, isLeftSidebar }: Props) {
 												? v.ticker.trade_price.toLocaleString()
 												: 0}
 										</td>
-										<tr className={'today-range'}>
-											<td>
+										<td className={'today-range'}>
+											<span>
 												{v?.ticker?.signed_change_rate
 													? `${(v.ticker.signed_change_rate * 100).toFixed(2)}%`
 													: '0%'}
-											</td>
-											<td>
+											</span>
+											<span>
 												{v?.ticker?.signed_change_price
 													? v.ticker.signed_change_price.toLocaleString()
 													: 0}
-											</td>
-										</tr>
+											</span>
+										</td>
 									</tr>
 								))}
 						</tbody>

@@ -68,6 +68,13 @@ export const AsideComponent = styled.aside<{ isShow: boolean }>`
 					justify-content: center;
 					align-items: center;
 					flex: 1;
+					&:last-child {
+						flex-direction: column;
+						span {
+							display: block;
+							margin: 2px 0;
+						}
+					}
 				}
 				> tr {
 					display: flex;
