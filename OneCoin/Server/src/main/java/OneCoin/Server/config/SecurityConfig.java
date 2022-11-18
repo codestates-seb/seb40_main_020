@@ -2,6 +2,8 @@ package OneCoin.Server.config;
 
 import OneCoin.Server.config.auth.filter.JwtAuthenticationFilter;
 import OneCoin.Server.config.auth.filter.JwtVerificationFilter;
+import OneCoin.Server.config.auth.handler.UserAccessDeniedHandler;
+import OneCoin.Server.config.auth.handler.UserAuthenticationEntryPoint;
 import OneCoin.Server.config.auth.handler.UserAuthenticationFailureHandler;
 import OneCoin.Server.config.auth.handler.UserAuthenticationSuccessHandler;
 import OneCoin.Server.config.auth.jwt.JwtTokenizer;
@@ -46,6 +48,10 @@ public class SecurityConfig {
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()   // jwt 쓸거니 비활성화
+                .exceptionHandling()
+                .authenticationEntryPoint(new UserAuthenticationEntryPoint())  // 엔트리포인트 작업 추가
+                .accessDeniedHandler(new UserAccessDeniedHandler())     // 접근 거부 핸들러 추가
+                .and()
                 .apply(new CustomFilterConfigurer())    // 커스텀 필터 적용
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
