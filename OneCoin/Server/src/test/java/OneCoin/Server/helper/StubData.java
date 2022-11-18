@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
+import java.util.List;
 
 public class StubData {
 
@@ -33,6 +34,15 @@ public class StubData {
                     .askOrBid(askOrBid)
                     .coin(MockCoin.getMockEntity(coinId, code, coinName))
                     .build();
+        }
+
+        public static List<RedisOrder> getMockEntities() {
+            RedisOrder mockEntity1 = MockRedisOrder.getMockEntity(2L, "333333", "100", false, 1L, "KRW-BTC", "비트코인");
+            RedisOrder mockEntity2 = MockRedisOrder.getMockEntity(3L, "333333", "200", true, 2L, "KRW-ETH", "이더리움");
+            RedisOrder mockEntity3 = MockRedisOrder.getMockEntity(4L, "555555", "300", true, 2L,"KRW-ETH", "이더리움");
+            RedisOrder mockEntity4 = MockRedisOrder.getMockEntity(5L, "555555", "400", false, 3L,"KRW-XRP", "리플");
+
+            return List.of(mockEntity1, mockEntity2, mockEntity3, mockEntity4);
         }
     }
 
