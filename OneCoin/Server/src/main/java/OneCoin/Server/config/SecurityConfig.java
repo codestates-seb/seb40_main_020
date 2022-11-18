@@ -54,7 +54,7 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.GET, "/*/users").hasRole("ROLE_ADMIN")
                         .antMatchers(HttpMethod.GET, "/*/users/**").hasAnyRole("ROLE_USER", "ROLE_ADMIN")
                         .antMatchers(HttpMethod.DELETE, "/*/users/**").hasRole("ROLE_USER")
-//                        .anyRequest().permitAll()                // 일단 허용
+                        .anyRequest().permitAll()                // 일단 허용
                 );
         return http.build();
     }
