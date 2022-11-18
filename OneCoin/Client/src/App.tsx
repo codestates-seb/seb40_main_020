@@ -6,6 +6,7 @@ import FindPassword from 'pages/FindPassword/FindPassword';
 import ResetPassword from 'pages/FindPassword/ResetPassword';
 
 const Balance = lazy(() => import('./pages/Balance'));
+const History = lazy(() => import('./pages/History'));
 const Exchange = lazy(() => import('./pages/Exchange'));
 
 function App() {
@@ -30,7 +31,7 @@ function App() {
 				/>
 				<Route
 					path="/investments/history"
-					element={<Suspense fallback={<>...</>}>{<>거래내역</>}</Suspense>}
+					element={<Suspense fallback={<>...</>}>{<History />}</Suspense>}
 				/>
 				<Route
 					path="/investments/wait_orders"
