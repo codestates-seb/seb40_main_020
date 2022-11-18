@@ -29,8 +29,6 @@ public class RedisOrder {
     @Column(nullable = false)
     private BigDecimal amount; // 미체결량
 
-    private BigDecimal completedAmount; // 체결량
-
     private LocalDateTime orderTime = LocalDateTime.now();
 
     private boolean askOrBid; // (ask:True, bid:False)
