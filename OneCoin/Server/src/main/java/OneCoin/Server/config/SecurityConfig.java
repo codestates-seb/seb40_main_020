@@ -27,7 +27,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class SecurityConfig {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils customAuthorityUtils;
@@ -55,12 +55,13 @@ public class SecurityConfig {
                 .apply(new CustomFilterConfigurer())    // 커스텀 필터 적용
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
-                        .antMatchers(HttpMethod.POST, "/*/users").permitAll()
-                        .antMatchers(HttpMethod.PATCH, "/*/users/**").hasRole("ROLE_USER")
-                        .antMatchers(HttpMethod.GET, "/*/users").hasRole("ROLE_ADMIN")
-                        .antMatchers(HttpMethod.GET, "/*/users/**").hasAnyRole("ROLE_USER", "ROLE_ADMIN")
-                        .antMatchers(HttpMethod.DELETE, "/*/users/**").hasRole("ROLE_USER")
+                        .antMatchers(HttpMethod.POST, "/users").permitAll()
+                        .antMatchers(HttpMethod.PATCH, "/users/**").hasRole("USER")
+                        .antMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.GET, "/users/**").hasAnyRole("USER", "ADMIN")
+                        .antMatchers(HttpMethod.DELETE, "/users/**").hasRole("USER")
                         .anyRequest().permitAll()                // 일단 허용
+
                 );
         return http.build();
     }

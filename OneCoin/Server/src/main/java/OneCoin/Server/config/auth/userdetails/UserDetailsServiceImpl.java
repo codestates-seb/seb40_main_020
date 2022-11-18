@@ -1,6 +1,8 @@
 package OneCoin.Server.config.auth.userdetails;
 
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
+import OneCoin.Server.exception.BusinessLogicException;
+import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,7 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> optionalUser = userRepository.findByEmail(username);
-        User findUser = optionalUser.orElseThrow();
+        User findUser = optionalUser.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
         return new UserDetailsImpl(findUser);
     }
