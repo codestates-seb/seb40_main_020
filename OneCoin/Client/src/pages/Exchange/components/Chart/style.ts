@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 export const ChartComponent = styled.div`
-	width: 990px;
-	height: 450px;
+	width: 100%;
+	height: 100%;
 	#tradingview_widget_wrapper {
 		> div {
 			:nth-last-child(1) {
