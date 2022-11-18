@@ -5,6 +5,7 @@ import Login from 'pages/Login/Login';
 import FindPassword from 'pages/FindPassword/FindPassword';
 import ResetPassword from 'pages/FindPassword/ResetPassword';
 
+const Balance = lazy(() => import('./pages/Balance'));
 const Exchange = lazy(() => import('./pages/Exchange'));
 
 function App() {
@@ -15,20 +16,17 @@ function App() {
 					path="/"
 					element={<Suspense fallback={<>...</>}>{<div>메인</div>}</Suspense>}
 				/>
-
 				<Route
 					path="/exchange"
 					element={<Suspense fallback={<>...</>}>{<Exchange />}</Suspense>}
 				/>
-
 				<Route
 					path="/balances"
 					element={<Suspense fallback={<>...</>}>{<>입출금</>}</Suspense>}
 				/>
-
 				<Route
 					path="/investments/balance"
-					element={<Suspense fallback={<>...</>}>{<>보유 자산</>}</Suspense>}
+					element={<Suspense fallback={<>...</>}>{<Balance />}</Suspense>}
 				/>
 				<Route
 					path="/investments/history"
