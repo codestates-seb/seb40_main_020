@@ -15,12 +15,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // (/ws/chat)엔드포인트로 들어온 http 을 웹소켓 통신으로 전환한다.
         //  요때 들어온 요청을 dispatcherServlet에서 같이 처리함.
         //  그래서 Spring mvc랑 함께 쓰기 좋다는 것.
-        registry.addEndpoint("/ws/chat").setAllowedOrigins("*").withSockJS();
+        registry.addEndpoint("/ws/chat").setAllowedOriginPatterns("*").withSockJS();
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        // destination header(STOMP에서 사용하는 Message format)이 아래 /pub으로 시작하면
+        // destination header(STOMP에서 사용하는 Message format)이 아래 /app으로 시작하면
         // 발행하는 거고
         registry.setApplicationDestinationPrefixes("/app");
         // /topic으로 시작하면 구독하는 것

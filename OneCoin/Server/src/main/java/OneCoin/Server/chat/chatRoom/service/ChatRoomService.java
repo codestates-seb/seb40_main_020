@@ -5,11 +5,13 @@ import OneCoin.Server.chat.chatRoom.entity.ChatRoom;
 import OneCoin.Server.chat.chatRoom.repository.ChatRoomRepository;
 import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 @Component
+@AllArgsConstructor
 public class ChatRoomService {
     private ChatRoomRepository chatRoomRepository;
 
