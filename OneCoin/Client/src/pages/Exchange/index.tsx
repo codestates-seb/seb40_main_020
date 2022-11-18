@@ -6,9 +6,8 @@ import QuoteList from './components/QuoteList';
 import { ExchangeComponent } from './style';
 import { GoTriangleUp, GoTriangleDown } from 'react-icons/go';
 import Order from './components/Order';
-import Hold from './components/Hold';
 import Aside from 'components/Aside';
-import Tab from 'components/Tab';
+import HoldList from './components/HoldList';
 
 function Exchange() {
 	interface T {
@@ -29,22 +28,15 @@ function Exchange() {
 
 	const [inputPrice, setInputPrice] = useState<number>(0);
 	const prcieClickHandler = (price: number) => setInputPrice(price);
-	const priceChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const value = e.target.value.replaceAll(',', '');
-		if (!isNaN(+value)) {
-			const formatValue = +value.toLocaleString();
-			setInputPrice(formatValue);
-		}
-	};
 	useEffect(() => {
 		const newData = coinData.filter((v) => v.coin === symbol.coin)[0];
 		setCoin(newData);
 		setInputPrice(newData.ticker?.trade_price ? newData.ticker.trade_price : 0);
 	}, [symbol]);
-	const a: React.ReactNode[] = [
-		<Chart symbol={symbol.symbol} key={1} />,
-		<Hold key={2} />,
-	];
+	useEffect(() => {
+		const newData = coinData.filter((v) => v.coin === symbol.coin)[0];
+		setInputPrice(newData.ticker?.trade_price ? newData.ticker.trade_price : 0);
+	}, []);
 	return (
 		<ExchangeComponent todayChange={coin?.ticker?.change && coin.ticker.change}>
 			<div className="coin-title">
@@ -90,13 +82,10 @@ function Exchange() {
 				/>
 			</div>
 			<div className="order-wrapper">
-				<Order
-					inputPrice={inputPrice}
-					priceChangeHandler={priceChangeHandler}
-				/>
+				<Order inputPrice={inputPrice} setInputPrice={setInputPrice} />
 			</div>
 			<div className="hold-wrapper">
-				<Hold />
+				<HoldList />
 			</div>
 			<div className="aside-wrapper">
 				<Aside symbolHandler={symbolHandler} />
