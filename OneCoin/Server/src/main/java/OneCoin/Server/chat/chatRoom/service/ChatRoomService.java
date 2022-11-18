@@ -3,7 +3,8 @@ package OneCoin.Server.chat.chatRoom.service;
 import OneCoin.Server.chat.util.Nation;
 import OneCoin.Server.chat.chatRoom.entity.ChatRoom;
 import OneCoin.Server.chat.chatRoom.repository.ChatRoomRepository;
-import OneCoin.Server.chat.exceptions.ExceptionCode;
+import OneCoin.Server.exception.BusinessLogicException;
+import OneCoin.Server.exception.ExceptionCode;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -38,13 +39,13 @@ public class ChatRoomService {
     private ChatRoom findVerifiedRoom(Long roomId) {
         Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findById(roomId);
         return optionalChatRoom
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionCode.NO_SUCH_CHAT_ROOM.getMessage()));
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.NO_SUCH_CHAT_ROOM));
     }
     //채팅방이름 중복 확인
     private void checkDuplicatedName(String name) {
         Optional<ChatRoom> chatRoom = chatRoomRepository.findByName(name);
         if(chatRoom.isPresent()) {
-            throw new IllegalArgumentException(ExceptionCode.CHAT_ROOM_NAME_EXISTS.getMessage());
+            throw new BusinessLogicException(ExceptionCode.CHAT_ROOM_NAME_EXISTS);
         }
     }
 }
