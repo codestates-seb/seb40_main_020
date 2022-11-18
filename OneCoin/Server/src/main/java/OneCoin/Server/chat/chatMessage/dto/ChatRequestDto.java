@@ -10,19 +10,20 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatMessageDto {
+public class ChatRequestDto {
     @NotBlank
     private MessageType type;
     @NotBlank
-    private String sender;
+    private String userDisplayName;
     @NotBlank
-    private Long senderId;
+    private Long userId;
     @NotBlank
-    private Long roomId;
+    private Long chatRoomId;
     @NotBlank
     private String message;
 
-    public void setSender(String sender) {
-        this.sender = sender;
+
+    public void setUserDisplayName(String userDisplayName) {
+        this.userDisplayName = userDisplayName;
     }
 }
