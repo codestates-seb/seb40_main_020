@@ -5,7 +5,7 @@ import Login from 'pages/Login/Login';
 import FindPassword from 'pages/FindPassword/FindPassword';
 import ResetPassword from 'pages/FindPassword/ResetPassword';
 
-// const Exchange = lazy(() => import('./pages/Exchange'));
+const Exchange = lazy(() => import('./pages/Exchange'));
 
 function App() {
 	return (
@@ -18,7 +18,7 @@ function App() {
 
 				<Route
 					path="/exchange"
-					element={<Suspense fallback={<>...</>}>{<>거래소</>}</Suspense>}
+					element={<Suspense fallback={<>...</>}>{<Exchange />}</Suspense>}
 				/>
 
 				<Route
