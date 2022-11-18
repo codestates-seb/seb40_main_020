@@ -1,6 +1,5 @@
 package OneCoin.Server.redis.redisRepository;
 
-import OneCoin.Server.coin.entity.Coin;
 import OneCoin.Server.helper.StubData;
 import OneCoin.Server.order.entity.RedisOrder;
 import OneCoin.Server.order.repository.RedisOrderRepository;
@@ -44,5 +43,24 @@ public class RedisOrderRepositoryTest {
 
         // then
         assertThat("KRW-BTC").isEqualTo(redisOrders.get(0).getCode());
+    }
+
+    @Test
+    @DisplayName("@Indexed 어노테이션을 사용하면 해당 필드로 select 문이 실행된다.")
+    void indexedTest() {
+        // given
+        List<RedisOrder> redisOrders = StubData.MockRedisOrder.getMockEntities();
+        redisOrderRepository.saveAll(redisOrders);
+
+        // when
+        BigDecimal limit = new BigDecimal("333333");
+        boolean askBid = true;
+        String code = "KRW-ETH";
+        List<RedisOrder> findRedisOrders = redisOrderRepository.findAllByLimitAndAskBidAndCode(limit, askBid, code);
+
+        // then
+        assertThat(findRedisOrders.size()).isEqualTo(2);
+        assertThat(findRedisOrders.get(0).getOrderId()).isEqualTo(3L);
+        assertThat(findRedisOrders.get(1).getOrderId()).isEqualTo(5L);
     }
 }
