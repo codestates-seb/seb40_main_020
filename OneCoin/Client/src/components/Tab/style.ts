@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const TabComponent = styled.div`
 	width: 100%;
+	height: 100%;
 	.title-menu {
 		width: 100%;
 		height: 45px;
