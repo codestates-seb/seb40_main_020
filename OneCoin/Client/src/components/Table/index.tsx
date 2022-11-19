@@ -23,17 +23,25 @@ const Table = ({ title, headerGroups, bodyDatas }: TableProps) => {
 				</tr>
 			</Header>
 			<Body>
-				{bodyDatas.map((data, i) => {
-					const keys = Object.keys(data).filter((key) => key !== 'id');
+				{bodyDatas.length > 0 ? (
+					bodyDatas.map((data, i) => {
+						const keys = Object.keys(data).filter((key) => key !== 'id');
 
-					return (
-						<tr key={i}>
-							{keys.map((key, i) => (
-								<td key={i}>{data[key]}</td>
-							))}
-						</tr>
-					);
-				})}
+						return (
+							<tr key={i}>
+								{keys.map((key, i) => (
+									<td key={i}>{data[key]}</td>
+								))}
+							</tr>
+						);
+					})
+				) : (
+					<tr>
+						<td colSpan={headerGroups.length}>
+							<span className="none-data">내역이 없습니다.</span>
+						</td>
+					</tr>
+				)}
 			</Body>
 		</Wrapper>
 	);
