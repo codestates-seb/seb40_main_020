@@ -3,7 +3,7 @@ import { HISTORY_PERIOD, HISTORY_TYPE } from 'utills/constants/investments';
 import ButtonList from '../ButtonList';
 import { Wrapper, SearchBox } from './style';
 
-import { FaSearch } from 'react-icons/fa';
+import { AiOutlineSearch } from 'react-icons/ai';
 
 const HistoryHeader = () => {
 	return (
@@ -13,7 +13,7 @@ const HistoryHeader = () => {
 			<SearchBox>
 				<span>코인선택</span>
 				<div>
-					<FaSearch className="icon" />
+					<AiOutlineSearch className="icon" />
 					<input type="text" placeholder="전체" />
 				</div>
 			</SearchBox>

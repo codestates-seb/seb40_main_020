@@ -29,6 +29,7 @@ export const SearchBox = styled.div`
 			right: 0;
 			transform: translate(-50%, -50%);
 			cursor: pointer;
+			font-size: 1.5rem;
 		}
 	}
 `;
