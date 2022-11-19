@@ -41,3 +41,9 @@ export const contentBox = css`
 	max-height: 1140px;
 	min-height: 100vh;
 `;
+
+export const contentBox = css`
+	background: #fff;
+	max-height: 1140px;
+	min-height: 100vh;
+`;
