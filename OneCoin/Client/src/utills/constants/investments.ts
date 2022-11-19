@@ -95,3 +95,37 @@ export const HISTORY_TYPE = [
 	{ title: '입금', value: 'deposit' },
 	{ title: '스왑', value: 'swap' },
 ];
+
+// wait_orders 미체결
+export const WAIT_ORDERS_THEAD = [
+	'시간',
+	'마켓명',
+	'거래종류',
+	'감시가격',
+	'주문가격',
+	'주문수량',
+	'미체결량',
+	'주문취소',
+];
+
+export const WAIT_ORDERS_TBODY = {
+	data: [
+		{
+			id: 1,
+			execution_time: '2022. 09.09. 07:58', // 시간
+			market: '-', // 마켓명
+			type: '입금', //거래종류
+			watch_price: '0.00000417 BTT', // 감시가격
+			order_price: '0.00000417 BTT', // 주문가격
+			order_quantity: '0.00000417 BTT', // 주문수량
+			not_signed: '0.00000417 BTT', // 미체결량
+			order_cancel: '0.00000417 BTT', // 주문취소
+		},
+	],
+	pageInfo: {
+		page: 1,
+		size: 10,
+		totalElements: 100,
+		totalPages: 10,
+	},
+};
