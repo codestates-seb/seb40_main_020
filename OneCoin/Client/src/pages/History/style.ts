@@ -1,6 +1,8 @@
 import styled from 'styled-components';
+import { contentBox } from '../../styles/index';
 
 export const Wrapper = styled.div`
+	${contentBox}
 	table thead th {
 		width: 12%;
 		:nth-child(1) {

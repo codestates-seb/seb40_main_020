@@ -10,7 +10,6 @@ export const Wapper = styled.main`
 
 export const Container = styled.section`
 	flex: 1;
-	background: #fff;
 `;
 
 export const Aside = styled.aside`
