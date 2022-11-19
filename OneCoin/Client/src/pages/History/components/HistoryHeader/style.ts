@@ -5,6 +5,8 @@ export const Wrapper = styled.div`
 	display: flex;
 	width: 100%;
 	margin: 50px 0 30px;
+	padding: 0 30px;
+	box-sizing: border-box;
 `;
 
 export const SearchBox = styled.div`

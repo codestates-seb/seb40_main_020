@@ -13,6 +13,8 @@ import Pagination, {
 import TabsLink from 'pages/Balance/components/TabsLink';
 import HistoryHeader from './components/HistoryHeader';
 
+import { Wrapper } from './style';
+
 const History = () => {
 	const [jumpToPage, setJumpToPage] = useState(0);
 	const onPageChanged: OnPageChangeCallback = (selectedItem) => {
@@ -22,14 +24,16 @@ const History = () => {
 
 	return (
 		<Layout>
-			<TabsLink array={INVERSTMENTS_LIST} />
-			<HistoryHeader />
-			<Table headerGroups={HISTORY_THEAD} bodyDatas={HISTORY_TBODY.data} />
-			<Pagination
-				currentPage={jumpToPage}
-				pageCount={HISTORY_TBODY.pageInfo.totalPages}
-				onPageChange={onPageChanged}
-			/>
+			<Wrapper>
+				<TabsLink array={INVERSTMENTS_LIST} />
+				<HistoryHeader />
+				<Table headerGroups={HISTORY_THEAD} bodyDatas={HISTORY_TBODY.data} />
+				<Pagination
+					currentPage={jumpToPage}
+					pageCount={HISTORY_TBODY.pageInfo.totalPages}
+					onPageChange={onPageChanged}
+				/>
+			</Wrapper>
 		</Layout>
 	);
 };
