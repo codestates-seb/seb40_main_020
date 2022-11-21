@@ -1,25 +1,31 @@
 package OneCoin.Server.order.service;
 
-import OneCoin.Server.order.entity.RedisOrder;
-import OneCoin.Server.order.repository.RedisOrderRepository;
+import OneCoin.Server.coin.entity.Coin;
+import OneCoin.Server.coin.service.CoinService;
+import OneCoin.Server.order.entity.Order;
+import OneCoin.Server.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class OrderService {
 
-    private final RedisOrderRepository redisOrderRepository;
+    private final OrderRepository orderRepository;
+    private final CoinService coinService;
 
-    public RedisOrder createAskOrder(RedisOrder redisOrder) {
+    public Order createOrder(Order order, String code) {
         // TODO User mapping
-        redisOrder.setAskOrBid(true);
-        return redisOrderRepository.save(redisOrder);
-    }
+        Coin coin = coinService.findVerifiedCoin(code);
+        if (order.isAskBid()) { // 매도
+        }
+        if (!order.isAskBid()) { // 매수
+            // 예외 확인
+        }
 
-    public RedisOrder createBidOrder(RedisOrder redisOrder) {
-        // TODO User mapping
-
-        return redisOrderRepository.save(redisOrder);
+        order.setCode(code);
+        return orderRepository.save(order);
     }
 }
