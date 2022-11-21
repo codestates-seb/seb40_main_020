@@ -38,3 +38,4 @@ out/
 
 ### Custom ###
 **/application-local.properties
+**/SecurityConfiguration.java
