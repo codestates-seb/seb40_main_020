@@ -1,18 +1,18 @@
 version: 0.0
 os: linux
 files:
-  - source:  /
-    destination: /home/ec2-user/onecoin
-    overwrite: yes
+  - source:  /    # 인스턴스에 복사할 수정된 파일 또는 디렉토리를 식별
+    destination: /home/ec2-user/onecoin   # 인스턴스에서 파일이 복사되어야 하는 위치
+    overwrite: yes    # 동일 파일 덮어쓰기 여부
 
 permissions:
-  - object: /
-    pattern: "**"
-    owner: ubuntu
-    group: ubuntu
+  - object: /   # 문자열 사용 대상 지정
+    pattern: "**"   # 권한을 적용할 패턴 지정
+    owner: ec2-user   # object 소유자 이름
+    group: ec2-user   # object 그룹 이름
 
 hooks:
   ApplicationStart:
-    - location: scripts/deploy.sh
-      timeout: 60
-      runas: ubuntu
+    - location: scripts/deploy.sh   # 스크립트 위치
+      timeout: 60      # 각 배포 수명 주기 이벤트에 대한 스크립트 실행에 허용되는 최대 시간
+      runas: root   # 기본적으로 인스턴스에서 실행 중인 CodeDeploy 에이전트
