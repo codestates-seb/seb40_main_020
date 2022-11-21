@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 export const QuoteListComponent = styled.div`
-	width: 488px;
-	height: 800px;
+	width: 100%;
+	height: 100%;
 	overflow: auto;
 	border: 1px solid var(--borderColor);
 	.normal {

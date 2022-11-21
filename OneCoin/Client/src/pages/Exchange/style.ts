@@ -6,9 +6,9 @@ interface Props {
 
 export const ExchangeComponent = styled.div<Props>`
 	display: grid;
-	gap: 5px;
+	gap: 8px;
 	grid-template-columns: 495px 495px 400px;
-	grid-template-rows: 220px 450px 460px 340px 220px 220px;
+	grid-template-rows: 210px 450px 460px 340px 220px 220px;
 	.today-range {
 		color: ${({ todayChange }) =>
 			todayChange === 'RISE'
@@ -18,12 +18,13 @@ export const ExchangeComponent = styled.div<Props>`
 				: '#000'};
 	}
 	.coin-title {
-		width: 990px;
-		height: 207px;
+		width: 100%;
+		height: 100%;
 		box-sizing: border-box;
 		background: #fff;
 		grid-column: 1/3;
 		grid-row: 1/2;
+		border: 1px solid var(--borderColor);
 		h1 {
 			font-size: 32px;
 			font-weight: 700;

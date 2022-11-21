@@ -1,11 +1,6 @@
 import { atom } from 'recoil';
-import { OrderbookType, TickerType, CoinDataType } from '../utills/types';
+import { CoinDataType } from '../utills/types';
 
-const socket = new WebSocket('wss://api.upbit.com/websocket/v1');
-const coinSocketState = atom({
-	key: 'coinSocket',
-	default: socket,
-});
 const symbolState = atom({
 	key: 'symbolState',
 	default: { coin: '비트코인', symbol: 'KRW-BTC' },
@@ -42,4 +37,4 @@ const coinDataState = atom<CoinDataType[]>({
 	dangerouslyAllowMutability: true,
 });
 
-export { coinSocketState, symbolState, coinDataState };
+export { symbolState, coinDataState };

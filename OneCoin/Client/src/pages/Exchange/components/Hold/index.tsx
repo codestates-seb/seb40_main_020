@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { HoldComponent } from './style';
-import {
-	proceedsCalculator,
-	yieldCalculator,
-} from '../../../../utills/calculate';
 
-function Hold() {
-	const mainTitleMenu = ['보유 코인', '미체결'];
-	const [title, setTitle] = useState('보유 코인');
-	const titleClickHandler = (item: string) => setTitle(item);
+interface Props {
+	title: string;
+}
+
+function Hold({ title }: Props) {
 	const subTitleMenu =
 		title === '보유 코인'
 			? ['코인명', '보유(평가금)', '매수평균가', '수익률']
@@ -45,18 +42,6 @@ function Hold() {
 	];
 	return (
 		<HoldComponent>
-			<div className="hold-menu">
-				{mainTitleMenu.map((v, i) => (
-					<div
-						key={i}
-						className={v === title ? 'select' : ''}
-						onClick={() => titleClickHandler(v)}
-					>
-						{v}
-					</div>
-				))}
-			</div>
-
 			<table>
 				<thead>
 					<tr className="hold-title">
