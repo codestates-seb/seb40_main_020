@@ -24,6 +24,7 @@ jobs:
     
     env:
       working-directory: ./OneCoin/Server
+      S3_BUCKET_NAME: onecoin-s3
 
     steps:
     - uses: actions/checkout@v3
@@ -33,17 +34,33 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         
+    # 연결 권한 설정
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       working-directory: ${{ env.working-directory }}
       
+    # 빌드
     - name: Build with Gradle
       run: ./gradlew clean build -x test
       working-directory: ${{ env.working-directory }}
     
+    # zip 파일 생성
     - name: Make zip file
-      run: zip -r ./$GITHUB_SHA.zip .
+      run: zip -r ./onecoin.zip .
       shell: bash
+      working-directory: ${{ env.working-directory }}
+    
+    # Access Key와 Secret Access Key를 통해 권한을 확인
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }} # 등록한 Github Secret이 자동으로 불려옵니다.
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # 등록한 Github Secret이 자동으로 불려옵니다.
+        aws-region: ap-northeast-2
+    
+    # 압축한 프로젝트를 S3로 전송합니다.
+    - name: Upload to S3
+      run: aws s3 cp --region ap-northeast-2 ./onecoin.zip s3://$S3_BUCKET_NAME/onecoin.zip
       working-directory: ${{ env.working-directory }}
       
 #       with:
