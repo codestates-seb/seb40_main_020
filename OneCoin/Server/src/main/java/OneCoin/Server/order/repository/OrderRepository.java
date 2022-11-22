@@ -9,5 +9,5 @@ import java.util.List;
 public interface OrderRepository extends CrudRepository<Order, Long> {
 
     List<Order> findAllByUserIdAndCode(Long userId, String code);
-    List<Order> findAllByLimitAndAskBidAndCode(BigDecimal limit, boolean askBid, String code);
+    List<Order> findAllByLimitAndOrderTypeAndCode(BigDecimal limit, String orderType, String code);
 }

@@ -43,9 +43,9 @@ public class OrderRepositoryTest {
 
         // when
         BigDecimal limit = new BigDecimal("333333");
-        boolean askBid = true;
+        String orderType = "ASK";
         String code = "KRW-ETH";
-        List<Order> findOrders = orderRepository.findAllByLimitAndAskBidAndCode(limit, askBid, code);
+        List<Order> findOrders = orderRepository.findAllByLimitAndOrderTypeAndCode(limit, orderType, code);
 
         // then
         assertThat(findOrders.size()).isEqualTo(2);

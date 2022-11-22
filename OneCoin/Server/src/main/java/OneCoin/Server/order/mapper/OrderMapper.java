@@ -19,7 +19,7 @@ public interface OrderMapper {
                         .market(new BigDecimal(String.valueOf(redisPostDto.getMarket())))
                         .stopLimit(new BigDecimal(String.valueOf(redisPostDto.getStopLimit())))
                         .amount(new BigDecimal(String.valueOf(redisPostDto.getAmount())))
-                        .askBid(redisPostDto.getAskBid() != 0)
+                        .orderType(redisPostDto.getOrderType())
                         .build();
     }
 

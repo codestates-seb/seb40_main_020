@@ -27,8 +27,8 @@ public class OrderDto {
         private double amount;
 
         @NotNull(message = "빈 필드는 허용하지 않습니다.")
-        @Range(min = 0, max = 1, message = "0 또는 1만 허용합니다.")
-        private Integer askBid;
+        @Pattern(regexp = "^ASK$|^BID$", message = "매도는 ASK, 매수는 BID를 입력해야 합니다.")
+        private String orderType;
     }
 
     @Getter
