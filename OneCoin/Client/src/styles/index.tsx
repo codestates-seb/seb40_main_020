@@ -35,3 +35,9 @@ export const container = css`
 	display: flex;
 	margin: 0 auto;
 `;
+
+export const contentBox = css`
+	background: #fff;
+	max-height: 1140px;
+	min-height: 100vh;
+`;

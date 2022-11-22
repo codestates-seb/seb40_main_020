@@ -5,13 +5,14 @@ import CoinList from './CoinList';
 
 export interface Props {
 	symbolHandler: (item: { coin: string; code: string; symbol: string }) => void;
+	isLeftSidebar?: boolean;
 }
 
-function Aside({ symbolHandler }: Props) {
+function Aside({ symbolHandler, isLeftSidebar }: Props) {
 	const menu = ['코인', '랭킹'];
 	const el = [<CoinList symbolHandler={symbolHandler} key={menu[0]} />];
 	return (
-		<AsideComponent>
+		<AsideComponent isShow={isLeftSidebar}>
 			<Tab menu={menu} el={el} />
 		</AsideComponent>
 	);
