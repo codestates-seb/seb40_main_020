@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { AsideComponent } from './style';
 import Tab from 'components/Tab';
 import CoinList from './CoinList';
@@ -17,4 +17,4 @@ function Aside({ symbolHandler }: Props) {
 	);
 }
 
-export default Aside;
+export default memo(Aside);
