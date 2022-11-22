@@ -40,17 +40,45 @@ function SignUp() {
 			displayName: data.displayName,
 			password: data.password,
 		};
+
 		return axios
-			.post('http://13.209.194.104:8080/api/users', { ...userData })
+			.post(`${process.env.REACT_APP_SERVER_URL}/api/users`, { ...userData })
 			.then(() => {
 				navigate('/login');
+				alert('이메일이 전송되었습니다. 이메일을 확인해주세요.');
 			})
 			.catch((err) => {
 				setError(err.response.data.message);
 				setTimeout(() => {
 					setError('');
-				}, 2000);
+				}, 1000);
 			});
+	};
+	// 닉네임, 이메일 중복확인
+	const displayName = useRef<string | null>(null);
+	const onDisplayCheck = async () => {
+		displayName.current = watch('displayName');
+		try {
+			const res = await axios.get(
+				`${process.env.REACT_APP_SERVER_URL}/api/users/duplicate-display-name?displayName=${displayName.current}`
+			);
+			return res;
+		} catch (err) {
+			alert('닉네임이 중복되었습니다.');
+		}
+	};
+
+	const email = useRef<string | null>(null);
+	const onEmailCheck = async () => {
+		email.current = watch('email');
+		try {
+			const res = await axios.get(
+				`${process.env.REACT_APP_SERVER_URL}/api/users/duplicate-email?email=${email.current}`
+			);
+			return res;
+		} catch (err) {
+			alert('이메일이 중복되었습니다.');
+		}
 	};
 
 	const password = useRef<string | null>(null);
@@ -64,19 +92,24 @@ function SignUp() {
 						<StyledDiv>회원가입</StyledDiv>
 						<SubDiv>로그인 ID(이메일) 및 비밀번호를 설정해주세요.</SubDiv>
 						<InputContainer>
-							<Input
-								placeholder="닉네임을 입력해주세요"
-								type={'text'}
-								id="displayName"
-								{...register('displayName', {
-									required: true,
-									minLength: 2,
-									maxLength: 16,
-									pattern: /^[ㄱ-ㅎ|가-힣|a-z|A-Z]+$/,
-									//ㄱ-ㅎ|가-힣|a-z|A-Z 한글,영어
-									//a-zA-Z 영어로만
-								})}
-							/>
+							<div>
+								<SecondInput
+									placeholder="닉네임을 입력해주세요"
+									type={'text'}
+									id="displayName"
+									{...register('displayName', {
+										required: true,
+										minLength: 2,
+										maxLength: 16,
+										pattern: /^[ㄱ-ㅎ|가-힣|a-z|A-Z]+$/,
+										//ㄱ-ㅎ|가-힣|a-z|A-Z 한글,영어
+										//a-zA-Z 영어로만
+									})}
+								/>
+								<DoubleCheckBox onClick={onDisplayCheck}>
+									중복확인
+								</DoubleCheckBox>
+							</div>
 							{errors.displayName && errors.displayName.type === 'required' && (
 								<Errormsg>⚠ 닉네임을 입력해주세요.</Errormsg>
 							)}
@@ -104,7 +137,7 @@ function SignUp() {
 										maxLength: 50,
 									})}
 								/>
-								<DoubleCheckBox>중복확인</DoubleCheckBox>
+								<DoubleCheckBox onClick={onEmailCheck}>중복확인</DoubleCheckBox>
 							</div>
 							{errors.email && errors.email.type === 'required' && (
 								<Errormsg>⚠ 이메일을 입력해주세요.</Errormsg>
