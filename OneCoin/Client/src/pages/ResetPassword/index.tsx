@@ -6,7 +6,7 @@ import {
 	InputContainer,
 	SubmitButton,
 	StyledDiv,
-} from './style';
+} from '../FindPassword/style';
 
 function ResetPassword() {
 	return (
