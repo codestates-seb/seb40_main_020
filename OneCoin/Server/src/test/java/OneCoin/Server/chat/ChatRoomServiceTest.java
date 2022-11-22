@@ -3,6 +3,7 @@ package OneCoin.Server.chat;
 import OneCoin.Server.chat.chatRoom.entity.ChatRoom;
 import OneCoin.Server.chat.chatRoom.repository.ChatRoomRepository;
 import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
+import OneCoin.Server.exception.BusinessLogicException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,7 +39,7 @@ public class ChatRoomServiceTest {
         });
         //then
         assertThat(throwable)
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(BusinessLogicException.class);
     }
 
     @Test
@@ -66,7 +67,7 @@ public class ChatRoomServiceTest {
         });
         //then
         assertThat(throwable)
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(BusinessLogicException.class);
     }
 
     @Test
@@ -100,7 +101,7 @@ public class ChatRoomServiceTest {
         });
         //then
         assertThat(throwable)
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(BusinessLogicException.class);
     }
 
     @Test
