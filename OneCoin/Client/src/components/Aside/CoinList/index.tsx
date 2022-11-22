@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { CoinListComponent } from './style';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { coinDataState } from '../../../store';
@@ -9,29 +9,28 @@ function CoinList({ symbolHandler }: Props) {
 	const [coinlist, setCoinlist] = useRecoilState(coinDataState);
 	const newcoinlist = [...coinlist];
 	const subTitleMenu = ['코인명', '현재가', '전일대비'];
-	const socket = new WebSocket('wss://api.upbit.com/websocket/v1');
 	const coinCodes = coinlist.map((v) => v.code);
 
-	function socketAPI(codes: { type: string; codes: string[] }[]) {
-		const data = [{ ticket: 'test' }, ...codes];
-		socket.addEventListener('open', function (event) {
-			socket.send(JSON.stringify(data));
-		});
-		socket.addEventListener('message', function (event) {
-			event.data.text().then((res: string) => {
-				const data = JSON.parse(res);
-				const idx = coinCodes.indexOf(data.code);
-				// console.log(data);
-				if (data.type === 'ticker') newcoinlist[idx].ticker = data;
-				if (data.type === 'orderbook') newcoinlist[idx].orderbook = data;
-			});
-		});
-		socket.addEventListener('error', (event) => {
-			console.log(event);
-		});
-	}
-
 	useEffect(() => {
+		const socket = new WebSocket('wss://api.upbit.com/websocket/v1');
+		function socketAPI(codes: { type: string; codes: string[] }[]) {
+			const data = [{ ticket: 'test' }, ...codes];
+			socket.addEventListener('open', function (event) {
+				socket.send(JSON.stringify(data));
+			});
+			socket.addEventListener('message', function (event) {
+				event.data.text().then((res: string) => {
+					const data = JSON.parse(res);
+					const idx = coinCodes.indexOf(data.code);
+					// console.log(data);
+					if (data.type === 'ticker') newcoinlist[idx].ticker = data;
+					if (data.type === 'orderbook') newcoinlist[idx].orderbook = data;
+				});
+			});
+			socket.addEventListener('error', (event) => {
+				console.log(event);
+			});
+		}
 		const codes = [
 			{ type: 'ticker', codes: coinCodes },
 			{ type: 'orderbook', codes: coinCodes },
@@ -58,7 +57,7 @@ function CoinList({ symbolHandler }: Props) {
 				<thead>
 					<tr>
 						{subTitleMenu.map((v, i) => (
-							<td key={i}>{v}</td>
+							<th key={i}>{v}</th>
 						))}
 					</tr>
 				</thead>
@@ -109,4 +108,4 @@ function CoinList({ symbolHandler }: Props) {
 	);
 }
 
-export default CoinList;
+export default memo(CoinList);

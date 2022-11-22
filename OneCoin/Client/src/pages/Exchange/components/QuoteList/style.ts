@@ -4,7 +4,6 @@ export const QuoteListComponent = styled.div`
 	width: 100%;
 	height: 100%;
 	overflow: auto;
-	border: 1px solid var(--borderColor);
 	.normal {
 		height: 45px;
 		color: var(--yellow);

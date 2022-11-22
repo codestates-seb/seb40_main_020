@@ -8,6 +8,7 @@ import { GoTriangleUp, GoTriangleDown } from 'react-icons/go';
 import Order from './components/Order';
 import Aside from 'components/Aside';
 import HoldList from './components/HoldList';
+import Layout from '../../components/Layout';
 
 function Exchange() {
 	interface T {
@@ -38,59 +39,58 @@ function Exchange() {
 		setInputPrice(newData.ticker?.trade_price ? newData.ticker.trade_price : 0);
 	}, []);
 	return (
-		<ExchangeComponent todayChange={coin?.ticker?.change && coin.ticker.change}>
-			<div className="coin-title">
-				<h1>{coin.coin}</h1>
-				<div>
-					<h2 className="current-price today-range">
-						{coin?.ticker?.trade_price
-							? coin.ticker.trade_price.toLocaleString()
-							: ''}
-					</h2>
-					<div className="today-price">
-						<span>전일대비</span>
-						<span className="today-range">
-							{coin?.ticker?.signed_change_rate
-								? (coin.ticker.signed_change_rate * 100).toFixed(2) + ' %'
+		<Layout isLeftSidebar={false} isLeftMargin={false}>
+			<ExchangeComponent
+				todayChange={coin?.ticker?.change && coin.ticker.change}
+			>
+				<div className="coin-title">
+					<h1>{coin.coin}</h1>
+					<div>
+						<h2 className="current-price today-range">
+							{coin?.ticker?.trade_price
+								? coin.ticker.trade_price.toLocaleString()
 								: ''}
-						</span>
-						<span>
-							{coin?.ticker?.change && coin.ticker.change === 'RISE' ? (
-								<GoTriangleUp className="today-range" />
-							) : coin?.ticker?.change && coin.ticker.change === 'FALL' ? (
-								<GoTriangleDown className="today-range" />
-							) : (
-								<></>
-							)}
-						</span>
-						<span className="today-range">
-							{coin?.ticker?.signed_change_price
-								? coin.ticker.signed_change_price.toLocaleString()
-								: ''}
-						</span>
+						</h2>
+						<div className="today-price">
+							<span>전일대비</span>
+							<span className="today-range">
+								{coin?.ticker?.signed_change_rate
+									? (coin.ticker.signed_change_rate * 100).toFixed(2) + ' %'
+									: ''}
+							</span>
+							<span>
+								{coin?.ticker?.change && coin.ticker.change === 'RISE' ? (
+									<GoTriangleUp className="today-range" />
+								) : coin?.ticker?.change && coin.ticker.change === 'FALL' ? (
+									<GoTriangleDown className="today-range" />
+								) : (
+									<></>
+								)}
+							</span>
+							<span className="today-range">
+								{coin?.ticker?.signed_change_price
+									? coin.ticker.signed_change_price.toLocaleString()
+									: ''}
+							</span>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div className="chart-wrapper">
+
 				<Chart symbol={symbol.symbol} />
-			</div>
-			<div className="quote-wrapper">
+
 				<QuoteList
 					coinOrderbook={coin?.orderbook && coin.orderbook}
 					prcieClickHandler={prcieClickHandler}
 					tradePrice={coin?.ticker?.trade_price && coin.ticker.trade_price}
 				/>
-			</div>
-			<div className="order-wrapper">
+
 				<Order inputPrice={inputPrice} setInputPrice={setInputPrice} />
-			</div>
-			<div className="hold-wrapper">
 				<HoldList />
-			</div>
-			<div className="aside-wrapper">
-				<Aside symbolHandler={symbolHandler} isLeftSidebar={true} />
-			</div>
-		</ExchangeComponent>
+				<div className="aside-wrapper">
+					<Aside symbolHandler={symbolHandler} isLeftSidebar={true} />
+				</div>
+			</ExchangeComponent>
+		</Layout>
 	);
 }
 

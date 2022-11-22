@@ -33,7 +33,7 @@ export const container = css`
 	max-width: 1400px;
 	width: 100%;
 	display: flex;
-	margin: 0 auto;
+	margin: 30px auto;
 `;
 
 export const contentBox = css`

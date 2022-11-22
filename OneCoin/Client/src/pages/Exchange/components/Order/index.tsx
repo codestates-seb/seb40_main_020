@@ -50,7 +50,7 @@ function Order({ inputPrice, setInputPrice }: Props) {
 		setInputPrice(newInputPrice);
 	};
 	return (
-		<OrderComponent>
+		<OrderComponent className="order-wrapper">
 			<div className="order-menu">
 				{menu.map((v, i) => (
 					<div

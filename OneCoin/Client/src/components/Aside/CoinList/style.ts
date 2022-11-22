@@ -59,7 +59,8 @@ export const CoinListComponent = styled.div`
 				:not(.sub-title) {
 					height: 54px;
 				}
-				> td {
+				> td,
+				th {
 					display: flex;
 					justify-content: center;
 					align-items: center;
