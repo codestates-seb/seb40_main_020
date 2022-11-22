@@ -24,7 +24,6 @@ export const ExchangeComponent = styled.div<Props>`
 		background: #fff;
 		grid-column: 1/3;
 		grid-row: 1/2;
-		border: 1px solid var(--borderColor);
 		h1 {
 			font-size: 32px;
 			font-weight: 700;
