@@ -1,6 +1,7 @@
 package OneCoin.Server.upbit.api;
 
-import OneCoin.Server.upbit.entity.SiseType;
+import OneCoin.Server.upbit.entity.enums.SiseType;
+import OneCoin.Server.upbit.service.MappingService;
 import OneCoin.Server.upbit.utils.JsonUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
@@ -19,42 +20,47 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UpbitWebSocketListener extends WebSocketListener {
 
-    private String parameter;
     private final JsonUtil jsonUtil;
+    private final MappingService mappingService;
+    private String parameter;
 
     public String getParameter() {
         return parameter;
     }
 
+    public void setParameter(List<String> codes) {
+        this.parameter = jsonUtil.toJson(
+                List.of(new Ticket("OneCoinProject"),
+                        new Type(SiseType.TICKER.getType(), codes),
+                        new Type(SiseType.ORDER_BOOK.getType(), codes))
+        );
+    }
+
     @Override
     public void onClosed(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
-        System.out.println(code + " " + reason);
+        log.warn("Socket Closed: {}, {}", code, reason);
     }
 
     @Override
     public void onClosing(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
-        System.out.println(code + " " + reason);
+        log.warn("Socket Closing: {}, {}", code, reason);
+
     }
 
     @Override
     public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, Response response) {
-        log.info(t.getMessage());
+        log.error("Socket Error: {}", t.getMessage());
     }
 
     @Override
     public void onMessage(@NotNull WebSocket webSocket, @NotNull ByteString text) {
-        String result = jsonUtil.fromJson(text.string(StandardCharsets.UTF_8), JsonNode.class).toPrettyString();
-//        System.out.println(result);
-        // TODO mapper
+        JsonNode jsonNode = jsonUtil.fromJson(text.string(StandardCharsets.UTF_8), JsonNode.class);
+        mappingService.delegate(jsonNode);
     }
 
     @Override
     public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
         webSocket.send(getParameter());
-    }
-
-    public void setParameter(SiseType siseType, List<String> codes) {
-        this.parameter = jsonUtil.toJson(List.of(new Ticket("test"), new Type(siseType.getType(), codes)));
     }
 
     @AllArgsConstructor
@@ -67,5 +73,4 @@ public class UpbitWebSocketListener extends WebSocketListener {
         private String type;
         private List<String> codes;
     }
-
 }
