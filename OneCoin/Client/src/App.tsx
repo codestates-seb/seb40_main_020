@@ -17,6 +17,8 @@ const FindPassword = lazy(() => import('pages/FindPassword'));
 const ResetPassword = lazy(() => import('pages/ResetPassword'));
 const Swap = lazy(() => import('pages/Swap'));
 const SwapResult = lazy(() => import('pages/SwapResult'));
+const SignUpToken = lazy(() => import('pages/SignUpToken'));
+const PasswordToken = lazy(() => import('pages/PasswordToken'));
 
 function App() {
 	const [isUseLogin, setIsUseLogin] = useRecoilState(isLogin);
@@ -74,6 +76,14 @@ function App() {
 				<Route
 					path="/mypage"
 					element={<Suspense fallback={<>...</>}>{<MyPage />}</Suspense>}
+				/>
+				<Route
+					path="/token/oauth2"
+					element={<Suspense fallback={<>...</>}>{<SignUpToken />}</Suspense>}
+				/>
+				<Route
+					path="/token/password"
+					element={<Suspense fallback={<>...</>}>{<PasswordToken />}</Suspense>}
 				/>
 			</Routes>
 			<Chatting />
