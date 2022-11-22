@@ -3,9 +3,9 @@ package OneCoin.Server.helper;
 import OneCoin.Server.coin.entity.Coin;
 import OneCoin.Server.order.dto.OrderDto;
 import OneCoin.Server.order.entity.Order;
-import lombok.SneakyThrows;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -59,8 +59,7 @@ public class StubData {
     }
 
     public static class MockCoin {
-        @SneakyThrows
-        public static Coin getMockEntity(long coinId, String code, String coinName) {
+        public static Coin getMockEntity(long coinId, String code, String coinName) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
             Constructor<Coin> constructor = Coin.class.getDeclaredConstructor(Long.class, String.class, String.class);
             constructor.setAccessible(true);
             Coin coin = constructor.newInstance(coinId, code, coinName);
