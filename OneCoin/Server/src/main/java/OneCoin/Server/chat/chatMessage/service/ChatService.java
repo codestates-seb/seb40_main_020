@@ -27,13 +27,6 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomService chatRoomService;
     private Map<Long, ChannelTopic> topics = new HashMap<>();
-    private final RedisMessageListenerContainer messageListenerContainer;
-    private final RedisSubscriber redisSubscriber;
-
-//    @PostConstruct
-//    private void init() {
-//        topics = new HashMap<>();
-//    }
     public ChatMessage deligate(MessageType messageType, ChatMessage chatMessage) {
         switch (messageType) {
             case ENTER:
