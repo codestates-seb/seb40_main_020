@@ -1,11 +1,6 @@
 import styled from 'styled-components';
 
 export const HoldComponent = styled.div`
-	width: 900px;
-	height: 322px;
-	border: 1px solid var(--borderColor);
-	margin-top: 12px;
-	background: #fff;
 	.hold-menu {
 		width: 100%;
 		height: 45px;

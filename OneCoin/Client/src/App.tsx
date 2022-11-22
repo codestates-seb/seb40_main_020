@@ -4,7 +4,7 @@ import SignUp from 'pages/SignUp/SignUp';
 import Login from 'pages/Login/Login';
 import FindPassword from 'pages/FindPassword/FindPassword';
 import ResetPassword from 'pages/FindPassword/ResetPassword';
-
+import Main from 'pages/Main/Main';
 const Balance = lazy(() => import('./pages/Balance'));
 const History = lazy(() => import('./pages/History'));
 const WaitOrders = lazy(() => import('./pages/WaitOrders'));
@@ -17,7 +17,7 @@ function App() {
 			<Routes>
 				<Route
 					path="/"
-					element={<Suspense fallback={<>...</>}>{<div>메인</div>}</Suspense>}
+					element={<Suspense fallback={<>...</>}>{<Main />}</Suspense>}
 				/>
 				<Route
 					path="/exchange"

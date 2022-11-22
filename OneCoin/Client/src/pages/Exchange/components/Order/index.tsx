@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import { OrderComponent } from './style';
 
 interface Props {
-	inputPrice: number | string;
-	priceChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	inputPrice: number;
+	setInputPrice: React.Dispatch<React.SetStateAction<number>>;
 }
 
-function Order({ inputPrice, priceChangeHandler }: Props) {
+function Order({ inputPrice, setInputPrice }: Props) {
 	const [order, setOrder] = useState('매수');
 	const menu = ['매수', '매도'];
 	const menuClickHandler = (item: string) => setOrder(item);
@@ -16,11 +16,38 @@ function Order({ inputPrice, priceChangeHandler }: Props) {
 	const [total, setTotal] = useState<number | string>(0);
 	const quantityChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setQuantity(e.target.value);
-		setTotal(+e.target.value * +inputPrice);
+		setTotal(+e.target.value * inputPrice);
 	};
 	const totalChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setQuantity((+e.target.value / +inputPrice).toFixed(8));
-		setTotal(e.target.value);
+		const value = e.target.value.replaceAll(',', '');
+		if (!isNaN(+value)) setTotal(+value);
+		setQuantity((+value / inputPrice).toFixed(8));
+	};
+	const priceChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value.replaceAll(',', '');
+		if (!isNaN(+value)) setInputPrice(+value);
+		setTotal(+value * +quantity);
+	};
+	const sizeBtnClickHandler = (size: number) => {
+		console.log((money / 100) * size);
+		const sizePrice = (money / 100) * size;
+		setTotal(sizePrice);
+		setQuantity((sizePrice / inputPrice).toFixed(8));
+	};
+	const btnHandler = (sign: string) => {
+		let additionalValue: number;
+		if (inputPrice < 100) additionalValue = 0.1;
+		else if (inputPrice < 1000) additionalValue = 1;
+		else if (inputPrice < 10000) additionalValue = 5;
+		else if (inputPrice < 100000) additionalValue = 10;
+		else if (inputPrice < 1000000) additionalValue = 50;
+		else if (inputPrice < 10000000) additionalValue = 500;
+		else additionalValue = 1000;
+		const newInputPrice =
+			sign === '+'
+				? inputPrice + additionalValue
+				: inputPrice - additionalValue;
+		setInputPrice(newInputPrice);
 	};
 	return (
 		<OrderComponent>
@@ -46,10 +73,10 @@ function Order({ inputPrice, priceChangeHandler }: Props) {
 						<input
 							type="text"
 							value={inputPrice.toLocaleString()}
-							onChange={(e) => priceChangeHandler(e)}
+							onChange={priceChangeHandler}
 						/>
-						<button>+</button>
-						<button>-</button>
+						<button onClick={() => btnHandler('+')}>+</button>
+						<button onClick={() => btnHandler('-')}>-</button>
 					</div>
 				</div>
 				<div className="order-size order">
@@ -63,9 +90,14 @@ function Order({ inputPrice, priceChangeHandler }: Props) {
 							/>
 						</div>
 						<div className="size-btn-wrapper">
-							{[10, 25, 50, 75, '직접입력'].map((v, i) => (
-								<div key={i} className="select-btn">
-									{v !== '직접입력' ? `${v}%` : v}
+							{[10, 25, 50, 75, 100].map((v, i) => (
+								<div
+									key={i}
+									className="select-btn"
+									onClick={() => sizeBtnClickHandler(v)}
+								>
+									{/* {v !== '직접입력' ? `${v}%` : v} */}
+									{v + '%'}
 								</div>
 							))}
 						</div>
@@ -83,7 +115,7 @@ function Order({ inputPrice, priceChangeHandler }: Props) {
 				</div>
 				<div className="order-btn">
 					<Button style={{ width: 455, height: 50, border: 'none' }}>
-						로그인
+						매수
 					</Button>
 				</div>
 			</div>
