@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Wapper, Container } from './style';
 import Aside from '../Aside/index';
+import Header from 'components/Header';
+import Footer from 'components/Footer';
 
 type Props = {
 	children: React.ReactNode;
@@ -21,10 +23,14 @@ function Layout({ children, isLeftSidebar = true }: Props) {
 	const symbolHandler = (item: T) => setSymbol(item);
 
 	return (
-		<Wapper>
-			<Container>{children}</Container>
-			<Aside symbolHandler={symbolHandler} isLeftSidebar={isLeftSidebar} />
-		</Wapper>
+		<>
+			<Header />
+			<Wapper>
+				<Container>{children}</Container>
+				<Aside symbolHandler={symbolHandler} isLeftSidebar={isLeftSidebar} />
+			</Wapper>
+			<Footer />
+		</>
 	);
 }
 
