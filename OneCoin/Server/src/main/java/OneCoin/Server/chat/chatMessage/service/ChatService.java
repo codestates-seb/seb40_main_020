@@ -50,19 +50,8 @@ public class ChatService {
         long chatRoomId = chatMessage.getChatRoomId();
         //채팅방이 존재하는지 확인
         chatRoomService.findChatRoom(chatRoomId);
-        //해당 토픽이 리스너 등록되어 있는지 확인하고 안됐으면 등록
-        addListenerIfNot(chatRoomId);
-        //입장 메시지 기록
         chatMessage.setMessage("[알림] " + chatMessage.getUserDisplayName() + "이 입장하셨습니다.");
         return chatMessage;
-    }
-    private void addListenerIfNot(long chatRoomId) {
-        ChannelTopic topic = topics.get(chatRoomId);
-        if(topic == null) {
-            topic = new ChannelTopic(String.valueOf(chatRoomId));
-            messageListenerContainer.addMessageListener(redisSubscriber, topic);
-            topics.put(chatRoomId, topic);
-        }
     }
     public ChannelTopic getTopic(long chatRoomId) {
         ChannelTopic topic = topics.get(chatRoomId);
