@@ -22,8 +22,8 @@ import java.util.List;
 @Validated
 @Slf4j
 public class UserController {
-    private UserService userService;
-    private UserMapper userMapper;
+    private final UserService userService;
+    private final UserMapper userMapper;
 
     public UserController(UserService userService, UserMapper userMapper) {
         this.userService = userService;
@@ -56,7 +56,7 @@ public class UserController {
     // 모든 회원 정보
     @GetMapping
     public ResponseEntity getUsers(@Positive @RequestParam int page,
-                                   @Positive @RequestParam int size){
+                                   @Positive @RequestParam int size) {
         Page<User> userPage = userService.findUsers(page - 1, size);
         List<User> users = userPage.getContent();
         return new ResponseEntity<>(
@@ -67,7 +67,7 @@ public class UserController {
 
     // 단일 회원 정보
     @GetMapping("/{user-id}")
-    public ResponseEntity getUser(@PathVariable("user-id") @Positive long userId){
+    public ResponseEntity getUser(@PathVariable("user-id") @Positive long userId) {
         User user = userService.findUser(userId);
         return new ResponseEntity<>(new SingleResponseDto<>(userMapper.userToUserResponse(user)), HttpStatus.OK);
     }

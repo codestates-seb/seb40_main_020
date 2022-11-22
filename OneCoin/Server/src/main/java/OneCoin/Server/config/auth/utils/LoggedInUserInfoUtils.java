@@ -23,7 +23,7 @@ public class LoggedInUserInfoUtils {
         } catch (Exception e) {
             throw new BusinessLogicException(ExceptionCode.AUTHENTICATION_NOT_FOUND);
         }
-        return ((Number)claims.get("id")).longValue();
+        return ((Number) claims.get("id")).longValue();
     }
 
     public User extractUser() {

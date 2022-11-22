@@ -1,6 +1,5 @@
 package OneCoin.Server.upbit.utils;
 
-import OneCoin.Server.upbit.entity.Trade;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JsonUtil {
-    private ObjectMapper objectMapper = customObjectMapper();
+    private final ObjectMapper objectMapper = customObjectMapper();
 
     public <T> String toJson(T data) {
         return objectMapper.valueToTree(data).toString();
@@ -24,6 +23,7 @@ public class JsonUtil {
             throw new RuntimeException(e);
         }
     }
+
     private ObjectMapper customObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY); // serializer는 private 필드에 접근 못하므로 해당 설정필요 or @JsonProperty

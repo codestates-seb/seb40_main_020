@@ -3,9 +3,11 @@ package OneCoin.Server.order.dto;
 import OneCoin.Server.validator.MustHaveLimitOrMarket;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
 public class OrderDto {

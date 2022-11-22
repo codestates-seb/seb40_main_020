@@ -2,8 +2,6 @@ package OneCoin.Server;
 
 import OneCoin.Server.chat.chatRoom.entity.ChatRoom;
 import OneCoin.Server.chat.chatRoom.repository.ChatRoomRepository;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

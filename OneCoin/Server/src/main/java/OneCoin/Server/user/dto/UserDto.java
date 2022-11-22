@@ -5,7 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 public class UserDto {
     @Getter
@@ -21,7 +24,7 @@ public class UserDto {
         // 이메일 : 이메일 형식이며, 최대 길이 50자 이하
         @NotBlank
         @Email
-        @Size(min=3, max=50)
+        @Size(min = 3, max = 50)
         private String email;
 
         // 정규표현식 제약조건 추가 필요
@@ -38,13 +41,13 @@ public class UserDto {
     public static class Patch {
         // 닉네임 : 영어로만 가능하고, 2글자 이상 최대 길이 16자 이하
         @NotBlank
-        @Size(min=2, max=16)
+        @Size(min = 2, max = 16)
         private String displayName;
 
         // 이메일 : 이메일 형식이며, 최대 길이 50자 이하
         @NotBlank
         @Email
-        @Size(min=3, max=50)
+        @Size(min = 3, max = 50)
         private String email;
 
         // 정규표현식 제약조건 추가 필요
@@ -56,6 +59,7 @@ public class UserDto {
 //        @PositiveOrZero
 //        private long balance;
     }
+
     @Getter
     @Setter
     @NoArgsConstructor

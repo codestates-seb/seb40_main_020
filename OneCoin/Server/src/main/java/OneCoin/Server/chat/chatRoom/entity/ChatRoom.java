@@ -18,6 +18,7 @@ public class ChatRoom {
     private Long chatRoomId;
     private String name;
     private String nation;
+
     @Builder
     public ChatRoom(String name, String nation) {
         this.name = name;

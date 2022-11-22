@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
-    public List<ChatRoom> findByNationOrderByChatRoomIdDesc(String nation);
-    public Optional<ChatRoom> findByName(String name);
+    List<ChatRoom> findByNationOrderByChatRoomIdDesc(String nation);
+
+    Optional<ChatRoom> findByName(String name);
 }
