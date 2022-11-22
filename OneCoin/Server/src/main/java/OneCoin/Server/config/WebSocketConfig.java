@@ -1,20 +1,15 @@
 package OneCoin.Server.config;
 
+import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
 import OneCoin.Server.config.auth.jwt.JwtTokenizer;
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
+import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtilsForWebSocket;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.messaging.simp.stomp.StompCommand;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -27,6 +22,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils customAuthorityUtils;
+    private final LoggedInUserInfoUtilsForWebSocket loggedInUserInfoUtilsForWebSocket;
+    private final ChatRoomService chatRoomService;
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // (/ws/chat)엔드포인트로 들어온 http 을 웹소켓 통신으로 전환한다.
@@ -49,6 +46,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new InterceptorForJwtAuthentication(jwtTokenizer, customAuthorityUtils));
+        registration.interceptors(new InterceptorForJwtAuthentication(jwtTokenizer, customAuthorityUtils, loggedInUserInfoUtilsForWebSocket, chatRoomService));
     }
 }

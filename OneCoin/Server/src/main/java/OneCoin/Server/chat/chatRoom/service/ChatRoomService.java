@@ -50,4 +50,8 @@ public class ChatRoomService {
             throw new BusinessLogicException(ExceptionCode.CHAT_ROOM_NAME_EXISTS);
         }
     }
+    //updateChatRoom
+    public ChatRoom updateChatRoom(ChatRoom chatRoom) {
+        return chatRoomRepository.save(chatRoom);
+    }
 }

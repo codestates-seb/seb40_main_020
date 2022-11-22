@@ -19,7 +19,7 @@ public class ChatRoom {
     private String name;
     private String nation;
     @OneToMany(mappedBy = "chatRoom", cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE},
-    orphanRemoval = true)
+    orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<ChatRoomUser> chatRoomUsers = new HashSet<>();
     @Builder
     public ChatRoom(String name, String nation) {
