@@ -1,5 +1,8 @@
-package OneCoin.Server.upbit.entity;
+package OneCoin.Server.upbit.entity.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum SiseType {
     TICKER("ticker"),
     TRADE("trade"),
@@ -9,9 +12,5 @@ public enum SiseType {
 
     SiseType(String type) {
         this.type = type;
-    }
-
-    public String getType() {
-        return type;
     }
 }
