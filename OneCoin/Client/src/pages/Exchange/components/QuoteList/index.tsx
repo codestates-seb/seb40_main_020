@@ -28,7 +28,7 @@ function QuoteList({ coinOrderbook, prcieClickHandler, tradePrice }: Props) {
 	}, [coinOrderbook]);
 
 	return (
-		<QuoteListComponent>
+		<QuoteListComponent className="quote-wrapper">
 			<div className="normal">일반호가</div>
 			<div className="ask">
 				{askPrice.map((ask, i) => (

@@ -1,10 +1,14 @@
 import styled from 'styled-components';
 import { container } from 'styles';
 
-export const Wapper = styled.main`
+interface Props {
+	isLeftMargin: boolean;
+}
+
+export const Wapper = styled.main<Props>`
 	${container}
 	aside {
-		margin-left: 30px;
+		margin-left: ${(props) => (props.isLeftMargin ? '30px' : '0')};
 	}
 `;
 

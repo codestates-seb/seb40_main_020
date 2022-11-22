@@ -10,7 +10,7 @@ function HoldList() {
 		<Hold key={menu[1]} title={'미체결'} />,
 	];
 	return (
-		<HoldListComponent>
+		<HoldListComponent className="hold-wrapper">
 			<Tab menu={menu} el={el} />
 		</HoldListComponent>
 	);

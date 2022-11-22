@@ -17,7 +17,7 @@ export const BALANCE_INFO_LIST = [
 export const HEADER_LIST = {
 	page: [
 		{ name: '거래소', path: '/exchange' },
-		{ name: '입금', path: '/balancese' },
+		{ name: '입금', path: '/balances' },
 		{ name: '투자내역', path: '/investments/balance' },
 		{ name: '스왑', path: '/swap' },
 	],
@@ -33,8 +33,8 @@ export const FOOTER_LIST = {
 	copyright: '1Coin © 2022 All rights reserved.',
 	fe: [
 		{ name: '서재홍', repository: 'https://github.com/jaehongg' },
-		{ name: '김민상', repository: 'https://github.com/MINDA01' },
-		{ name: '민다영', repository: 'https://github.com/minsang98' },
+		{ name: '김민상', repository: 'https://github.com/minsang98' },
+		{ name: '민다영', repository: 'https://github.com/MINDA01' },
 		{ name: '유현규', repository: 'https://github.com/korean-davinci' },
 	],
 	be: [

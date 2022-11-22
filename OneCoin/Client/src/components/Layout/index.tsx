@@ -7,6 +7,7 @@ import Footer from 'components/Footer';
 type Props = {
 	children: React.ReactNode;
 	isLeftSidebar?: boolean;
+	isLeftMargin?: boolean;
 };
 interface T {
 	coin: string;
@@ -14,7 +15,11 @@ interface T {
 	symbol: string;
 }
 
-function Layout({ children, isLeftSidebar = true }: Props) {
+function Layout({
+	children,
+	isLeftSidebar = true,
+	isLeftMargin = true,
+}: Props) {
 	const [symbol, setSymbol] = useState<T>({
 		coin: '비트코인',
 		code: 'KRW-BTC',
@@ -25,7 +30,7 @@ function Layout({ children, isLeftSidebar = true }: Props) {
 	return (
 		<>
 			<Header />
-			<Wapper>
+			<Wapper isLeftMargin={isLeftMargin}>
 				<Container>{children}</Container>
 				<Aside symbolHandler={symbolHandler} isLeftSidebar={isLeftSidebar} />
 			</Wapper>

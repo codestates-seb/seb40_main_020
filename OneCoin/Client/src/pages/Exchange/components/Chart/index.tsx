@@ -8,7 +8,7 @@ interface Props {
 
 function Chart({ symbol }: Props) {
 	return (
-		<ChartComponent>
+		<ChartComponent className="chart-wrapper">
 			<AdvancedRealTimeChart
 				theme="light"
 				autosize

@@ -57,7 +57,7 @@ function CoinList({ symbolHandler }: Props) {
 				<thead>
 					<tr>
 						{subTitleMenu.map((v, i) => (
-							<td key={i}>{v}</td>
+							<th key={i}>{v}</th>
 						))}
 					</tr>
 				</thead>
