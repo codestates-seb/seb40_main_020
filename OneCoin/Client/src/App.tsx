@@ -10,6 +10,7 @@ const History = lazy(() => import('./pages/History'));
 const WaitOrders = lazy(() => import('./pages/WaitOrders'));
 const Balances = lazy(() => import('./pages/Balances'));
 const Exchange = lazy(() => import('./pages/Exchange'));
+const MyPage = lazy(() => import('./pages/MyPage'));
 
 function App() {
 	return (
@@ -70,6 +71,10 @@ function App() {
 							<ResetPassword />
 						</Suspense>
 					}
+				/>
+				<Route
+					path="/mypage"
+					element={<Suspense fallback={<>...</>}>{<MyPage />}</Suspense>}
 				/>
 			</Routes>
 		</>
