@@ -1,8 +1,13 @@
 package OneCoin.Server.config;
 
+import OneCoin.Server.chat.chatMessage.controller.ChatController;
+import OneCoin.Server.chat.chatMessage.dto.ChatRequestDto;
+import OneCoin.Server.chat.chatMessage.entity.ChatMessage;
+import OneCoin.Server.chat.chatMessage.service.ChatService;
 import OneCoin.Server.chat.chatRoom.entity.ChatRoom;
 import OneCoin.Server.chat.chatRoom.entity.ChatRoomUser;
 import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
+import OneCoin.Server.chat.constant.MessageType;
 import OneCoin.Server.config.auth.jwt.JwtTokenizer;
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
 import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtilsForWebSocket;
@@ -25,13 +30,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+
 @Slf4j
 @RequiredArgsConstructor
-public class InterceptorForJwtAuthentication implements ChannelInterceptor {
+public class MessageInterceptor implements ChannelInterceptor {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils customAuthorityUtils;
     private final LoggedInUserInfoUtilsForWebSocket loggedInUserInfoUtilsForWebSocket;
     private final ChatRoomService chatRoomService;
+    private final ChatController chatController;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -39,17 +46,26 @@ public class InterceptorForJwtAuthentication implements ChannelInterceptor {
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
             verifyAuthorization(accessor);
         } else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
-            /** 이 부분을 redis에 저장할지 고민입니다.*/
-            ChatRoom chatRoom = registerUserToChatRoom(accessor);
-            System.out.println(chatRoom);
-//            sendEnterMessage();
+            User user = loggedInUserInfoUtilsForWebSocket.extractUser(accessor.getUser());
+            ChatRoom chatRoom = registerUserToChatRoom(accessor, user);
+            sendEnterMessage(chatRoom, user);
         }
         return message;
     }
+
+    private void sendEnterMessage(ChatRoom chatRoom, User user) {
+        ChatRequestDto chatRequestDto = ChatRequestDto.builder()
+                .type(MessageType.ENTER)
+                .userDisplayName(user.getDisplayName())
+                .userId(user.getUserId())
+                .chatRoomId(chatRoom.getChatRoomId())
+                .build();
+        chatController.message(chatRequestDto);
+    }
+
     @Transactional
-    private ChatRoom registerUserToChatRoom(StompHeaderAccessor accessor) {
+    private ChatRoom registerUserToChatRoom(StompHeaderAccessor accessor, User user) {
         long roomId = parseRoomIdFromHeader(accessor);
-        User user = loggedInUserInfoUtilsForWebSocket.extractUser(accessor.getUser());
         ChatRoom chatRoom = chatRoomService.findChatRoom(roomId);
         ChatRoomUser chatRoomUser = ChatRoomUser.builder()
                 .chatRoom(chatRoom)
@@ -78,6 +94,7 @@ public class InterceptorForJwtAuthentication implements ChannelInterceptor {
         accessor.setUser(user);
         accessor.setLeaveMutable(true);
     }
+
     private Map<String, Object> verifyJws(String jws) {
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey()); // SecretKey 파싱
         Map<String, Object> claims = jwtTokenizer.getClaims(jws, base64EncodedSecretKey).getBody();   // Claims 파싱

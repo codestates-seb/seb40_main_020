@@ -22,7 +22,7 @@ public class ChatController {
     @MessageMapping("/rooms")//여기에는 @Payload가 생략되어 있음. body를 객체로 mapping시켜줌
     public void message(ChatRequestDto requestMessage) {
         ChatMessage convertedChatMessage = chatMapper.requestDtoToChatMessage(requestMessage);
-        ChatMessage chatMessage = chatService.deligate(requestMessage.getType(), convertedChatMessage);
+        ChatMessage chatMessage = chatService.delegate(requestMessage.getType(), convertedChatMessage);
         ChatResponseDto chatResponseDto = chatMapper.chatMessageToResponseDto(chatMessage);
         redisTemplate.convertAndSend(channelTopic.getTopic(), chatResponseDto);
     }

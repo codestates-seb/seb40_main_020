@@ -1,5 +1,6 @@
 package OneCoin.Server.config;
 
+import OneCoin.Server.chat.chatMessage.controller.ChatController;
 import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
 import OneCoin.Server.config.auth.jwt.JwtTokenizer;
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
@@ -24,6 +25,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final CustomAuthorityUtils customAuthorityUtils;
     private final LoggedInUserInfoUtilsForWebSocket loggedInUserInfoUtilsForWebSocket;
     private final ChatRoomService chatRoomService;
+    private final ChatController chatController;
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // (/ws/chat)엔드포인트로 들어온 http 을 웹소켓 통신으로 전환한다.
@@ -46,6 +48,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new InterceptorForJwtAuthentication(jwtTokenizer, customAuthorityUtils, loggedInUserInfoUtilsForWebSocket, chatRoomService));
+        registration.interceptors(new MessageInterceptor(jwtTokenizer, customAuthorityUtils, loggedInUserInfoUtilsForWebSocket, chatRoomService, chatController));
     }
 }
