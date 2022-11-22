@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class askInfo {
-    private double askPrice;
-    private double askSize;
-    private double changeRate;
+    private String askPrice;
+    private String askSize;
+    private String changeRate;
 }

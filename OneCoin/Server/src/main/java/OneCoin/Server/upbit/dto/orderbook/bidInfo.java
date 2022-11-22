@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class bidInfo {
-    private double bidPrice;
-    private double bidSize;
-    private double changeRate;
+    private String bidPrice;
+    private String bidSize;
+    private String changeRate;
 }

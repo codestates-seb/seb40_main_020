@@ -8,8 +8,8 @@ import java.util.List;
 @Getter
 @Setter
 public class OrderBookDto {
-    private double totalAskSize;
-    private double totalBidSize;
+    private String totalAskSize;
+    private String totalBidSize;
     private List<askInfo> askInfo;
     private List<bidInfo> bidInfo;
 }
