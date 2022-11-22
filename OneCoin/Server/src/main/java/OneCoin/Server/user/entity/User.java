@@ -36,4 +36,14 @@ public class User extends Auditable {
     @Column
     @Enumerated(EnumType.STRING)
     private Role userRole;
+
+    @Builder
+    public User(String displayName, String email, String password, Platform platform, long balance, Role userRole) {
+        this.displayName = displayName;
+        this.email = email;
+        this.password = password;
+        this.platform = platform;
+        this.balance = balance;
+        this.userRole = userRole;
+    }
 }
