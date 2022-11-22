@@ -64,6 +64,13 @@ export const CoinListComponent = styled.div`
 					justify-content: center;
 					align-items: center;
 					flex: 1;
+					> div {
+						span {
+							display: block;
+							text-align: center;
+							margin: 3px 0;
+						}
+					}
 				}
 				> tr {
 					display: flex;

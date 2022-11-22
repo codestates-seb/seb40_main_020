@@ -85,18 +85,20 @@ function CoinList({ symbolHandler }: Props) {
 											? v.ticker.trade_price.toLocaleString()
 											: 0}
 									</td>
-									<tr className={todayRate}>
-										<td>
-											{v?.ticker?.signed_change_rate
-												? `${(v.ticker.signed_change_rate * 100).toFixed(2)}%`
-												: '0%'}
-										</td>
-										<td>
-											{v?.ticker?.signed_change_price
-												? v.ticker.signed_change_price.toLocaleString()
-												: 0}
-										</td>
-									</tr>
+									<td className={todayRate}>
+										<div>
+											<span>
+												{v?.ticker?.signed_change_rate
+													? `${(v.ticker.signed_change_rate * 100).toFixed(2)}%`
+													: '0%'}
+											</span>
+											<span>
+												{v?.ticker?.signed_change_price
+													? v.ticker.signed_change_price.toLocaleString()
+													: 0}
+											</span>
+										</div>
+									</td>
 								</tr>
 							);
 						})}
