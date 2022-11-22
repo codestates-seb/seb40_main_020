@@ -40,13 +40,15 @@ jobs:
     - name: Set application-dev.properties 
       run: |
         touch ${{ env.PROPERTIES_PATH }}
-        echo "spring.datasource.url=${{ secrets.SPRING_DATASOURCE_URL }}
+        echo "
+        spring.datasource.url=${{ secrets.SPRING_DATASOURCE_URL }}
         spring.datasource.username=${{ secrets.SPRING_DATASOURCE_USERNAME }}
         spring.datasource.password=${{ secrets.SPRING_DATASOURCE_PASSWORD }}
         mail.address.admin=${{ secrets.MAIL_ADDRESS_ADMIN }}
         jwt.secret-key=${{ secrets.JWT_SECRET_KEY }}
         spring.redis.port=${{ secrets.SPRING_REDIS_PORT }}
-        spring.redis.host=${{ secrets.SPRING_REDIS_HOST }}" >> ${{ env.PROPERTIES_PATH }}
+        spring.redis.host=${{ secrets.SPRING_REDIS_HOST }}
+        " >> ${{ env.PROPERTIES_PATH }}
         
     # 연결 권한 설정
     - name: Grant execute permission for gradlew
