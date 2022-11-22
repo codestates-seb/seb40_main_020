@@ -30,7 +30,7 @@ public class OrderControllerValidTest {
     @SneakyThrows
     @Test
     @DisplayName("valid test: @MustHaveLimitOrMarket 테스트, 두 필드 모두 0이면 에러가 발생한다.")
-    void validTest1() {
+    void validTest1() throws Exception {
         OrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
         redisPostDto.setLimit(0);
         String content = gson.toJson(redisPostDto);
@@ -48,7 +48,7 @@ public class OrderControllerValidTest {
     @SneakyThrows
     @Test
     @DisplayName("valid test: @MustHaveLimitOrMarket 테스트, 두 필드 모두 값이 있으면 에러가 발생한다.")
-    void validTest2() {
+    void validTest2() throws Exception {
         OrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
         redisPostDto.setMarket(100);
         String content = gson.toJson(redisPostDto);
@@ -66,7 +66,7 @@ public class OrderControllerValidTest {
     @SneakyThrows
     @Test
     @DisplayName("valid test: @MustHaveLimitOrMarket 테스트, 두 필드 중 하나만 값이 있으면 에러가 발생하지 않는다.")
-    void validTest3() {
+    void validTest3() throws Exception {
         OrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
         String content = gson.toJson(redisPostDto);
 
