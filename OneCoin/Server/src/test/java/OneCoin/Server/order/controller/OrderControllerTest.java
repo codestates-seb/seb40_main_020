@@ -6,7 +6,6 @@ import OneCoin.Server.order.dto.OrderDto;
 import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.service.OrderService;
 import com.google.gson.Gson;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -35,10 +34,9 @@ public class OrderControllerTest {
     @Autowired
     private Gson gson;
 
-    @SneakyThrows
     @Test
     @DisplayName("slice test: 매수/매도 주문")
-    void postOrderTest() throws Exception{
+    void postOrderTest() throws Exception {
         // given
         OrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
         String content = gson.toJson(redisPostDto);

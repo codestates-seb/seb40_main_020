@@ -55,7 +55,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     /**
-     *  true 면 해당 필터 동작을 수행하지 않고 다음 필터로 건너뜀
+     * true 면 해당 필터 동작을 수행하지 않고 다음 필터로 건너뜀
      */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -65,7 +65,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     /**
-     *  JWT 검증
+     * JWT 검증
      */
     private Map<String, Object> verifyJws(HttpServletRequest request) {
         String jws = request.getHeader("Authorization").replace("Bearer ", "");
@@ -76,7 +76,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     /**
-     *  Authentication(인증) 객체를 SecurityContext 에 저장
+     * Authentication(인증) 객체를 SecurityContext 에 저장
      */
     private void setAuthenticationToContext(Map<String, Object> claims) {
 //        String username = (String) claims.get("username");

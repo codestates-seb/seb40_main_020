@@ -38,7 +38,7 @@ public class JwtTokenizer {
     }
 
     /**
-     *  AccessToken 생성
+     * AccessToken 생성
      */
     public String generateAccessToken(Map<String, Object> claims,
                                       String subject,
@@ -56,7 +56,7 @@ public class JwtTokenizer {
     }
 
     /**
-     *  RefreshToken 생성
+     * RefreshToken 생성
      */
     public String generateRefreshToken(String subject, Date expiration, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
@@ -70,8 +70,8 @@ public class JwtTokenizer {
     }
 
     /**
-     *  JWT 에서 Claim 추출(JWT 검증 수행)
-     *  jws : JWT + Signature
+     * JWT 에서 Claim 추출(JWT 검증 수행)
+     * jws : JWT + Signature
      */
     public Jws<Claims> getClaims(String jws, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
@@ -83,7 +83,7 @@ public class JwtTokenizer {
     }
 
     /**
-     *  JWT 검증(getClaims 에서 값을 가져오지 않고 검사만 수행)
+     * JWT 검증(getClaims 에서 값을 가져오지 않고 검사만 수행)
      */
     public void verifySignature(String jws, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);

@@ -27,7 +27,9 @@ public class UserService {
         this.customAuthorityUtils = customAuthorityUtils;
     }
 
-    /** 유저 생성 */
+    /**
+     * 유저 생성
+     */
     @Transactional
     public User createUser(User user) {
         // 계정 존재 여부 조회

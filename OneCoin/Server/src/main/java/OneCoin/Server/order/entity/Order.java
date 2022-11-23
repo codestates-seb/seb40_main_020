@@ -5,7 +5,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
-import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -29,13 +28,12 @@ public class Order {
     @Indexed
     private BigDecimal stopLimit;
 
-    @Column(nullable = false)
     private BigDecimal amount; // 미체결량
 
     private LocalDateTime orderTime = LocalDateTime.now();
 
     @Indexed
-    private boolean askBid; // (ask:True, bid:False)
+    private String orderType; // ASK, BID
 
     @Indexed
     private Long userId;

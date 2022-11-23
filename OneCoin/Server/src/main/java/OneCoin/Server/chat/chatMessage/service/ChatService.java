@@ -46,6 +46,7 @@ public class ChatService {
         chatMessage.setChatAt(LocalDateTime.now());
         return chatMessageRepository.save(chatMessage);
     }
+
     private ChatMessage enterRoom(ChatMessage chatMessage) {
         long chatRoomId = chatMessage.getChatRoomId();
         //채팅방이 존재하는지 확인
@@ -55,7 +56,7 @@ public class ChatService {
     }
     public ChannelTopic getTopic(long chatRoomId) {
         ChannelTopic topic = topics.get(chatRoomId);
-        if(topic == null) {
+        if (topic == null) {
             throw new BusinessLogicException(ExceptionCode.NO_SUCH_CHAT_ROOM);
         }
         return topic;

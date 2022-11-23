@@ -31,4 +31,24 @@ public class OrderController {
 
         return new ResponseEntity(new SingleResponseDto<>(redisPostResponse), HttpStatus.CREATED);
     }
+
+    @GetMapping("/completion")
+    public ResponseEntity getCompletedOrder(@RequestParam("code") String code) { // 체결된 내역
+        // TODO
+        // transaction history에서 봐야함
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/non-trading")
+    public ResponseEntity getNonTradingOrder(@RequestParam("code") String code) {
+        List<Order> orders = orderService.findOrders(code);
+        return new ResponseEntity(new MultiResponseDto<>(orders), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/non-trading/{order-id}")
+    public ResponseEntity deleteNonTradingOrder(@PathVariable("order-id") long orderId) {
+        orderService.cancelOrder(orderId);
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 }

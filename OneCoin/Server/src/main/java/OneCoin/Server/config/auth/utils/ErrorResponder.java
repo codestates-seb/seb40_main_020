@@ -1,6 +1,6 @@
 package OneCoin.Server.config.auth.utils;
 
-import OneCoin.Server.response.ErrorResponse;
+import OneCoin.Server.exception.ErrorResponse;
 import com.google.gson.Gson;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
