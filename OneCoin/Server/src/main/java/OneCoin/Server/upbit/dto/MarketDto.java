@@ -8,8 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MarketDto {
-    private String code;
-    private String coinName;
     private TickerDto ticker;
     private OrderBookDto orderBook;
 }
