@@ -67,6 +67,20 @@ public class UserService {
 
     /**
      * <pre>
+     *     비밀번호 재설정
+     * </pre>
+     */
+    @Transactional
+    public User resetPassword(User user) {
+        User findUser = findVerifiedUser(user.getUserId());
+
+        findUser.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        return userRepository.save(findUser);
+    }
+
+    /**
+     * <pre>
      *     단일 회원 정보 가져오기
      * </pre>
      */

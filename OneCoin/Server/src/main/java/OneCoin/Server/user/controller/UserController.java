@@ -53,6 +53,20 @@ public class UserController {
         );
     }
 
+    // 비밀번호 재설정
+//    @PatchMapping("/password-reset")
+//    public ResponseEntity patchUser(
+//            @Valid @RequestBody UserDto.Patch requestBody) {
+//        User user = userMapper.userPatchToUser(requestBody);
+//        user.setUserId(userId);
+//
+//        User updatedUser = userService.updateUser(user);
+//
+//        return new ResponseEntity<>(
+//                new SingleResponseDto<>(userMapper.userToUserResponse(updatedUser)), HttpStatus.OK
+//        );
+//    }
+
     // 모든 회원 정보
     @GetMapping
     public ResponseEntity getUsers(@Positive @RequestParam int page,
@@ -71,4 +85,5 @@ public class UserController {
         User user = userService.findUser(userId);
         return new ResponseEntity<>(new SingleResponseDto<>(userMapper.userToUserResponse(user)), HttpStatus.OK);
     }
+
 }
