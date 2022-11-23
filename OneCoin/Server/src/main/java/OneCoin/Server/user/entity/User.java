@@ -1,10 +1,7 @@
 package OneCoin.Server.user.entity;
 
 import OneCoin.Server.audit.Auditable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -21,7 +18,7 @@ public class User extends Auditable {
     @Column(nullable = false)
     private String displayName;
 
-    @Column(nullable = false, updatable = false, unique = false)
+    @Column(nullable = false, updatable = false)
     private String email;
 
     @Column(nullable = false)
