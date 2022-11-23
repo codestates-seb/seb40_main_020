@@ -38,10 +38,7 @@ public class UpbitHandlingService {
             OrderBookDto orderBookDto = objectMapper.readValue(jsonNode.toString(), OrderBookDto.class);
             List<UnitInfo> unitInfos = Arrays.asList(objectMapper.readValue(jsonNode.get("orderbook_units").toString(), UnitInfo[].class));
             orderBookDto = mapper.unitInfoToOrderBookDto(orderBookDto, unitInfos, prevClosingPrice);
-            System.out.println(jsonNode);
-            System.out.println(orderBookDto.getAskInfo().get(0).getAskPrice());
-            System.out.println(orderBookDto.getAskInfo().get(0).getChangeRate());
-            System.out.println(orderBookDto.getAskInfo().get(0).getAskSize());
+            // 미완성
         }
     }
 }
