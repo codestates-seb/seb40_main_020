@@ -18,7 +18,8 @@ public enum ExceptionCode {
     FAIL_TO_SERIALIZE(500, "직렬화에 실패했습니다."),
     USER_NOT_FOUND(404, "User not found"),
     USER_EXISTS(409, "User already exists"),
-    INVALID_DESTINATION(400, "No match for the destination");
+    INVALID_DESTINATION(400, "No match for the destination"),
+    AUTHENTICATION_NOT_FOUND(404, "No authentication found in SecurityContextHolder");
 
     private final int code;
     private final String description;

@@ -33,7 +33,6 @@ public class ChatRoomUserTest {
         ChatRoom chatRoomSaved = chatRoomRepository.save(chatRoom);
         User user = User.builder()
                 .userRole(Role.ROLE_USER)
-                .balance(0L)
                 .displayName("zoro")
                 .email("zoro@naver.com")
                 .password("1234")

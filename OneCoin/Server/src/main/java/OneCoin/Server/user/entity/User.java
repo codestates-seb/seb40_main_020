@@ -33,9 +33,6 @@ public class User extends Auditable {
     @Enumerated(EnumType.STRING)
     private Platform platform;
 
-    @Column(nullable = false)
-    private long balance;
-
     // 추후 Attribute Converter 사용하거나 테이블 분리도 고려 -> 테이블 병합, 컨버터 사용
     @Column
     @Enumerated(EnumType.STRING)
@@ -43,6 +40,15 @@ public class User extends Auditable {
     @OneToMany(mappedBy = "chatRoom", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.DETACH},
             orphanRemoval = true)
     private Set<ChatRoomUser> chatRoomUsers;
+
+    @Builder
+    public User(String displayName, String email, String password, Platform platform, Role userRole) {
+        this.displayName = displayName;
+        this.email = email;
+        this.password = password;
+        this.platform = platform;
+        this.userRole = userRole;
+    }
 
     @Override
     public int hashCode() {

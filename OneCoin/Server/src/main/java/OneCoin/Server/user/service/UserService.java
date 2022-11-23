@@ -27,7 +27,9 @@ public class UserService {
         this.customAuthorityUtils = customAuthorityUtils;
     }
 
-    /** 유저 생성 */
+    /**
+     * 유저 생성
+     */
     @Transactional
     public User createUser(User user) {
         // 계정 존재 여부 조회
@@ -50,7 +52,7 @@ public class UserService {
     /**
      * <pre>
      *     회원 정보 변경
-     *     displayName, email, password, balance 만 변경 가능
+     *     displayName, email, password 만 변경 가능
      * </pre>
      */
     @Transactional
@@ -60,7 +62,20 @@ public class UserService {
         findUser.setDisplayName(user.getDisplayName());
         findUser.setEmail(user.getEmail());
         findUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        findUser.setBalance(user.getBalance());
+
+        return userRepository.save(findUser);
+    }
+
+    /**
+     * <pre>
+     *     비밀번호 재설정
+     * </pre>
+     */
+    @Transactional
+    public User resetPassword(User user) {
+        User findUser = findVerifiedUser(user.getUserId());
+
+        findUser.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userRepository.save(findUser);
     }

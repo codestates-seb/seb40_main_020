@@ -1,6 +1,6 @@
 package OneCoin.Server.config.auth.handler;
 
-import OneCoin.Server.response.ErrorResponse;
+import OneCoin.Server.exception.ErrorResponse;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -3,9 +3,11 @@ package OneCoin.Server.order.dto;
 import OneCoin.Server.validator.MustHaveLimitOrMarket;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
 public class OrderDto {
@@ -27,8 +29,8 @@ public class OrderDto {
         private double amount;
 
         @NotNull(message = "빈 필드는 허용하지 않습니다.")
-        @Range(min = 0, max = 1, message = "0 또는 1만 허용합니다.")
-        private Integer askBid;
+        @Pattern(regexp = "^ASK$|^BID$", message = "매도는 ASK, 매수는 BID를 입력해야 합니다.")
+        private String orderType;
     }
 
     @Getter
