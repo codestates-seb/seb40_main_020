@@ -1,11 +1,17 @@
 package OneCoin.Server.upbit.entity;
 
-import java.util.Map;
+import lombok.Getter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
+import java.util.List;
+
+@Getter
+@RedisHash(value = "orderbook")
 public class OrderBook { // 호가
+    @Id
     private String code; // 마켓 코드
-    private double totalAskSize; // 호가 매도 총 잔량 - 옵션
-    private double totalBidSize; // 호가 매수 총 잔량 - 옵션
-    private Map<Double, Double> askPriceSize; // 매도 호가, 잔량
-    private Map<Double, Double> bidPriceSize; // 매도 호가, 잔량
+    private String total_ask_size; // 호가 매도 총 잔량
+    private String total_bid_size; // 호가 매수 총 잔량
+    private List<Object> orderbook_units; // 호가 정보
 }
