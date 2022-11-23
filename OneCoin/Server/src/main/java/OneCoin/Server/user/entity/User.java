@@ -1,9 +1,12 @@
 package OneCoin.Server.user.entity;
 
 import OneCoin.Server.audit.Auditable;
+import OneCoin.Server.chat.chatRoom.entity.ChatRoomUser;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Objects;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,4 +40,12 @@ public class User extends Auditable {
     @Column
     @Enumerated(EnumType.STRING)
     private Role userRole;
+    @OneToMany(mappedBy = "chatRoom", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.DETACH},
+            orphanRemoval = true)
+    private Set<ChatRoomUser> chatRoomUsers;
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.email);
+    }
 }
