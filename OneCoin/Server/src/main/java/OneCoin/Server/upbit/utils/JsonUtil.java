@@ -1,15 +1,14 @@
 package OneCoin.Server.upbit.utils;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class JsonUtil {
-    private final ObjectMapper objectMapper = customObjectMapper();
+    private final ObjectMapper objectMapper;
 
     public <T> String toJson(T data) {
         return objectMapper.valueToTree(data).toString();
@@ -21,12 +20,5 @@ public class JsonUtil {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private ObjectMapper customObjectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY); // serializer는 private 필드에 접근 못하므로 해당 설정필요 or @JsonProperty
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // api에서 정해진 키를 다 파싱하지 않음 or @JsonIgnoreProperties
-        return objectMapper;
     }
 }
