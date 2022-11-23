@@ -29,9 +29,9 @@ public class ChatService {
             case ENTER:
                 chatMessage = enterRoom(chatMessage);
                 break;
-        //TODO: 채팅방 퇴장
-//            case LEAVE:
-//                result = leave(chatMessage);
+            case LEAVE:
+                chatMessage = leaveRoom(chatMessage);
+                break;
         }
         chatMessage.setChatAt(LocalDateTime.now());
         return chatMessageRepository.save(chatMessage);
@@ -40,11 +40,8 @@ public class ChatService {
         chatMessage.setMessage("[알림] " + chatMessage.getUserDisplayName() + "이 입장하셨습니다.");
         return chatMessage;
     }
-    public ChannelTopic getTopic(long chatRoomId) {
-        ChannelTopic topic = topics.get(chatRoomId);
-        if(topic == null) {
-            throw new BusinessLogicException(ExceptionCode.NO_SUCH_CHAT_ROOM);
-        }
-        return topic;
+    private ChatMessage leaveRoom(ChatMessage chatMessage) {
+        chatMessage.setMessage("[알림] " + chatMessage.getUserDisplayName() + "이 퇴장하셨습니다.");
+        return chatMessage;
     }
 }

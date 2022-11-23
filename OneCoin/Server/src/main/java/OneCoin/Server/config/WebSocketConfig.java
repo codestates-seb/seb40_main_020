@@ -3,8 +3,10 @@ package OneCoin.Server.config;
 import OneCoin.Server.chat.chatMessage.controller.ChatController;
 import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
 import OneCoin.Server.config.auth.jwt.JwtTokenizer;
+import OneCoin.Server.config.auth.utils.AuthorizationUtilsForWebSocket;
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
 import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtilsForWebSocket;
+import OneCoin.Server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -26,6 +28,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final LoggedInUserInfoUtilsForWebSocket loggedInUserInfoUtilsForWebSocket;
     private final ChatRoomService chatRoomService;
     private final ChatController chatController;
+    private final UserService userService;
+    private final AuthorizationUtilsForWebSocket authorizationUtilsForWebSocket;
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // (/ws/chat)엔드포인트로 들어온 http 을 웹소켓 통신으로 전환한다.
@@ -48,6 +52,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new MessageInterceptor(jwtTokenizer, customAuthorityUtils, loggedInUserInfoUtilsForWebSocket, chatRoomService, chatController));
+        registration.interceptors(
+                new MessageInterceptor(loggedInUserInfoUtilsForWebSocket,
+                        chatRoomService, chatController, userService,
+                        authorizationUtilsForWebSocket));
     }
 }
