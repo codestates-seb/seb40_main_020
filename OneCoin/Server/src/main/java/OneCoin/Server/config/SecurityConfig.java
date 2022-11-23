@@ -56,13 +56,13 @@ public class SecurityConfig {
                 .apply(new CustomFilterConfigurer())    // 커스텀 필터 적용
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
+                        .antMatchers(HttpMethod.GET, "/ws/chat/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/users").permitAll()
                         .antMatchers(HttpMethod.PATCH, "/users/**").hasRole("USER")
                         .antMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
                         .antMatchers(HttpMethod.GET, "/users/**").hasAnyRole("USER", "ADMIN")
                         .antMatchers(HttpMethod.DELETE, "/users/**").hasRole("USER")
                         .anyRequest().permitAll()                // 일단 허용
-
                 );
         return http.build();
     }
