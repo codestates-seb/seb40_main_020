@@ -60,7 +60,7 @@ public class StubData {
 
     public static class MockCoin {
         @SneakyThrows
-        public static Coin getMockEntity(long coinId, String code, String coinName) {
+        public static Coin getMockEntity(long coinId, String code, String coinName) throws Exception {
             Constructor<Coin> constructor = Coin.class.getDeclaredConstructor(Long.class, String.class, String.class);
             constructor.setAccessible(true);
             Coin coin = constructor.newInstance(coinId, code, coinName);

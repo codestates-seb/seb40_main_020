@@ -38,7 +38,7 @@ public class OrderControllerTest {
     @SneakyThrows
     @Test
     @DisplayName("slice test: 매수/매도 주문")
-    void postOrderTest() {
+    void postOrderTest() throws Exception{
         // given
         OrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
         String content = gson.toJson(redisPostDto);

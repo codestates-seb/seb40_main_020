@@ -18,7 +18,6 @@ public interface UserMapper {
         user.setEmail(requestBody.getEmail());
         user.setPassword(requestBody.getPassword());
         user.setPlatform(Platform.ORIGIN);
-        user.setBalance(0L);
         user.setUserRole(Role.ROLE_USER);   // default : ROLE_USER
 
         return user;
@@ -31,7 +30,18 @@ public interface UserMapper {
         user.setEmail(requestBody.getEmail());
         user.setPassword(requestBody.getPassword());
         user.setPlatform(Platform.ORIGIN);
-        user.setBalance(0L);
+        user.setUserRole(Role.ROLE_USER);
+
+        return user;
+    }
+
+    default User userPasswordToUser(UserDto.Password requestBody) {
+        User user = new User();
+
+        user.setDisplayName("");
+        user.setEmail("");
+        user.setPassword(requestBody.getPassword());
+        user.setPlatform(Platform.ORIGIN);
         user.setUserRole(Role.ROLE_USER);
 
         return user;
