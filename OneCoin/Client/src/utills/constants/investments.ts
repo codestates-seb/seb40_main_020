@@ -14,20 +14,6 @@ export const BALANCE_INFO_LIST = [
 	{ name: '총 평가수익률', currency: '%' },
 ];
 
-export const HEADER_LIST = {
-	page: [
-		{ name: '거래소', path: '/exchange' },
-		{ name: '입금', path: '/balances' },
-		{ name: '투자내역', path: '/investments/balance' },
-		{ name: '스왑', path: '/swap' },
-	],
-	logout: [
-		{ name: '로그인', path: '/login' },
-		{ name: '회원가입', path: '/signup' },
-	],
-	login: [{ name: '마이페이지', path: '/mypage' }],
-};
-
 export const FOOTER_LIST = {
 	repository: 'https://github.com/codestates-seb/seb40_main_020',
 	copyright: '1Coin © 2022 All rights reserved.',
