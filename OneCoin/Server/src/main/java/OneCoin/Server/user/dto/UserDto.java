@@ -52,9 +52,6 @@ public class UserDto {
         @NotBlank
         @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[$@!%*?&#~])[A-Za-z\\d$@!%*?&#~]{8,25}")
         private String password;
-
-//        @PositiveOrZero
-//        private long balance;
     }
 
     @Getter
