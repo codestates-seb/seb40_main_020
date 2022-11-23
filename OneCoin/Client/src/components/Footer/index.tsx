@@ -3,7 +3,7 @@ import { FooterComponent } from './syle';
 import { useNavigate } from 'react-router-dom';
 import { AiFillGithub } from 'react-icons/ai';
 import logo from '../../assets/images/one.png';
-import { FOOTER_LIST } from '../../utills/constants/investments';
+import { FOOTER_LIST } from '../../utills/constants/footer';
 
 function Footer() {
 	const navigate = useNavigate();
