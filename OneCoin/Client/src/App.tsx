@@ -10,6 +10,7 @@ const History = lazy(() => import('./pages/History'));
 const WaitOrders = lazy(() => import('./pages/WaitOrders'));
 const Balances = lazy(() => import('./pages/Balances'));
 const Exchange = lazy(() => import('./pages/Exchange'));
+const SubChart = lazy(() => import('./pages/Exchange/components/SubChart'));
 
 function App() {
 	return (
@@ -68,6 +69,14 @@ function App() {
 					element={
 						<Suspense fallback={<>...</>}>
 							<ResetPassword />
+						</Suspense>
+					}
+				/>
+				<Route
+					path="/chart"
+					element={
+						<Suspense fallback={<>...</>}>
+							<SubChart />
 						</Suspense>
 					}
 				/>
