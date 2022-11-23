@@ -1,7 +1,7 @@
 package OneCoin.Server.upbit.listener;
 
 import OneCoin.Server.upbit.entity.enums.SiseType;
-import OneCoin.Server.upbit.service.MappingService;
+import OneCoin.Server.upbit.service.UpbitHandlingService;
 import OneCoin.Server.upbit.utils.JsonUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.List;
 public class UpbitWebSocketListener extends WebSocketListener {
 
     private final JsonUtil jsonUtil;
-    private final MappingService mappingService;
+    private final UpbitHandlingService upbitHandlingService;
     private String parameter;
 
     public String getParameter() {
@@ -55,7 +55,7 @@ public class UpbitWebSocketListener extends WebSocketListener {
     @Override
     public void onMessage(@NotNull WebSocket webSocket, @NotNull ByteString text) {
         JsonNode jsonNode = jsonUtil.fromJson(text.string(StandardCharsets.UTF_8), JsonNode.class);
-        mappingService.delegate(jsonNode);
+        upbitHandlingService.parsing(jsonNode);
     }
 
     @Override
