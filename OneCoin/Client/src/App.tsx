@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Main from 'pages/Main/Main';
+import Chatting from 'pages/Chatting';
 
 const Balance = lazy(() => import('./pages/Balance'));
 const History = lazy(() => import('./pages/History'));
@@ -67,6 +68,7 @@ function App() {
 					element={<Suspense fallback={<>…</>}>{<SwapResult />}</Suspense>}
 				/>
 			</Routes>
+			<Chatting />
 		</>
 	);
 }
