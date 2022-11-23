@@ -24,6 +24,7 @@ public class RedisSubscriber{
         try {
             //스트링 -> 객체로 매핑
             ChatResponseDto chatResponseDto = objectMapper.readValue(publishedMessage, ChatResponseDto.class);
+            log.info("[publisher] {}", chatResponseDto);
             messagingTemplate.convertAndSend("/topic/rooms/" + chatResponseDto.getChatRoomId(), chatResponseDto);
         } catch (JsonProcessingException e) {
             throw new BusinessLogicException(ExceptionCode.FAIL_TO_SERIALIZE);
