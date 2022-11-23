@@ -35,6 +35,18 @@ public interface UserMapper {
         return user;
     }
 
+    default User userPasswordToUser(UserDto.Password requestBody) {
+        User user = new User();
+
+        user.setDisplayName("");
+        user.setEmail("");
+        user.setPassword(requestBody.getPassword());
+        user.setPlatform(Platform.ORIGIN);
+        user.setUserRole(Role.ROLE_USER);
+
+        return user;
+    }
+
     default UserDto.Response userToUserResponse(User user) {
         UserDto.Response response = new UserDto.Response();
 

@@ -10,12 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -54,18 +56,19 @@ public class UserController {
     }
 
     // 비밀번호 재설정
-//    @PatchMapping("/password-reset")
-//    public ResponseEntity patchUser(
-//            @Valid @RequestBody UserDto.Patch requestBody) {
-//        User user = userMapper.userPatchToUser(requestBody);
-//        user.setUserId(userId);
-//
-//        User updatedUser = userService.updateUser(user);
-//
-//        return new ResponseEntity<>(
-//                new SingleResponseDto<>(userMapper.userToUserResponse(updatedUser)), HttpStatus.OK
-//        );
-//    }
+    @PatchMapping("/reset-passwords")
+    public ResponseEntity patchUser(
+            @Valid @RequestBody UserDto.Password requestBody,
+            @AuthenticationPrincipal Map<String, Object> userInfo) {
+        User user = userMapper.userPasswordToUser(requestBody);
+        user.setUserId(Long.parseLong(userInfo.get("id").toString()));
+
+        User updatedUser = userService.resetPassword(user);
+
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(userMapper.userToUserResponse(updatedUser)), HttpStatus.OK
+        );
+    }
 
     // 모든 회원 정보
     @GetMapping
