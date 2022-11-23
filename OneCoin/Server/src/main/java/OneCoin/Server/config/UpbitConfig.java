@@ -1,6 +1,6 @@
 package OneCoin.Server.config;
 
-import OneCoin.Server.upbit.api.UpbitWebSocketListener;
+import OneCoin.Server.upbit.listener.UpbitWebSocketListener;
 import OneCoin.Server.upbit.entity.enums.CoinList;
 import OneCoin.Server.upbit.service.MappingService;
 import OneCoin.Server.upbit.utils.JsonUtil;

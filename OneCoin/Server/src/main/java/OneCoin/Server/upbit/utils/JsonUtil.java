@@ -17,7 +17,6 @@ public class JsonUtil {
 
     public <T> T fromJson(String json, Class<T> classType) {
         try {
-//            Trade trade = objectMapper.readValue(json, Trade.class); TODO
             return objectMapper.treeToValue(objectMapper.readTree(json), classType);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
