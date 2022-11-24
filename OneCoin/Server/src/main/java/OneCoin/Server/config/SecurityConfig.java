@@ -25,6 +25,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -55,13 +56,13 @@ public class SecurityConfig {
                 .apply(new CustomFilterConfigurer())    // 커스텀 필터 적용
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
+                        .antMatchers(HttpMethod.GET, "/ws/chat/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/users").permitAll()
                         .antMatchers(HttpMethod.PATCH, "/users/**").hasRole("USER")
                         .antMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
                         .antMatchers(HttpMethod.GET, "/users/**").hasAnyRole("USER", "ADMIN")
                         .antMatchers(HttpMethod.DELETE, "/users/**").hasRole("USER")
                         .anyRequest().permitAll()                // 일단 허용
-
                 );
         return http.build();
     }
@@ -75,8 +76,8 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));   // 모든 origin 허용
-        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PATCH", "DELETE"));  // 허용 메소드 설정
+        configuration.setAllowedOrigins(List.of("*"));   // 모든 origin 허용
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));  // 허용 메소드 설정
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();   // CorsConfigurationSource 구현 클래스
         source.registerCorsConfiguration("/**", configuration);
@@ -100,7 +101,7 @@ public class SecurityConfig {
 
             // 커스텀한 필터를 필터 체인에 추가
             builder.addFilter(jwtAuthenticationFilter)
-                    . addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
+                    .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
         }
     }
 }

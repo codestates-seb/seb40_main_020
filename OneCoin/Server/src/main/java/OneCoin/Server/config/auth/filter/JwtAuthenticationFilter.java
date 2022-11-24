@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     /**
-     *  인증에 성공할 경우 호출
+     * 인증에 성공할 경우 호출
      */
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
@@ -69,7 +69,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     /**
-     *  AccessToken 생성 위임
+     * AccessToken 생성 위임
      */
     private String delegateAccessToken(User user) {
         // userInfo
@@ -87,7 +87,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     /**
-     *  RefreshToken 생성 위임
+     * RefreshToken 생성 위임
      */
     private String delegateRefreshToken(User user) {
         // userInfo

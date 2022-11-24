@@ -9,5 +9,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ChatRoomMapper {
     ChatRoomDto chatRoomToChatRoomDto(ChatRoom chatRoom);
+
     List<ChatRoomDto> chatRoomListToChatRoomDtoList(List<ChatRoom> chatRooms);
 }

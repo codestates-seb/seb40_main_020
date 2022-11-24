@@ -10,20 +10,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
 @Validated
 @Slf4j
 public class UserController {
-    private UserService userService;
-    private UserMapper userMapper;
+    private final UserService userService;
+    private final UserMapper userMapper;
 
     public UserController(UserService userService, UserMapper userMapper) {
         this.userService = userService;
@@ -53,10 +55,25 @@ public class UserController {
         );
     }
 
+    // 비밀번호 재설정
+    @PatchMapping("/reset-passwords")
+    public ResponseEntity patchUser(
+            @Valid @RequestBody UserDto.Password requestBody,
+            @AuthenticationPrincipal Map<String, Object> userInfo) {
+        User user = userMapper.userPasswordToUser(requestBody);
+        user.setUserId(Long.parseLong(userInfo.get("id").toString()));
+
+        User updatedUser = userService.resetPassword(user);
+
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(userMapper.userToUserResponse(updatedUser)), HttpStatus.OK
+        );
+    }
+
     // 모든 회원 정보
     @GetMapping
     public ResponseEntity getUsers(@Positive @RequestParam int page,
-                                   @Positive @RequestParam int size){
+                                   @Positive @RequestParam int size) {
         Page<User> userPage = userService.findUsers(page - 1, size);
         List<User> users = userPage.getContent();
         return new ResponseEntity<>(
@@ -67,8 +84,9 @@ public class UserController {
 
     // 단일 회원 정보
     @GetMapping("/{user-id}")
-    public ResponseEntity getUser(@PathVariable("user-id") @Positive long userId){
+    public ResponseEntity getUser(@PathVariable("user-id") @Positive long userId) {
         User user = userService.findUser(userId);
         return new ResponseEntity<>(new SingleResponseDto<>(userMapper.userToUserResponse(user)), HttpStatus.OK);
     }
+
 }

@@ -55,19 +55,17 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     /**
-     *  true 면 해당 필터 동작을 수행하지 않고 다음 필터로 건너뜀
+     * true 면 해당 필터 동작을 수행하지 않고 다음 필터로 건너뜀
      */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String authorization = request.getHeader("Authorization");
 
-        System.out.println("ShouldNotFilter result : " + (authorization == null || !authorization.startsWith("Bearer")));
-
         return authorization == null || !authorization.startsWith("Bearer");  // Bearer 이 아니면 true(현재 필터 스킵)
     }
 
     /**
-     *  JWT 검증
+     * JWT 검증
      */
     private Map<String, Object> verifyJws(HttpServletRequest request) {
         String jws = request.getHeader("Authorization").replace("Bearer ", "");
@@ -78,12 +76,13 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     /**
-     *  Authentication(인증) 객체를 SecurityContext 에 저장
+     * Authentication(인증) 객체를 SecurityContext 에 저장
      */
     private void setAuthenticationToContext(Map<String, Object> claims) {
-        String username = (String) claims.get("username");
+//        String username = (String) claims.get("username");
         List<GrantedAuthority> authorities = customAuthorityUtils.createAuthorities(Role.valueOf((String) claims.get("roles")));
-        Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
+//        Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(claims, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication); // SecurityContext 에 Authentication 저장
     }
 }
