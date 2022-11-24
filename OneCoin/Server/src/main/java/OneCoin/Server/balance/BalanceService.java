@@ -8,6 +8,7 @@ import OneCoin.Server.exception.ExceptionCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.Positive;
 import java.util.Optional;
 
 @Service
@@ -20,7 +21,7 @@ public class BalanceService {
     }
 
     /**
-     *  Balance 변경
+     *  입금으로 Balance 변경
      */
     public Balance updateBalance(Deposit deposit) {
         Balance findBalance = findBalance(deposit.getBalance().getBalanceId());
@@ -46,5 +47,30 @@ public class BalanceService {
         Optional<Balance> optionalBalance = balanceRepository.findById(balanceId);
         Balance balance = optionalBalance.orElseThrow(() -> new BusinessLogicException(ExceptionCode.BALANCE_NOT_FOUND));
         return balance;
+    }
+
+    /**
+     *  매수(BID) 체결 출금
+     */
+    public Balance updateBalanceByBid(long userId, @Positive long price) {
+        Balance balance = findBalanceByUserId(userId);
+
+        if (balance.getBalance() < price) {
+            throw new BusinessLogicException(ExceptionCode.NOT_ENOUGH_BALANCE);
+        }
+        balance.setBalance(balance.getBalance() - price);
+
+        return balanceRepository.save(balance);
+    }
+
+    /**
+     *  매도(ASK) 체결 입금
+     */
+    public Balance updateBalanceByAsk(long userId, @Positive long price) {
+        Balance balance = findBalanceByUserId(userId);
+
+        balance.setBalance(balance.getBalance() + price);
+
+        return balanceRepository.save(balance);
     }
 }
