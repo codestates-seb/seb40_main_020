@@ -4,6 +4,7 @@ import OneCoin.Server.upbit.dto.orderbook.OrderBookDto;
 import OneCoin.Server.upbit.dto.ticker.TickerDto;
 import OneCoin.Server.upbit.entity.Trade;
 import OneCoin.Server.upbit.entity.UnitInfo;
+import OneCoin.Server.upbit.entity.enums.CoinList;
 import OneCoin.Server.upbit.entity.enums.SiseType;
 import OneCoin.Server.upbit.mapper.OrderBookDtoMapper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -56,5 +57,15 @@ public class UpbitHandlingService {
     private void saveOrderBook(OrderBookDto orderBookDto) {
         HashOperations<String, String, OrderBookDto> operations = redisTemplate.opsForHash();
         operations.put(SiseType.ORDER_BOOK.getType(), orderBookDto.getCode(), orderBookDto);
+    }
+
+    public List<TickerDto> findTickers() {
+        HashOperations<String, String, TickerDto> operations = redisTemplate.opsForHash();
+        return operations.multiGet(SiseType.TICKER.getType(), CoinList.CODES);
+    }
+
+    public List<OrderBookDto> findOrderBooks() {
+        HashOperations<String, String, OrderBookDto> operations = redisTemplate.opsForHash();
+        return operations.multiGet(SiseType.ORDER_BOOK.getType(), CoinList.CODES);
     }
 }
