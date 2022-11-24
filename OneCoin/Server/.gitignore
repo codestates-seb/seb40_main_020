@@ -39,4 +39,3 @@ out/
 ### Custom ###
 **/application.properties
 **/application-local.properties
-**/application-dev.properties

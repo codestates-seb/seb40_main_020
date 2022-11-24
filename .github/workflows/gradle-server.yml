@@ -25,6 +25,8 @@ jobs:
     env:
       working-directory: ./OneCoin/Server
       S3_BUCKET_NAME: onecoin-s3
+      PROPERTIES_PATH: ./OneCoin/Server/src/main/resources/application-dev.properties
+
 
     steps:
     - uses: actions/checkout@v3
@@ -33,6 +35,20 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
+
+    # properties secret 설정
+    - name: Set application-dev.properties 
+      run: |
+        touch ${{ env.PROPERTIES_PATH }}
+        echo "
+        spring.datasource.url=${{ secrets.SPRING_DATASOURCE_URL }}
+        spring.datasource.username=${{ secrets.SPRING_DATASOURCE_USERNAME }}
+        spring.datasource.password=${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+        mail.address.admin=${{ secrets.MAIL_ADDRESS_ADMIN }}
+        jwt.secret-key=${{ secrets.JWT_SECRET_KEY }}
+        spring.redis.port=${{ secrets.SPRING_REDIS_PORT }}
+        spring.redis.host=${{ secrets.SPRING_REDIS_HOST }}
+        " >> ${{ env.PROPERTIES_PATH }}
         
     # 연결 권한 설정
     - name: Grant execute permission for gradlew
@@ -62,6 +78,14 @@ jobs:
     - name: Upload to S3
       run: aws s3 cp --region ap-northeast-2 ./onecoin.zip s3://$S3_BUCKET_NAME/onecoin.zip
       working-directory: ${{ env.working-directory }}
+    
+    # CodeDeploy에게 배포 명령을 내립니다.
+    - name: Code Deploy
+      run: >
+        aws deploy create-deployment --application-name OneCoinDeploy
+        --deployment-config-name CodeDeployDefault.AllAtOnce
+        --deployment-group-name OneCoinDeploy-group
+        --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=onecoin.zip
       
 #       with:
 #         gradle-version: 7.5.1
