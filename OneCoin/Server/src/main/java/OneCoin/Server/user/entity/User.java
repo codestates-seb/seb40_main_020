@@ -1,6 +1,7 @@
 package OneCoin.Server.user.entity;
 
 import OneCoin.Server.audit.Auditable;
+import OneCoin.Server.balance.entity.Balance;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,6 +24,9 @@ public class User extends Auditable {
 
     @Column(nullable = false)
     private String password;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Balance balance;
 
     // 추후 Attribute Converter 사용 고려 -> 사용
     @Column
