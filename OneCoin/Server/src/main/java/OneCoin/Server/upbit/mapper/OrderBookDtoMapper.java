@@ -49,8 +49,6 @@ public class OrderBookDtoMapper {
         int comparison = changeRate.compareTo(BigDecimal.ZERO);
         if (comparison > 0) {
             return "+";
-        } else if (comparison < 0) {
-            return "-";
         }
         return "";
     }
