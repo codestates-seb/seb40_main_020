@@ -44,7 +44,7 @@ public class TradingService {
 
     private void deleteAmountZeroEntity(Order order) {
         BigDecimal zero = BigDecimal.ZERO;
-        if (order.getAmount().compareTo(zero) == 0) {
+        if (order.getAmount().compareTo(zero) <= 0) {
             orderRepository.delete(order);
         }
     }
