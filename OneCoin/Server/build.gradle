@@ -47,6 +47,9 @@ dependencies {
 
 	//gson
 	implementation 'com.google.code.gson:gson:2.10'
+
+	//RestAssure
+	testImplementation 'io.rest-assured:spring-web-test-client:5.3.0'
 }
 
 tasks.named('test') {

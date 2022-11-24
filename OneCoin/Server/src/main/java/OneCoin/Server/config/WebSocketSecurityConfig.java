@@ -13,9 +13,8 @@ public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBro
     protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
         //TODO: 비공개 채팅방 개설시 수정 필요
         messages
-                .simpSubscribeDestMatchers("/topic/**").permitAll()
-                .simpDestMatchers("/app/**").hasRole("USER")
-                .anyMessage().permitAll();
+                .simpSubscribeDestMatchers("/topic/**").hasRole("USER")
+                .simpDestMatchers("/app/**").hasRole("USER");
     }
 
     @Override

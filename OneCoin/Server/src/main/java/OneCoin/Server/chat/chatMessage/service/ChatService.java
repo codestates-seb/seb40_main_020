@@ -4,15 +4,12 @@ import OneCoin.Server.chat.chatMessage.entity.ChatMessage;
 import OneCoin.Server.chat.chatMessage.repository.ChatMessageRepository;
 import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
 import OneCoin.Server.chat.constant.MessageType;
-import OneCoin.Server.chat.redis.RedisSubscriber;
 import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,38 +24,24 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomService chatRoomService;
     private Map<Long, ChannelTopic> topics = new HashMap<>();
-    private final RedisMessageListenerContainer messageListenerContainer;
-    private final RedisSubscriber redisSubscriber;
-
-//    @PostConstruct
-//    private void init() {
-//        topics = new HashMap<>();
-//    }
-    public ChatMessage deligate(MessageType messageType, ChatMessage chatMessage) {
+    public ChatMessage delegate(MessageType messageType, ChatMessage chatMessage) {
         switch (messageType) {
             case ENTER:
                 chatMessage = enterRoom(chatMessage);
                 break;
-        //TODO: 채팅방 퇴장
-//            case LEAVE:
-//                result = leave(chatMessage);
+            case LEAVE:
+                chatMessage = leaveRoom(chatMessage);
+                break;
         }
         chatMessage.setChatAt(LocalDateTime.now());
         return chatMessageRepository.save(chatMessage);
     }
-
     private ChatMessage enterRoom(ChatMessage chatMessage) {
-        long chatRoomId = chatMessage.getChatRoomId();
-        //채팅방이 존재하는지 확인
-        chatRoomService.findChatRoom(chatRoomId);
         chatMessage.setMessage("[알림] " + chatMessage.getUserDisplayName() + "이 입장하셨습니다.");
         return chatMessage;
     }
-    public ChannelTopic getTopic(long chatRoomId) {
-        ChannelTopic topic = topics.get(chatRoomId);
-        if (topic == null) {
-            throw new BusinessLogicException(ExceptionCode.NO_SUCH_CHAT_ROOM);
-        }
-        return topic;
+    private ChatMessage leaveRoom(ChatMessage chatMessage) {
+        chatMessage.setMessage("[알림] " + chatMessage.getUserDisplayName() + "이 퇴장하셨습니다.");
+        return chatMessage;
     }
 }

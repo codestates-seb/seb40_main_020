@@ -10,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class ChatRequestDto {
     @NotBlank
     private MessageType type;

@@ -19,14 +19,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedisSubscriber{
     private final ObjectMapper objectMapper;
-    private final RedisTemplate redisTemplate;
     private final SimpMessagingTemplate messagingTemplate;
-
-    //리스너에게 수신된 메시지를 각 비즈니스 로직을 거쳐 WebSocket구독자들에게 전달한다.
     public void sendMessage(String publishedMessage) {
         try {
             //스트링 -> 객체로 매핑
             ChatResponseDto chatResponseDto = objectMapper.readValue(publishedMessage, ChatResponseDto.class);
+            log.info("[publisher] {}", chatResponseDto);
             messagingTemplate.convertAndSend("/topic/rooms/" + chatResponseDto.getChatRoomId(), chatResponseDto);
         } catch (JsonProcessingException e) {
             throw new BusinessLogicException(ExceptionCode.FAIL_TO_SERIALIZE);

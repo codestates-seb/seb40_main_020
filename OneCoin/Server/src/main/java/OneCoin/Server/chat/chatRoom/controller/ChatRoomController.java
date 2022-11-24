@@ -25,16 +25,22 @@ public class ChatRoomController {
     public ResponseEntity createRoom(@RequestParam String name,
                                      @RequestParam String nation) {
         ChatRoom chatRoom = chatRoomService.createRoom(name, nation);
-        ChatRoomDto dto = chatRoomMapper.chatRoomToChatRoomDto(chatRoom);
+        ChatRoomDto responseDto = chatRoomMapper.chatRoomToChatRoomDto(chatRoom);
         //채팅 방에 몇 명이 있는지 조회하는 기능 추가
-        return new ResponseEntity<>(new SingleResponseDto<>(dto), HttpStatus.CREATED);
+        return new ResponseEntity<>(new SingleResponseDto<>(responseDto), HttpStatus.CREATED);
     }
 
     //채팅방 리스트 국가 별 조회
+//    @GetMapping
+//    public ResponseEntity findByNation(@RequestParam String nation) {
+//        List<ChatRoom> rooms = chatRoomService.findRoomByNation(nation);
+//        List<ChatRoomDto> dtos = chatRoomMapper.chatRoomListToChatRoomDtoList(rooms);
+//        return new ResponseEntity<>(new MultiResponseDto<>(dtos), HttpStatus.OK);
+//    }
+
     @GetMapping
-    public ResponseEntity findByNation(@RequestParam String nation) {
-        List<ChatRoom> rooms = chatRoomService.findRoomByNation(nation);
-        List<ChatRoomDto> dtos = chatRoomMapper.chatRoomListToChatRoomDtoList(rooms);
-        return new ResponseEntity<>(new MultiResponseDto<>(dtos), HttpStatus.OK);
+    public ResponseEntity getRooms() {
+        List<ChatRoomDto> responseDtos = chatRoomService.findAll();
+        return new ResponseEntity<>(new MultiResponseDto<>(responseDtos), HttpStatus.OK);
     }
 }
