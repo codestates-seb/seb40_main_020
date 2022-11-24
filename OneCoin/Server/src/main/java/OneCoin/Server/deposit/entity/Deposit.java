@@ -24,5 +24,8 @@ public class Deposit extends CreatedOnlyAuditable {
     private Balance balance;
 
     @Column(nullable = false)
+    private Long remainingBalance;
+
+    @Column(nullable = false)
     private Long depositAmount;
 }
