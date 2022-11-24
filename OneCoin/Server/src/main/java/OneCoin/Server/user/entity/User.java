@@ -1,18 +1,19 @@
 package OneCoin.Server.user.entity;
 
 import OneCoin.Server.audit.Auditable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import OneCoin.Server.chat.chatRoom.entity.ChatRoomUser;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Objects;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity(name = "users")
+@Builder
 public class User extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +37,9 @@ public class User extends Auditable {
     @Column
     @Enumerated(EnumType.STRING)
     private Role userRole;
+    @OneToMany(mappedBy = "chatRoom", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.DETACH},
+            orphanRemoval = true)
+    private Set<ChatRoomUser> chatRoomUsers;
 
     @Builder
     public User(String displayName, String email, String password, Platform platform, Role userRole) {
@@ -44,5 +48,10 @@ public class User extends Auditable {
         this.password = password;
         this.platform = platform;
         this.userRole = userRole;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.email);
     }
 }
