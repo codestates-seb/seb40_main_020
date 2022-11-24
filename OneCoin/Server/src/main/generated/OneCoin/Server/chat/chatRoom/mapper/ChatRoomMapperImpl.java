@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
     value = "org.mapstruct.ap.MappingProcessor",
     date = "2022-11-24T12:53:12+0900",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 11.0.17 (Azul Systems, Inc.)"
+
 )
 @Component
 public class ChatRoomMapperImpl implements ChatRoomMapper {
