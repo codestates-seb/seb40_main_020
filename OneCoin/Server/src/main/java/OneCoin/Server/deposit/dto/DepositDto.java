@@ -23,6 +23,7 @@ public class DepositDto {
     @AllArgsConstructor
     public static class Response {
         private Long depositAmount;
-        private Long balance;
+        private Long remainingBalance;
+        private String createdAt;
     }
 }

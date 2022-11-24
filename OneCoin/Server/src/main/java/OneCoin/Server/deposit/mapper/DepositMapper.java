@@ -14,7 +14,8 @@ public interface DepositMapper {
         DepositDto.Response response = new DepositDto.Response();
 
         response.setDepositAmount(deposit.getDepositAmount());
-        response.setBalance(deposit.getBalance().getBalance());
+        response.setRemainingBalance(deposit.getRemainingBalance());
+        response.setCreatedAt(deposit.getCreatedAt().toString());
 
         return response;
     }
