@@ -9,7 +9,7 @@ import java.util.Arrays;
 public enum Nation {
     KR("kr"), JP("jp"), US("us"), EU("eu");
     @Getter
-    private String name;
+    private final String name;
 
     Nation(String name) {
         this.name = name;

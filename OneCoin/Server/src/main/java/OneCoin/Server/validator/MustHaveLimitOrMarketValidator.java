@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 @Slf4j
 public class MustHaveLimitOrMarketValidator implements ConstraintValidator<MustHaveLimitOrMarket, OrderDto.Post> {
     private String limit;
-    private String  market;
+    private String market;
 
     @Override
     public void initialize(MustHaveLimitOrMarket constraintAnnotation) {

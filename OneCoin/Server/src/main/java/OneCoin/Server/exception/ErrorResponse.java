@@ -1,6 +1,5 @@
-package OneCoin.Server.response;
+package OneCoin.Server.exception;
 
-import OneCoin.Server.exception.ExceptionCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -50,9 +49,9 @@ public class ErrorResponse {
 
     @Getter
     public static class FieldError {
-        private String field;
-        private Object rejectedValue;
-        private String reason;
+        private final String field;
+        private final Object rejectedValue;
+        private final String reason;
 
         private FieldError(String field, Object rejectedValue, String reason) {
             this.field = field;
@@ -75,9 +74,9 @@ public class ErrorResponse {
 
     @Getter
     public static class ConstraintViolationError {
-        private String propertyPath;
-        private Object rejectedValue;
-        private String reason;
+        private final String propertyPath;
+        private final Object rejectedValue;
+        private final String reason;
 
         private ConstraintViolationError(String propertyPath, Object rejectedValue,
                                          String reason) {
