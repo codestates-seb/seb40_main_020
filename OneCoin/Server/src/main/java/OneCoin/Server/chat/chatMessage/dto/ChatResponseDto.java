@@ -1,12 +1,13 @@
 package OneCoin.Server.chat.chatMessage.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@ToString
+@Builder
+@NoArgsConstructor
 public class ChatResponseDto {
     private long chatRoomId;
     private String userDisplayName;
