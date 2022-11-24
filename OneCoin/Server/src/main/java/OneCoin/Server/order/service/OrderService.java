@@ -105,22 +105,4 @@ public class OrderService {
         long userId = 1L;
         return orderRepository.findAllByUserIdAndCode(userId, code);
     }
-
-    public List<Order> findOrdersMatchingPrice(String price, String orderType, String code) {
-        return orderRepository.findAllByLimitAndOrderTypeAndCode(new BigDecimal(price), orderType, code);
-    }
-
-    public void updateAmountAfterTrade(List<Order> orders) {
-        for (Order order : orders) {
-            deleteAmountZeroEntity(order);
-        }
-        orderRepository.saveAll(orders);
-    }
-
-    private void deleteAmountZeroEntity(Order order) {
-        BigDecimal zero = BigDecimal.ZERO;
-        if (order.getAmount().compareTo(zero) == 0) {
-            orderRepository.delete(order);
-        }
-    }
 }

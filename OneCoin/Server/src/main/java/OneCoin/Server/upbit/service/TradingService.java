@@ -1,6 +1,7 @@
 package OneCoin.Server.upbit.service;
 
 import OneCoin.Server.order.entity.Order;
+import OneCoin.Server.order.repository.OrderRepository;
 import OneCoin.Server.order.service.OrderService;
 import OneCoin.Server.order.service.WalletService;
 import OneCoin.Server.upbit.entity.Trade;
@@ -16,13 +17,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TradingService {
 
-    private final OrderService orderService;
-    private final WalletService walletService;
+    private final OrderRepository orderRepository;
+    private final WalletService walletService; // TODO 매도 채결시 wallet으로
 
     public void completeOrders(Trade trade) {
-        List<Order> orders = orderService.findOrdersMatchingPrice(trade.getTradePrice(), trade.getOrderType(), trade.getCode());
+        String tradePrice = trade.getTradePrice();
+        List<Order> orders = orderRepository.findAllByLimitAndOrderTypeAndCode(new BigDecimal(tradePrice), trade.getOrderType(), trade.getCode());
         subtractAmount(orders, trade.getTradeVolume());
-        orderService.updateAmountAfterTrade(orders);
+        updateAmountAfterTrade(orders);
     }
 
     private void subtractAmount(List<Order> orders, String amount) {
@@ -30,6 +32,20 @@ public class TradingService {
         for (Order order : orders) {
             BigDecimal newAmount = order.getAmount().subtract(subtractionAmount);
             order.setAmount(newAmount);
+        }
+    }
+
+    private void updateAmountAfterTrade(List<Order> orders) {
+        for (Order order : orders) {
+            deleteAmountZeroEntity(order);
+        }
+        orderRepository.saveAll(orders);
+    }
+
+    private void deleteAmountZeroEntity(Order order) {
+        BigDecimal zero = BigDecimal.ZERO;
+        if (order.getAmount().compareTo(zero) == 0) {
+            orderRepository.delete(order);
         }
     }
 }
