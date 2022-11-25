@@ -19,6 +19,7 @@ public enum ExceptionCode {
     USER_NOT_FOUND(404, "User not found"),
     USER_EXISTS(409, "User already exists"),
     INVALID_DESTINATION(400, "No match for the destination"),
+    BALANCE_NOT_FOUND(404, "Balance not found"),
     AUTHENTICATION_NOT_FOUND(404, "No authentication found in SecurityContextHolder");
 
     private final int code;

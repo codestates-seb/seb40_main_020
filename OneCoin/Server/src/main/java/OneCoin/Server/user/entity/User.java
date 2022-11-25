@@ -1,8 +1,9 @@
 package OneCoin.Server.user.entity;
 
 import OneCoin.Server.audit.Auditable;
-import OneCoin.Server.chat.chatRoom.entity.ChatRoomUser;
 import lombok.*;
+import OneCoin.Server.balance.entity.Balance;
+import OneCoin.Server.chat.chatRoom.entity.ChatRoomUser;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -22,11 +23,14 @@ public class User extends Auditable {
     @Column(nullable = false)
     private String displayName;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
     private String password;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Balance balance;
 
     // 추후 Attribute Converter 사용 고려 -> 사용
     @Column
