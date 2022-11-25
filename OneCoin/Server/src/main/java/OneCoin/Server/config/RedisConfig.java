@@ -1,10 +1,10 @@
 package OneCoin.Server.config;
 
-import OneCoin.Server.chat.redis.RedisSubscriber;
+import OneCoin.Server.chat.listener.RedisListener;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,20 +14,22 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 
 @Configuration
+@RequiredArgsConstructor
 public class RedisConfig {
-
     @Value("${spring.redis.host}")
     private String host;
 
     @Value("${spring.redis.port}")
     private int port;
+
     @Bean
     public ChannelTopic channelTopic() {
-        return new ChannelTopic("chatRoom");
+        return new ChannelTopic("chat");
     }
+
     @Bean
-    public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
-        return new MessageListenerAdapter(subscriber, "sendMessage");
+    public MessageListenerAdapter listenerAdapterForSending(RedisListener listener) {
+        return new MessageListenerAdapter(listener, "sendMessage");
     }
 
     @Bean // Redis Channel(Topic)에서 메시지를 받고 주입된 리스너에게 비동기적으로 displat하는 컨테이너
