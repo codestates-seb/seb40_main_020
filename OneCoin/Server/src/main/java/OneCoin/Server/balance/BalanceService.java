@@ -66,13 +66,13 @@ public class BalanceService {
     }
 
     /**
-     *  매도(ASK) 체결 입금
+     *  매도(ASK) 체결 입금, 미체결된 매수(BID) 취소 입금
      */
-    public Balance updateBalanceByAsk(long userId, @Positive BigDecimal price) {
+    public void updateBalanceByAskOrCancelBid(long userId, @Positive BigDecimal price) {
         Balance balance = findBalanceByUserId(userId);
 
         balance.setBalance(balance.getBalance().add(price));
 
-        return balanceRepository.save(balance);
+        balanceRepository.save(balance);
     }
 }

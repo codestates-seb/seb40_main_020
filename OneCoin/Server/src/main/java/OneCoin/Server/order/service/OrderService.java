@@ -84,10 +84,11 @@ public class OrderService {
 
     public void cancelOrder(long orderId) {
         Order order = findVerifiedOrder(orderId);
-        long userId = loggedInUserInfoUtils.extractUserId();
-        verifySameUser(order, userId);
-        // TODO balance 다시 돌려주기
+        long userId = verifyUserOrder(order);
 
+        if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수 주문 취소 시 balance 환불
+            giveBalanceBack(userId, order);
+        }
         orderRepository.delete(order);
     }
 
@@ -96,10 +97,19 @@ public class OrderService {
         return optionalRedisOrder.orElseThrow(() -> new BusinessLogicException(ExceptionCode.NO_EXISTS_ORDER));
     }
 
-    private void verifySameUser(Order order, long userId) {
+    private long verifyUserOrder(Order order) {
+        User user = loggedInUserInfoUtils.extractUser();
+        long userId = user.getUserId();
         if (order.getUserId() != userId) {
             throw new BusinessLogicException(ExceptionCode.NOT_YOUR_ORDER);
         }
+        return userId;
+    }
+
+    private void giveBalanceBack(long userId, Order order) {
+        BigDecimal cancelPrice = getMyOrderPrice(order);
+        BigDecimal totalCancelPrice = cancelPrice.multiply(order.getAmount());
+        balanceService.updateBalanceByAskOrCancelBid(userId, totalCancelPrice);
     }
 
     @Transactional(readOnly = true)
