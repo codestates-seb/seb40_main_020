@@ -106,7 +106,7 @@ public class UserService {
      * </pre>
      */
     @Transactional
-    public Boolean checkDuplicateEmail(String email){
+    public Boolean checkDuplicateEmail(String email) {
         if (hasAccount(email)) {
             throw new BusinessLogicException(ExceptionCode.USER_EXISTS);
         }
