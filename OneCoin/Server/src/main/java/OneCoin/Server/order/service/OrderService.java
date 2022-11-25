@@ -1,5 +1,6 @@
 package OneCoin.Server.order.service;
 
+import OneCoin.Server.balance.BalanceService;
 import OneCoin.Server.coin.service.CoinService;
 import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtils;
 import OneCoin.Server.exception.BusinessLogicException;
@@ -26,6 +27,7 @@ public class OrderService {
     private final CoinService coinService;
     private final WalletService walletService;
     private final LoggedInUserInfoUtils loggedInUserInfoUtils;
+    private final BalanceService balanceService;
 
     public Order createOrder(Order order, String code) {
         User user = loggedInUserInfoUtils.extractUser();
@@ -65,16 +67,8 @@ public class OrderService {
     private void updateUserBalance(User user, BigDecimal price, BigDecimal amount) {
         BigDecimal balance = new BigDecimal(String.valueOf(100000000)); // TODO user.getBalance();
         BigDecimal totalBidPrice = price.multiply(amount);
-        verifyEnoughBalance(balance, totalBidPrice);
 
         // TODO user balance 업데이트 - user쪽 서비스 로직으로 진행
-    }
-
-    private void verifyEnoughBalance(BigDecimal balance, BigDecimal totalBidPrice) {
-        int comparison = balance.compareTo(totalBidPrice);
-        if (comparison < 0) {
-            throw new BusinessLogicException(ExceptionCode.NOT_ENOUGH_BALANCE);
-        }
     }
 
     private BigDecimal getMyOrderPrice(Order order) {
