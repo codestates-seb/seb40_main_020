@@ -101,13 +101,27 @@ public class UserService {
 
     /**
      * <pre>
+     *     닉네임 중복 체크 서비스
+     *     닉네임이 동일한 계정이 있으면 에러
+     * </pre>
+     */
+    @Transactional
+    public Boolean checkDuplicateDisplayName(String email) {
+        if (hasAccount(email)) {
+            throw new BusinessLogicException(ExceptionCode.USER_EXISTS);
+        }
+        return false;
+    }
+
+    /**
+     * <pre>
      *     이메일 중복 체크 서비스
      *     이메일이 동일한 계정이 있으면 에러
      * </pre>
      */
     @Transactional
-    public Boolean checkDuplicateEmail(String email) {
-        if (hasAccount(email)) {
+    public Boolean checkDuplicateEmail(String displayName) {
+        if (userRepository.existsByDisplayName(displayName)) {
             throw new BusinessLogicException(ExceptionCode.USER_EXISTS);
         }
         return false;
