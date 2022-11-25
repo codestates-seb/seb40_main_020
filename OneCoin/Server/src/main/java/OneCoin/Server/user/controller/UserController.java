@@ -70,9 +70,15 @@ public class UserController {
         );
     }
 
+    // 닉네임 중복 체크
+    @GetMapping("/duplicate-display-name")
+    public ResponseEntity checkDisplayName(@Valid @RequestParam String displayName) {
+        return new ResponseEntity<>(userService.checkDuplicateDisplayName(displayName), HttpStatus.OK);
+    }
+
     // 이메일 중복 체크 error 로 변경
     @GetMapping("/duplicate-email")
-    public ResponseEntity getUsers(@Valid @RequestParam String email) {
+    public ResponseEntity checkEmail(@Valid @RequestParam String email) {
         return new ResponseEntity<>(userService.checkDuplicateEmail(email), HttpStatus.OK);
     }
 
