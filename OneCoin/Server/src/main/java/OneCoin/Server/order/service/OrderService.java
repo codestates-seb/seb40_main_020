@@ -40,7 +40,7 @@ public class OrderService {
         }
         if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수
             BigDecimal price = getMyOrderPrice(order);
-            updateUserBalance(user, price, order.getAmount());
+            updateUserBalance(userId, price, order.getAmount());
         }
         order.setUserId(user.getUserId());
         order.setCode(code);
@@ -64,11 +64,9 @@ public class OrderService {
         }
     }
 
-    private void updateUserBalance(User user, BigDecimal price, BigDecimal amount) {
-        BigDecimal balance = new BigDecimal(String.valueOf(100000000)); // TODO user.getBalance();
+    private void updateUserBalance(long userId, BigDecimal price, BigDecimal amount) {
         BigDecimal totalBidPrice = price.multiply(amount);
-
-        // TODO user balance 업데이트 - user쪽 서비스 로직으로 진행
+        balanceService.updateBalanceByBid(userId, totalBidPrice);
     }
 
     private BigDecimal getMyOrderPrice(Order order) {
