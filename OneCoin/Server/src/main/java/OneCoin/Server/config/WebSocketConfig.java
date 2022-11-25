@@ -31,7 +31,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // (/ws/chat)엔드포인트로 들어온 http 을 웹소켓 통신으로 전환한다.
         //  요때 들어온 요청을 dispatcherServlet에서 같이 처리함.
         //  그래서 Spring mvc랑 함께 쓰기 좋다는 것.
-        registry.addEndpoint("/ws/chat")
+        registry.addEndpoint("/ws/chat", "/ws/upbit-info")
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
     }
