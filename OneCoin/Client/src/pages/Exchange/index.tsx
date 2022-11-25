@@ -9,6 +9,7 @@ import Order from './components/Order';
 import Aside from 'components/Aside';
 import HoldList from './components/HoldList';
 import Layout from '../../components/Layout';
+import ChartList from './components/ChartList';
 
 function Exchange() {
 	interface T {
@@ -36,7 +37,8 @@ function Exchange() {
 	}, [symbol]);
 	useEffect(() => {
 		const newData = coinData.filter((v) => v.coin === symbol.coin)[0];
-		setInputPrice(newData.ticker?.trade_price ? newData.ticker.trade_price : 0);
+		const price = newData?.ticker?.trade_price ? newData.ticker.trade_price : 0;
+		setInputPrice(price);
 	}, []);
 	return (
 		<Layout isLeftSidebar={false} isLeftMargin={false}>
@@ -76,15 +78,20 @@ function Exchange() {
 					</div>
 				</div>
 
-				<Chart symbol={symbol.symbol} />
-
+				{/* <Chart symbol={symbol.symbol} /> */}
+				{/* <SubChart symbol={symbol} /> */}
+				<ChartList symbol={symbol} />
 				<QuoteList
 					coinOrderbook={coin?.orderbook && coin.orderbook}
 					prcieClickHandler={prcieClickHandler}
 					tradePrice={coin?.ticker?.trade_price && coin.ticker.trade_price}
 				/>
 
-				<Order inputPrice={inputPrice} setInputPrice={setInputPrice} />
+				<Order
+					inputPrice={inputPrice}
+					setInputPrice={setInputPrice}
+					symbol={symbol}
+				/>
 				<HoldList />
 				<div className="aside-wrapper">
 					<Aside symbolHandler={symbolHandler} isLeftSidebar={true} />
