@@ -31,17 +31,22 @@ public class MessageInterceptor implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-        if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+        StompCommand command = accessor.getCommand();
+        if (StompCommand.CONNECT.equals(command)) {
             log.info("[CONNECT] start {}", accessor.getSessionId());
             authorizationUtils.verifyAuthorization(accessor);
             log.info("[CONNECT] complete {}", accessor.getSessionId());
-        } else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+        } else if (StompCommand.SUBSCRIBE.equals(command)) {
             log.info("[SUBSCRIBE] start {}", accessor.getSessionId());
             registerUserAndSendEnterMessage(accessor);
             log.info("[SUBSCRIBE] complete {}", accessor.getSessionId());
-        } else if (StompCommand.SEND.equals(accessor.getCommand())) {
+        } else if (StompCommand.SEND.equals(command)) {
             log.info("[SEND] start {}", accessor.getSessionId());
-        } else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
+        } else if (StompCommand.UNSUBSCRIBE.equals(command)) {
+            log.info("[UNSUBSCRIBE] start {}", accessor.getSessionId());
+            //TODO
+            log.info("[UNSUBSCRIBE] complete {}", accessor.getSessionId());
+        } else if (StompCommand.DISCONNECT.equals(command)) {
             log.info("[DISCONNECT] start {}", accessor.getSessionId());
             unregisterUserAndSendLeaveMessage(accessor);
             log.info("[DISCONNECT] complete {}", accessor.getSessionId());
@@ -58,8 +63,10 @@ public class MessageInterceptor implements ChannelInterceptor {
         if (user != null) {
             chatRoomInMemoryService.saveUserInChatRoom(chatRoomId, user.getUserId(), user.getDisplayName(), user.getEmail());
             redisPublisher.publishEnterOrLeaveMessage(MessageType.ENTER, chatRoomId, user);
+            log.info("register user complete : user {} -> room {}", user.getUserId(), chatRoomId);
+            return;
         }
-        log.info("register user complete : user {} -> room {}", user.getUserId(), chatRoomId);
+        log.info("register user complete : unloggedInUser -> room {}",chatRoomId);
     }
 
     private void unregisterUserAndSendLeaveMessage(StompHeaderAccessor accessor) {
