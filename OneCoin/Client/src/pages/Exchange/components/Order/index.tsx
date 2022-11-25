@@ -1,22 +1,35 @@
 import Button from 'components/Button';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { OrderComponent } from './style';
 
 interface Props {
 	inputPrice: number;
 	setInputPrice: React.Dispatch<React.SetStateAction<number>>;
+	symbol: { coin: string; code: string; symbol: string };
 }
 
-function Order({ inputPrice, setInputPrice }: Props) {
+function Order({ inputPrice, setInputPrice, symbol }: Props) {
+	const money = 50000000;
+	const coin = 2.64345;
+
 	const [order, setOrder] = useState('매수');
 	const menu = ['매수', '매도'];
 	const menuClickHandler = (item: string) => setOrder(item);
-	const money = 50000000;
-	const [quantity, setQuantity] = useState<number | string>(0);
-	const [total, setTotal] = useState<number | string>(0);
+	const [quantity, setQuantity] = useState<string>('0');
+	const [total, setTotal] = useState<number>(0);
+	const sizeBtnArr = [10, 25, 50, 75, 100];
+	useEffect(() => {
+		setQuantity('0');
+		setTotal(0);
+	}, [symbol.symbol]);
+	useEffect(() => {
+		setTotal(Math.round(inputPrice * +quantity));
+	}, [inputPrice]);
 	const quantityChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setQuantity(e.target.value);
-		setTotal(+e.target.value * inputPrice);
+		if (!Number.isNaN(+e.target.value)) {
+			setQuantity(e.target.value);
+			setTotal(Math.round(+e.target.value * inputPrice));
+		}
 	};
 	const totalChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value.replaceAll(',', '');
@@ -26,13 +39,18 @@ function Order({ inputPrice, setInputPrice }: Props) {
 	const priceChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value.replaceAll(',', '');
 		if (!isNaN(+value)) setInputPrice(+value);
-		setTotal(+value * +quantity);
+		setTotal(Math.round(+value * +quantity));
 	};
 	const sizeBtnClickHandler = (size: number) => {
-		console.log((money / 100) * size);
-		const sizePrice = (money / 100) * size;
-		setTotal(sizePrice);
-		setQuantity((sizePrice / inputPrice).toFixed(8));
+		if (order === '매수') {
+			const sizePrice = (money / 100) * size;
+			setTotal(sizePrice);
+			setQuantity((sizePrice / inputPrice).toFixed(8));
+		} else {
+			const sizePrice = (coin / 100) * size;
+			setQuantity(sizePrice + '');
+			setTotal(Math.round(inputPrice * sizePrice));
+		}
 	};
 	const btnHandler = (sign: string) => {
 		let additionalValue: number;
@@ -48,6 +66,8 @@ function Order({ inputPrice, setInputPrice }: Props) {
 				? inputPrice + additionalValue
 				: inputPrice - additionalValue;
 		setInputPrice(newInputPrice);
+		console.log(Math.round(newInputPrice * +quantity).toLocaleString());
+		setTotal(Math.round(newInputPrice * +quantity));
 	};
 	return (
 		<OrderComponent className="order-wrapper">
@@ -65,10 +85,14 @@ function Order({ inputPrice, setInputPrice }: Props) {
 			<div className="order-contents">
 				<div className="holding-money order">
 					<div className="order-title">주문가능</div>
-					<div>{`${money.toLocaleString()} KRW`}</div>
+					<div>
+						{order === '매수'
+							? `${money.toLocaleString()} KRW`
+							: `${coin} ${symbol.symbol.replace('KRW', '')}`}
+					</div>
 				</div>
 				<div className="order-price order">
-					<div className="order-title">매수가격</div>
+					<div className="order-title">{`${order}가격`}</div>
 					<div className="order-input">
 						<input
 							type="text"
@@ -90,13 +114,12 @@ function Order({ inputPrice, setInputPrice }: Props) {
 							/>
 						</div>
 						<div className="size-btn-wrapper">
-							{[10, 25, 50, 75, 100].map((v, i) => (
+							{sizeBtnArr.map((v, i) => (
 								<div
 									key={i}
 									className="select-btn"
 									onClick={() => sizeBtnClickHandler(v)}
 								>
-									{/* {v !== '직접입력' ? `${v}%` : v} */}
 									{v + '%'}
 								</div>
 							))}
@@ -115,7 +138,7 @@ function Order({ inputPrice, setInputPrice }: Props) {
 				</div>
 				<div className="order-btn">
 					<Button style={{ width: 455, height: 50, border: 'none' }}>
-						매수
+						{order}
 					</Button>
 				</div>
 			</div>
