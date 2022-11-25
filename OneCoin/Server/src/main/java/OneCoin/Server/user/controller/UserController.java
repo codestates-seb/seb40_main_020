@@ -72,7 +72,7 @@ public class UserController {
 
     // 이메일 중복 체크 error 로 변경
     @GetMapping("/duplicate-email")
-    public ResponseEntity getUsers(@Valid @RequestParam String email){
+    public ResponseEntity getUsers(@Valid @RequestParam String email) {
         return new ResponseEntity<>(userService.checkDuplicateEmail(email), HttpStatus.OK);
     }
 

@@ -15,7 +15,7 @@ public class UserDto {
     public static class Post {
         // 닉네임 : 영어로만 가능하고, 2글자 이상 최대 길이 16자 이하
         @NotBlank
-        @Pattern(regexp = "^[A-Za-z\\d]{2,16}$")
+        @Pattern(regexp = "^[A-Za-zㄱ-ㅎ가-힣\\d]{2,16}$")
         private String displayName;
 
         // 이메일 : 이메일 형식이며, 최대 길이 50자 이하
@@ -36,9 +36,9 @@ public class UserDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Patch {
-        // 닉네임 : 영어로만 가능하고, 2글자 이상 최대 길이 16자 이하
+        // 닉네임 : 영어, 한글 가능하고, 2글자 이상 최대 길이 16자 이하
         @NotBlank
-        @Size(min = 2, max = 16)
+        @Pattern(regexp = "^[A-Za-zㄱ-ㅎ가-힣\\d]{2,16}$")
         private String displayName;
 
         // 이메일 : 이메일 형식이며, 최대 길이 50자 이하
