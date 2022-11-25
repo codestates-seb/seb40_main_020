@@ -72,14 +72,6 @@ function App() {
 						</Suspense>
 					}
 				/>
-				<Route
-					path="/chart"
-					element={
-						<Suspense fallback={<>...</>}>
-							<SubChart />
-						</Suspense>
-					}
-				/>
 			</Routes>
 		</>
 	);
