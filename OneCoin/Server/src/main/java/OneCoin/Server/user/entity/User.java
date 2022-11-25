@@ -7,7 +7,6 @@ import OneCoin.Server.chat.chatRoom.entity.ChatRoomUser;
 
 import javax.persistence.*;
 import java.util.Objects;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,9 +40,6 @@ public class User extends Auditable {
     @Column
     @Enumerated(EnumType.STRING)
     private Role userRole;
-    @OneToMany(mappedBy = "chatRoom", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.DETACH},
-            orphanRemoval = true)
-    private Set<ChatRoomUser> chatRoomUsers;
 
     @Builder
     public User(String displayName, String email, String password, Platform platform, Role userRole) {
