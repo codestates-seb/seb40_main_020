@@ -18,6 +18,7 @@ public class ChatService {
     //데이터베이스에저장하기
     //유효성 검사하기
     private final ChatMessageRepository chatMessageRepository;
+    private final int NUMBER_OF_CHATS_TO_SEND = 30;
 
     public ChatMessage delegate(MessageType messageType, ChatMessage chatMessage) {
         switch (messageType) {
@@ -28,8 +29,9 @@ public class ChatService {
                 chatMessage = leaveRoom(chatMessage);
                 break;
         }
-        chatMessage.setChatAt(LocalDateTime.now());
-        return chatMessageRepository.save(chatMessage);
+        chatMessage.setChatAt(LocalDateTime.now().toString());
+        chatMessageRepository.save(chatMessage);
+        return chatMessage;
     }
 
     private ChatMessage enterRoom(ChatMessage chatMessage) {
@@ -43,6 +45,6 @@ public class ChatService {
     }
 
     public List<ChatMessage> getChatMessages(Long chatRoomId) {
-        return chatMessageRepository.findAllByChatRoomId(chatRoomId).stream().limit(30).collect(Collectors.toList());
+        return chatMessageRepository.getMessageFromRoomLimitN(chatRoomId, NUMBER_OF_CHATS_TO_SEND);
     }
 }

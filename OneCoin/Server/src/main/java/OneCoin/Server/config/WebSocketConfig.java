@@ -43,7 +43,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.setApplicationDestinationPrefixes("/app");
         // /topic으로 시작하면 구독하는 것
         // 일단 여기서는 스프링에서 기본적으로 제공하는 simple broker를 사용
-        registry.enableSimpleBroker("/topic");
+        registry.enableSimpleBroker("/topic", "/info");
     }
 
     @Override
