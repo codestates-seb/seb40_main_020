@@ -18,7 +18,7 @@ public class User extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String displayName;
 
     @Column(nullable = false, updatable = false, unique = true)
@@ -26,6 +26,9 @@ public class User extends Auditable {
 
     @Column(nullable = false)
     private String password;
+
+    @Column
+    private String imagePath;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Balance balance;
