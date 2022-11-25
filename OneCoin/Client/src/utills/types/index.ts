@@ -71,3 +71,28 @@ export interface OrderType {
 	price: number;
 	size: number;
 }
+export interface MyCoins {
+	code?: string;
+	amount?: string;
+	priceEvaluation?: string;
+	averagePrice?: string;
+	change?: string;
+	changePrice?: string;
+	changeRate?: string;
+}
+export interface CompleteOrders {
+	code?: string;
+	completedTime?: string;
+	orderType?: string;
+	price?: string;
+	amount?: string;
+}
+export interface NonTradingOders {
+	code?: string;
+	orderTime?: string;
+	orderType?: string;
+	limit?: string;
+	market?: string;
+	stopLimit?: string;
+	amount?: string;
+}

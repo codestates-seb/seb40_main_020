@@ -32,6 +32,7 @@ export const HoldComponent = styled.div`
 				border-bottom: 1px solid var(--borderColor);
 				> td {
 					display: flex;
+					flex-direction: column;
 					justify-content: center;
 					align-items: center;
 					flex: 1;
@@ -39,15 +40,21 @@ export const HoldComponent = styled.div`
 			}
 		}
 	}
-
+	.trade-status {
+		display: flex;
+		td {
+			display: flex;
+			flex-direction: row;
+			justify-content: start;
+			margin-left: 1rem;
+			> div {
+				margin: 0 1rem;
+			}
+		}
+	}
 	.hold-item {
 		height: 50px;
-		.ask {
-			color: var(--blue);
-		}
-		.bid {
-			color: var(--red);
-		}
+
 		.cancel {
 			cursor: pointer;
 		}
@@ -58,5 +65,11 @@ export const HoldComponent = styled.div`
 			justify-content: center;
 			align-items: center;
 		}
+	}
+	.ask {
+		color: var(--blue);
+	}
+	.bid {
+		color: var(--red);
 	}
 `;
