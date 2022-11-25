@@ -45,8 +45,7 @@ public class UserService {
             return userRepository.save(user);
         }
 
-        // 기존 계정 반환
-        return userRepository.findByEmail(user.getEmail()).orElseThrow();
+        return null;
     }
 
     /**
@@ -102,6 +101,21 @@ public class UserService {
 
     /**
      * <pre>
+     *     이메일 중복 체크 서비스
+     *     이메일이 동일한 계정이 있으면 에러
+     * </pre>
+     */
+    @Transactional
+    public Boolean checkDuplicateEmail(String email){
+        if (hasAccount(email)) {
+            throw new BusinessLogicException(ExceptionCode.USER_EXISTS);
+        }
+        return false;
+    }
+
+
+    /**
+     * <pre>
      *     회원 정보 삭제
      * </pre>
      */
@@ -126,7 +140,7 @@ public class UserService {
     /**
      * <pre>
      *     계정 존재 여부 조회
-     *     이메일, 플랫폼이 동일한 계정이 있으면 true
+     *     이메일이 동일한 계정이 있으면 true
      * </pre>
      */
     @Transactional
