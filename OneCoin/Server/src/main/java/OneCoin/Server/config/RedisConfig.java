@@ -1,6 +1,6 @@
 package OneCoin.Server.config;
 
-import OneCoin.Server.chat.redis.RedisSubscriber;
+import OneCoin.Server.chat.listener.RedisListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,12 +29,12 @@ public class RedisConfig {
 
     @Bean
     public ChannelTopic channelTopic() {
-        return new ChannelTopic("chatRoom");
+        return new ChannelTopic("chat");
     }
 
     @Bean
-    public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
-        return new MessageListenerAdapter(subscriber, "sendMessage");
+    public MessageListenerAdapter listenerAdapterForSending(RedisListener listener) {
+        return new MessageListenerAdapter(listener, "sendMessage");
     }
 
     @Bean // Redis Channel(Topic)에서 메시지를 받고 주입된 리스너에게 비동기적으로 displat하는 컨테이너

@@ -2,17 +2,13 @@ package OneCoin.Server.chat.chatMessage.service;
 
 import OneCoin.Server.chat.chatMessage.entity.ChatMessage;
 import OneCoin.Server.chat.chatMessage.repository.ChatMessageRepository;
-import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
 import OneCoin.Server.chat.constant.MessageType;
-import OneCoin.Server.exception.BusinessLogicException;
-import OneCoin.Server.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +18,8 @@ public class ChatService {
     //데이터베이스에저장하기
     //유효성 검사하기
     private final ChatMessageRepository chatMessageRepository;
-    private final ChatRoomService chatRoomService;
-    private Map<Long, ChannelTopic> topics = new HashMap<>();
+    private final int NUMBER_OF_CHATS_TO_SEND = 30;
+
     public ChatMessage delegate(MessageType messageType, ChatMessage chatMessage) {
         switch (messageType) {
             case ENTER:
@@ -33,15 +29,22 @@ public class ChatService {
                 chatMessage = leaveRoom(chatMessage);
                 break;
         }
-        chatMessage.setChatAt(LocalDateTime.now());
-        return chatMessageRepository.save(chatMessage);
+        chatMessage.setChatAt(LocalDateTime.now().toString());
+        chatMessageRepository.save(chatMessage);
+        return chatMessage;
     }
+
     private ChatMessage enterRoom(ChatMessage chatMessage) {
         chatMessage.setMessage("[알림] " + chatMessage.getUserDisplayName() + "이 입장하셨습니다.");
         return chatMessage;
     }
+
     private ChatMessage leaveRoom(ChatMessage chatMessage) {
         chatMessage.setMessage("[알림] " + chatMessage.getUserDisplayName() + "이 퇴장하셨습니다.");
         return chatMessage;
+    }
+
+    public List<ChatMessage> getChatMessages(Long chatRoomId) {
+        return chatMessageRepository.getMessageFromRoomLimitN(chatRoomId, NUMBER_OF_CHATS_TO_SEND);
     }
 }

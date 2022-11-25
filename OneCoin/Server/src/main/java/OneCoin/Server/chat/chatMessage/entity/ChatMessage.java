@@ -1,33 +1,23 @@
 package OneCoin.Server.chat.chatMessage.entity;
 
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
-
-import javax.persistence.Column;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
 @Getter
 @Setter
-@RedisHash(value = "chatMessage", timeToLive = -1L)
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class ChatMessage {
-    @Id
-    @Column(unique = true, nullable = false, updatable = false)
-    private Long chatMessageId;
-    @Column(nullable = false, updatable = false)
+    @JsonProperty("message")
     private String message;
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime chatAt;
-    @Column(nullable = false, updatable = false)
+    @JsonProperty("chat_at")
+    private String chatAt;
+    @JsonProperty("user_id")
     private Long userId;
-    @Indexed
-    @Column(nullable = false, updatable = false)
+    @JsonProperty("chat_room_id")
     private Long chatRoomId;
-    @Column(nullable = false, updatable = false)
+    @JsonProperty("user_display_name")
     private String userDisplayName;
 }
