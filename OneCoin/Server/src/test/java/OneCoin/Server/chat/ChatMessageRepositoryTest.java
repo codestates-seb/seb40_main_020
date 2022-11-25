@@ -20,26 +20,26 @@ public class ChatMessageRepositoryTest {
 
     @BeforeEach
     void init() {
-        chatMessageRepository.deleteAll();
-        for(long i = 1L; i <= 10L; i++) {
-            chatMessageRepository.save(chatMessageMaker(i, 1L));
+        for(long i = 60L; i <= 70L; i++) {
+            chatMessageRepository.save(chatMessageMaker(i, 20L));
         }
     }
 
     @Test
     void test() {
-        List<ChatMessage> chatMessageList = chatMessageRepository.findAllByChatRoomId(1L);
+        List<ChatMessage> chatMessageList = chatMessageRepository.getMessageFromRoomLimitN(20L, 10);
         assertThat(chatMessageList.size())
                 .isEqualTo(10);
+        assertThat(chatMessageList.get(0).getUserId()
+                .equals(Long.valueOf(70L)));
     }
 
     private ChatMessage chatMessageMaker(long userId, long chatRoomId) {
-        return ChatMessage.builder()
-                .chatRoomId(chatRoomId)
-                .userDisplayName(String.valueOf(userId*100L))
-                .message("hello")
-                .userId(userId)
-                .chatAt(LocalDateTime.now())
-                .build();
+        return new ChatMessage(
+                "hello" + userId,
+                LocalDateTime.now().toString(),
+                userId,
+                chatRoomId,
+                String.valueOf(userId*100L));
     }
 }
