@@ -1,6 +1,6 @@
-package OneCoin.Server.chat.chatRoomInMemory.repository;
+package OneCoin.Server.chat.chatRoom.repository;
 
-import OneCoin.Server.chat.chatRoomInMemory.entity.ChatRoomInMemory;
+import OneCoin.Server.chat.chatRoom.entity.ChatRoomInMemory;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

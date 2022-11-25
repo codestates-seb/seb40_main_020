@@ -1,17 +1,14 @@
-package OneCoin.Server.chat.chatRoomInMemory.service;
+package OneCoin.Server.chat.chatRoom.service;
 
 
-import OneCoin.Server.chat.chatRoomInMemory.entity.ChatRoomInMemory;
-import OneCoin.Server.chat.chatRoomInMemory.entity.UserInChatRoomInMemory;
-import OneCoin.Server.chat.chatRoomInMemory.repository.ChatRoomInMemoryRepository;
-import OneCoin.Server.chat.chatRoomInMemory.repository.UserInChatRoomRepository;
-import OneCoin.Server.exception.BusinessLogicException;
-import OneCoin.Server.exception.ExceptionCode;
+import OneCoin.Server.chat.chatRoom.entity.ChatRoomInMemory;
+import OneCoin.Server.chat.chatRoom.entity.UserInChatRoomInMemory;
+import OneCoin.Server.chat.chatRoom.repository.ChatRoomInMemoryRepository;
+import OneCoin.Server.chat.chatRoom.repository.UserInChatRoomRepository;
 import OneCoin.Server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

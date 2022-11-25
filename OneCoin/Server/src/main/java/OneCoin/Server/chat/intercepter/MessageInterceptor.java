@@ -1,7 +1,7 @@
-package OneCoin.Server.config;
+package OneCoin.Server.chat.intercepter;
 
-import OneCoin.Server.chat.chatRoomInMemory.entity.UserInChatRoomInMemory;
-import OneCoin.Server.chat.chatRoomInMemory.service.ChatRoomInMemoryService;
+import OneCoin.Server.chat.chatRoom.entity.UserInChatRoomInMemory;
+import OneCoin.Server.chat.chatRoom.service.ChatRoomInMemoryService;
 import OneCoin.Server.chat.constant.MessageType;
 import OneCoin.Server.chat.publisher.RedisPublisher;
 import OneCoin.Server.config.auth.utils.AuthorizationUtilsForWebSocket;

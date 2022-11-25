@@ -1,8 +1,7 @@
 package OneCoin.Server.chat;
 
-import OneCoin.Server.chat.chatRoomInMemory.entity.UserInChatRoomInMemory;
-import OneCoin.Server.chat.chatRoomInMemory.repository.UserInChatRoomRepository;
-import OneCoin.Server.user.entity.User;
+import OneCoin.Server.chat.chatRoom.entity.UserInChatRoomInMemory;
+import OneCoin.Server.chat.chatRoom.repository.UserInChatRoomRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package OneCoin.Server.chat.chatRoomInMemory.entity;
+package OneCoin.Server.chat.chatRoom.entity;
 
 import lombok.Builder;
 import lombok.Getter;
