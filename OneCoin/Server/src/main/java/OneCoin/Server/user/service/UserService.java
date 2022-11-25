@@ -106,8 +106,8 @@ public class UserService {
      * </pre>
      */
     @Transactional
-    public Boolean checkDuplicateDisplayName(String email) {
-        if (hasAccount(email)) {
+    public Boolean checkDuplicateDisplayName(String displayName) {
+        if (userRepository.existsByDisplayName(displayName)) {
             throw new BusinessLogicException(ExceptionCode.USER_EXISTS);
         }
         return false;
@@ -120,8 +120,8 @@ public class UserService {
      * </pre>
      */
     @Transactional
-    public Boolean checkDuplicateEmail(String displayName) {
-        if (userRepository.existsByDisplayName(displayName)) {
+    public Boolean checkDuplicateEmail(String email) {
+        if (hasAccount(email)) {
             throw new BusinessLogicException(ExceptionCode.USER_EXISTS);
         }
         return false;
