@@ -1,9 +1,9 @@
 package OneCoin.Server.user.entity;
 
 import OneCoin.Server.audit.Auditable;
-import OneCoin.Server.chat.chatRoom.entity.ChatRoomUser;
-import OneCoin.Server.balance.entity.Balance;
 import lombok.*;
+import OneCoin.Server.balance.entity.Balance;
+import OneCoin.Server.chat.chatRoom.entity.ChatRoomUser;
 
 import javax.persistence.*;
 import java.util.Objects;
