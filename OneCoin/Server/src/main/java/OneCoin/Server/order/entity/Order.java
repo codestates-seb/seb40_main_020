@@ -30,6 +30,8 @@ public class Order {
 
     private BigDecimal amount; // 미체결량
 
+    private BigDecimal commission;
+
     private LocalDateTime orderTime = LocalDateTime.now();
 
     @Indexed

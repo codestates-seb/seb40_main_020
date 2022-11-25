@@ -7,6 +7,7 @@ import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.entity.Wallet;
+import OneCoin.Server.order.entity.enums.Commission;
 import OneCoin.Server.order.entity.enums.TransactionType;
 import OneCoin.Server.order.repository.OrderRepository;
 import OneCoin.Server.user.entity.User;
@@ -31,16 +32,18 @@ public class OrderService {
 
     public Order createOrder(Order order, String code) {
         User user = loggedInUserInfoUtils.extractUser();
-        long userId = user.getUserId();
         coinService.findVerifiedCoin(code);
+        long userId = user.getUserId();
+        BigDecimal amount = order.getAmount();
 
         if (order.getOrderType().equals(TransactionType.ASK.getType())) { // 매도
             Wallet wallet = verifyCoinInMyWallet(userId, code);
-            checkUserCoinAmount(wallet, order.getAmount());
+            checkUserCoinAmount(wallet, amount);
         }
         if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수
             BigDecimal price = getMyOrderPrice(order);
-            updateUserBalance(userId, price, order.getAmount());
+            updateUserBalance(userId, price, amount);
+            order.setCommission(calculateCommission(price, amount));
         }
         order.setUserId(user.getUserId());
         order.setCode(code);
@@ -65,7 +68,7 @@ public class OrderService {
     }
 
     private void updateUserBalance(long userId, BigDecimal price, BigDecimal amount) {
-        BigDecimal totalBidPrice = price.multiply(amount);
+        BigDecimal totalBidPrice = price.multiply(amount).multiply(Commission.ORDER.getRate());
         balanceService.updateBalanceByBid(userId, totalBidPrice);
     }
 
@@ -80,6 +83,11 @@ public class OrderService {
             price = order.getStopLimit();
         }
         return price;
+    }
+
+    private BigDecimal calculateCommission(BigDecimal price, BigDecimal amount) {
+        BigDecimal commissionRate = Commission.ORDER.getRate().subtract(BigDecimal.ONE); // 0.05
+        return price.multiply(amount).multiply(commissionRate);
     }
 
     public void cancelOrder(long orderId) {
@@ -108,7 +116,7 @@ public class OrderService {
 
     private void giveBalanceBack(long userId, Order order) {
         BigDecimal cancelPrice = getMyOrderPrice(order);
-        BigDecimal totalCancelPrice = cancelPrice.multiply(order.getAmount());
+        BigDecimal totalCancelPrice = cancelPrice.multiply(order.getAmount()).multiply(Commission.ORDER.getRate());
         balanceService.updateBalanceByAskOrCancelBid(userId, totalCancelPrice);
     }
 
