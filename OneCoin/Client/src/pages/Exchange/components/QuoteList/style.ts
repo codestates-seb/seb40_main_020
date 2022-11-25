@@ -4,6 +4,13 @@ export const QuoteListComponent = styled.div`
 	width: 100%;
 	height: 100%;
 	overflow: auto;
+	::-webkit-scrollbar {
+		width: 10px;
+	}
+	::-webkit-scrollbar-thumb {
+		border-radius: 8px;
+		background-color: #d9d9d9;
+	}
 	.normal {
 		height: 45px;
 		color: var(--yellow);
