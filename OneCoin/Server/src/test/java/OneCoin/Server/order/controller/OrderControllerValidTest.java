@@ -18,14 +18,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class OrderControllerValidTest {
 
-    private final String errorMessage = "Limit과 Market 중 한 필드는 반드시 값이 입력되어야 합니다. 또한 한 번에 두 필드 모두 입력할 수 없습니다.";
+    private final String errorMessage = "가격을 기입하는 필드 중에서 하나의 필드는 반드시 값이 입력되어야 합니다. 또한 한 번에 두 필드 이상을 입력할 수 없습니다.";
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private Gson gson;
 
     @Test
-    @DisplayName("valid test: @MustHaveLimitOrMarket 테스트, 두 필드 모두 0이면 에러가 발생한다.")
+    @DisplayName("valid test: @MustHavePrice 테스트, 모든 필드가 0이면 에러가 발생한다.")
     void validTest1() throws Exception {
         OrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
         redisPostDto.setLimit(0);
@@ -42,7 +42,7 @@ public class OrderControllerValidTest {
     }
 
     @Test
-    @DisplayName("valid test: @MustHaveLimitOrMarket 테스트, 두 필드 모두 값이 있으면 에러가 발생한다.")
+    @DisplayName("valid test: @MustHavePrice 테스트, 두 필드 이상 값이 입력되어 있으면 에러가 발생한다.")
     void validTest2() throws Exception {
         OrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
         redisPostDto.setMarket(100);
@@ -59,7 +59,7 @@ public class OrderControllerValidTest {
     }
 
     @Test
-    @DisplayName("valid test: @MustHaveLimitOrMarket 테스트, 두 필드 중 하나만 값이 있으면 에러가 발생하지 않는다.")
+    @DisplayName("valid test: @MustHavePrice 테스트, 필드 중 하나만 값이 있으면 에러가 발생하지 않는다.")
     void validTest3() throws Exception {
         OrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
         String content = gson.toJson(redisPostDto);

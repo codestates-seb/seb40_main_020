@@ -1,6 +1,6 @@
 package OneCoin.Server.order.dto;
 
-import OneCoin.Server.validator.MustHaveLimitOrMarket;
+import OneCoin.Server.validator.MustHavePrice;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class OrderDto {
     @Getter
     @Setter
-    @MustHaveLimitOrMarket(limit = "limit", market = "market")
+    @MustHavePrice(limit = "limit", market = "market", stopLimit = "stopLimit")
     public static class Post {
 
         @PositiveOrZero(message = "음수 값은 허용하지 않습니다.")
