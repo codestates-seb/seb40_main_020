@@ -64,16 +64,16 @@ public class OrderService {
         }
     }
 
-    // 매수 시
-    // user의 보유 금액으로 매수할 수 있는 지 확인 - user의 balance
-    private void checkUserBalance(BigDecimal price, BigDecimal amount) {
-        // TODO jwt User의 것만 찾기
-        long userId = 1L;
-        // User user = userService.find()..
-        // BigDecimal balance = user.getBalance();
-        BigDecimal balance = BigDecimal.valueOf(10000);
+    private void updateUserBalance(User user, BigDecimal price, BigDecimal amount) {
+        BigDecimal balance = new BigDecimal(String.valueOf(100000000)); // user.getBalance();
+        BigDecimal totalBidPrice = price.multiply(amount);
+        checkEnoughBalance(balance, totalBidPrice);
 
-        int comparison = balance.compareTo(price.multiply(amount));
+        // TODO user balance 업데이트 - user쪽 서비스 로직으로 진행
+    }
+
+    private void checkEnoughBalance(BigDecimal balance, BigDecimal totalBidPrice) {
+        int comparison = balance.compareTo(totalBidPrice);
         if (comparison < 0) {
             throw new BusinessLogicException(ExceptionCode.NOT_ENOUGH_BALANCE);
         }
@@ -104,23 +104,5 @@ public class OrderService {
         // TODO jwt User의 것만 찾기
         long userId = 1L;
         return orderRepository.findAllByUserIdAndCode(userId, code);
-    }
-
-    public List<Order> findOrdersMatchingPrice(String price, String orderType, String code) {
-        return orderRepository.findAllByLimitAndOrderTypeAndCode(new BigDecimal(price), orderType, code);
-    }
-
-    public void updateAmountAfterTrade(List<Order> orders) {
-        for (Order order : orders) {
-            deleteAmountZeroEntity(order);
-        }
-        orderRepository.saveAll(orders);
-    }
-
-    private void deleteAmountZeroEntity(Order order) {
-        BigDecimal zero = BigDecimal.ZERO;
-        if (order.getAmount().compareTo(zero) == 0) {
-            orderRepository.delete(order);
-        }
     }
 }

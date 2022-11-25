@@ -15,10 +15,14 @@ public class LoggedInUserInfoUtilsForWebSocket {
     private UserService userService;
 
     public User extractUser(Principal principal) {
-        Authentication authentication = (Authentication) principal;
-        Map<String, Object> claims = (Map) authentication.getPrincipal();
-        Long userId = ((Integer) claims.get("id")).longValue();
-        User user = userService.findUser(userId);
-        return user;
+        try {
+            Authentication authentication = (Authentication) principal;
+            Map<String, Object> claims = (Map) authentication.getPrincipal();
+            Long userId = ((Integer) claims.get("id")).longValue();
+            User user = userService.findUser(userId);
+            return user;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @Validated
 @Slf4j
 public class UserController {
@@ -68,6 +68,12 @@ public class UserController {
         return new ResponseEntity<>(
                 new SingleResponseDto<>(userMapper.userToUserResponse(updatedUser)), HttpStatus.OK
         );
+    }
+
+    // 이메일 중복 체크 error 로 변경
+    @GetMapping("/duplicate-email")
+    public ResponseEntity getUsers(@Valid @RequestParam String email){
+        return new ResponseEntity<>(userService.checkDuplicateEmail(email), HttpStatus.OK);
     }
 
     // 모든 회원 정보

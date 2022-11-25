@@ -1,4 +1,4 @@
-package OneCoin.Server.chat.redis;
+package OneCoin.Server.chat.listener;
 
 
 import OneCoin.Server.chat.chatMessage.dto.ChatResponseDto;
@@ -8,16 +8,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service
-public class RedisSubscriber{
+@Component
+public class RedisListener {
     private final ObjectMapper objectMapper;
     private final SimpMessagingTemplate messagingTemplate;
     public void sendMessage(String publishedMessage) {
