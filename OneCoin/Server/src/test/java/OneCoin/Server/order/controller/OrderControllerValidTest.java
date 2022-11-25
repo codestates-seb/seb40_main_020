@@ -2,15 +2,20 @@ package OneCoin.Server.order.controller;
 
 import OneCoin.Server.helper.StubData;
 import OneCoin.Server.order.dto.OrderDto;
+import OneCoin.Server.order.entity.Order;
+import OneCoin.Server.order.service.OrderService;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -21,6 +26,8 @@ public class OrderControllerValidTest {
     private final String errorMessage = "가격을 기입하는 필드 중에서 하나의 필드는 반드시 값이 입력되어야 합니다. 또한 한 번에 두 필드 이상을 입력할 수 없습니다.";
     @Autowired
     private MockMvc mockMvc;
+    @MockBean
+    private OrderService orderService;
     @Autowired
     private Gson gson;
 
@@ -63,6 +70,8 @@ public class OrderControllerValidTest {
     void validTest3() throws Exception {
         OrderDto.Post redisPostDto = StubData.MockRedisPostDto.getMockRedisPost();
         String content = gson.toJson(redisPostDto);
+
+        given(orderService.createOrder(Mockito.any(Order.class), Mockito.anyString())).willReturn(new Order());
 
         mockMvc.perform(
                         post("/api/order/KRW-BTC")
