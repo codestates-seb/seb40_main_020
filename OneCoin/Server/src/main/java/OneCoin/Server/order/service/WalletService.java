@@ -1,13 +1,12 @@
 package OneCoin.Server.order.service;
 
+import OneCoin.Server.exception.BusinessLogicException;
+import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.order.entity.Wallet;
 import OneCoin.Server.order.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -24,6 +23,14 @@ public class WalletService {
 
 //        return walletRepository.save();
         return null;
+    }
+
+    public Wallet findVerifiedWalletWithCoin(long userId, String code) {
+        Wallet wallet = findMyWallet(userId, code);
+        if (wallet == null) {
+            throw new BusinessLogicException(ExceptionCode.HAVE_NO_COIN);
+        }
+        return wallet;
     }
 
     // ws

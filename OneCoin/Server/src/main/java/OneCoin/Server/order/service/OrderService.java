@@ -37,7 +37,7 @@ public class OrderService {
         BigDecimal amount = order.getAmount();
 
         if (order.getOrderType().equals(TransactionType.ASK.getType())) { // 매도
-            Wallet wallet = verifyCoinInMyWallet(userId, code);
+            Wallet wallet = walletService.findVerifiedWalletWithCoin(userId, code);
             checkUserCoinAmount(wallet, amount);
         }
         if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수
@@ -48,14 +48,6 @@ public class OrderService {
         order.setUserId(user.getUserId());
         order.setCode(code);
         return orderRepository.save(order);
-    }
-
-    private Wallet verifyCoinInMyWallet(long userId, String code) {
-        Wallet wallet = walletService.findMyWallet(userId, code);
-        if (wallet == null) {
-            throw new BusinessLogicException(ExceptionCode.HAVE_NO_COIN);
-        }
-        return wallet;
     }
 
     private void checkUserCoinAmount(Wallet wallet, BigDecimal amount) {
