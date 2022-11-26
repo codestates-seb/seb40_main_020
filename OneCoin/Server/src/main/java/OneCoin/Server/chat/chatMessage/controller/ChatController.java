@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -23,7 +25,6 @@ public class ChatController {
     public void message(ChatRequestDto requestMessage) {
         log.info("message received: {}", requestMessage);
         ChatMessage convertedChatMessage = chatMapper.requestDtoToChatMessage(requestMessage);
-        //TODO : delegate를 저장으로 바꿔도 될 것 같은데
         ChatMessage chatMessage = chatService.saveMessage(convertedChatMessage);
         ChatResponseDto chatResponseDto = chatMapper.chatMessageToResponseDto(chatMessage);
         log.info("[CONTROLLER] message is ready for sending");

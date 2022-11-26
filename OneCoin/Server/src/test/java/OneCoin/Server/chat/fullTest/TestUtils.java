@@ -88,11 +88,11 @@ public class TestUtils {
 
     }
     public StompSession getSessionAfterConnect(String url, WebSocketHttpHeaders httpHeaders, StompHeaders stompHeaders) throws ExecutionException, InterruptedException, TimeoutException {
-        WebSocketStompClient receivingStompClient = makeStompClient();
-        ListenableFuture<StompSession> connectForListening = receivingStompClient
+        WebSocketStompClient stompClient = makeStompClient();
+        ListenableFuture<StompSession> connection = stompClient
                 .connect(url, httpHeaders, stompHeaders, new StompSessionHandlerAdapter() {
                 });
-        return connectForListening.get(100, TimeUnit.SECONDS);
+        return connection.get(100, TimeUnit.SECONDS);
     }
 
     public ChatRequestDto makeSendingMessage(String message, Long chatRoomId, User sendingUser) {
@@ -120,14 +120,5 @@ public class TestUtils {
         WebSocketStompClient client = new WebSocketStompClient(sockJsClient);
         client.setMessageConverter(new MappingJackson2MessageConverter());
         return client;
-    }
-
-    public ChatRequestDto makeUnsubscribeMessage(Long chatRoomId, User sendingUser) {
-        return ChatRequestDto.builder()
-                .chatRoomId(chatRoomId)
-                .userId(sendingUser.getUserId())
-                .type(MessageType.LEAVE)
-                .userDisplayName(sendingUser.getDisplayName())
-                .build();
     }
 }

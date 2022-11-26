@@ -38,9 +38,12 @@ public class MessageInterceptor implements ChannelInterceptor {
             log.info("[SUBSCRIBE] complete {}", accessor.getSessionId());
         } else if (StompCommand.SEND.equals(command)) {
             log.info("[SEND] start {}", accessor.getSessionId());
+        } else if (StompCommand.UNSUBSCRIBE.equals(command)) {
+            log.info("[UNSUBSCRIBE] start {}", accessor.getSessionId());
+            unregisterUserAndSendLeaveMessage(accessor);
+            log.info("[UNSUBSCRIBE] complete {}", accessor.getSessionId());
         } else if (StompCommand.DISCONNECT.equals(command)) {
             log.info("[DISCONNECT] start {}", accessor.getSessionId());
-            unregisterUserAndSendLeaveMessage(accessor);
             log.info("[DISCONNECT] complete {}", accessor.getSessionId());
         }
         return message;

@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.data.redis.connection.Subscription;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -73,7 +74,6 @@ public class ChattingFullTest {
         /** message Setting */
         String message = "hello everyone";
         ChatRequestDto sendingMessage = testUtils.makeSendingMessage(message, chatRoomId, sendingUser);
-        ChatRequestDto unsubscribeMessage = testUtils.makeUnsubscribeMessage(chatRoomId, sendingUser);
         /** Connection for receiver, NonAuthenticatedUser*/
         StompSession receiver =
                 testUtils.getSessionAfterConnect(url, new WebSocketHttpHeaders(), new StompHeaders());
@@ -90,7 +90,7 @@ public class ChattingFullTest {
         ChatResponseDto senderMsaAfterReceiverSubscribe = receivedMessagesOfSender.poll(1, TimeUnit.SECONDS);
 
         /** sender : Subscribe */
-        sender.subscribe(String.format("/topic/rooms/%d", chatRoomId), new StompFrameHandlerImpl(new ChatResponseDto(), receivedMessagesOfSender));
+        StompSession.Subscription subscription = sender.subscribe(String.format("/topic/rooms/%d", chatRoomId), new StompFrameHandlerImpl(new ChatResponseDto(), receivedMessagesOfSender));
         /** then : received Messages */
         ChatResponseDto receiverMsgAfterSenderSubscribe = receivedMessagesOfReceiver.poll(1, TimeUnit.SECONDS);
         ChatResponseDto senderMsgAfterSenderSubscribe = receivedMessagesOfSender.poll(1, TimeUnit.SECONDS);
@@ -108,12 +108,12 @@ public class ChattingFullTest {
         ChatResponseDto senderMsgAfterSenderSend = receivedMessagesOfSender.poll(1, TimeUnit.SECONDS);
 
         /** sender : Unsubscribe */
-        sender.send("/app/rooms", unsubscribeMessage);
+        subscription.unsubscribe();
         /** then : received Messages */
         ChatResponseDto receiverMsgAfterSenderUnsubscribe = receivedMessagesOfReceiver.poll(1, TimeUnit.SECONDS);
         ChatResponseDto senderMsgAfterSenderUnsubscribe = receivedMessagesOfSender.poll(1, TimeUnit.SECONDS);
 
-        /** sender : disconnect -> User never disconnects by herself or himself*/
+        /** sender : disconnect */
 
         /** then : Number Of Chatters */
         long numberOfChattersLast = chatRoomInMemoryService.findVerifiedChatRoom(chatRoomId).getNumberOfChatters();
@@ -134,10 +134,10 @@ public class ChattingFullTest {
         assertThat(receiverMsgAfterSenderSend.getMessage()).isEqualTo(message);
         assertThat(senderMsgAfterSenderSend.getMessage()).isEqualTo(message);
         /** After Sender UnSubscribe */
-//        assertThat(receiverMsgAfterSenderUnsubscribe.getMessage()).contains("퇴장");
-//        assertThat(senderMsgAfterSenderUnsubscribe).isNull();
-//        assertThat(numberOfChattersLast).isEqualTo(1L);
-//        assertThat(usersLast.size()).isEqualTo(0L);
+        assertThat(receiverMsgAfterSenderUnsubscribe.getMessage()).contains("퇴장");
+        assertThat(senderMsgAfterSenderUnsubscribe).isNull();
+        assertThat(numberOfChattersLast).isEqualTo(1L);
+        assertThat(usersLast.size()).isEqualTo(0L);
     }
 
     public class StompFrameHandlerImpl<T> implements StompFrameHandler {
