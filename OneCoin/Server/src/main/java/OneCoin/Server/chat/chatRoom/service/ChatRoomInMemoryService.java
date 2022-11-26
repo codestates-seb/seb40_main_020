@@ -68,7 +68,7 @@ public class ChatRoomInMemoryService {
     }
 
 
-    private ChatRoomInMemory findVerifiedChatRoom(Long chatRoomId) {
+    public ChatRoomInMemory findVerifiedChatRoom(Long chatRoomId) {
         Optional<ChatRoomInMemory> optionalChatRoom = chatRoomInMemoryRepository.findById(chatRoomId);
         if(optionalChatRoom.isEmpty()) {
             return createChatRoom(chatRoomId);
