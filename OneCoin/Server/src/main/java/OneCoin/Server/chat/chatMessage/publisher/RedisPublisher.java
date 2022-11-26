@@ -1,4 +1,4 @@
-package OneCoin.Server.chat.publisher;
+package OneCoin.Server.chat.chatMessage.publisher;
 
 import OneCoin.Server.chat.chatMessage.dto.ChatResponseDto;
 import OneCoin.Server.chat.chatMessage.entity.ChatMessage;
@@ -22,14 +22,9 @@ public class RedisPublisher {
     private final ChannelTopic channelTopic;
 
     public void publishEnterOrLeaveMessage(MessageType type, Long chatRoomId, User user) {
-        ChatMessage chatMessage = ChatMessage.builder()
-                .chatRoomId(chatRoomId)
-                .userId(user.getUserId())
-                .userDisplayName(user.getDisplayName())
-                .build();
-        ChatMessage messageToUse = chatService.delegate(type, chatMessage);
+        ChatMessage messageToUse = chatService.makeEnterOrLeaveChatMessage(type, chatRoomId, user);
         ChatResponseDto chatResponseDto = chatMapper.chatMessageToResponseDto(messageToUse);
-        log.info("[PUBLISHER] message is ready for sending");
+        log.info("[PUBLISHER] {} message is ready for sending", type);
         log.info("[MESSAGE] {}", chatResponseDto);
         redisTemplate.convertAndSend(channelTopic.getTopic(), chatResponseDto);
     }

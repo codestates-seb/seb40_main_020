@@ -3,12 +3,12 @@ package OneCoin.Server.chat.chatMessage.service;
 import OneCoin.Server.chat.chatMessage.entity.ChatMessage;
 import OneCoin.Server.chat.chatMessage.repository.ChatMessageRepository;
 import OneCoin.Server.chat.constant.MessageType;
+import OneCoin.Server.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,26 +20,38 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final int NUMBER_OF_CHATS_TO_SEND = 30;
 
-    public ChatMessage delegate(MessageType messageType, ChatMessage chatMessage) {
-        switch (messageType) {
-            case ENTER:
-                chatMessage = enterRoom(chatMessage);
-                break;
-            case LEAVE:
-                chatMessage = leaveRoom(chatMessage);
-                break;
+    public ChatMessage makeEnterOrLeaveChatMessage(MessageType messageType, Long chatRoomId, User user) {
+        ChatMessage chatMessage = ChatMessage.builder()
+                .chatRoomId(chatRoomId)
+                .userId(user.getUserId())
+                .userDisplayName(user.getDisplayName())
+                .build();
+        if(messageType.equals(MessageType.ENTER)) {
+            setEnterMessage(chatMessage);
+        } else if(messageType.equals(MessageType.LEAVE)) {
+            setLeaveMessage(chatMessage);
         }
-        chatMessage.setChatAt(LocalDateTime.now().toString());
+        setCurrentTime(chatMessage);
+        return chatMessage;
+    }
+
+    public ChatMessage saveMessage(ChatMessage chatMessage) {
+        setCurrentTime(chatMessage);
         chatMessageRepository.save(chatMessage);
         return chatMessage;
     }
 
-    private ChatMessage enterRoom(ChatMessage chatMessage) {
+    private ChatMessage setCurrentTime(ChatMessage chatMessage) {
+        chatMessage.setChatAt(LocalDateTime.now().toString());
+        return chatMessage;
+    }
+
+    private ChatMessage setEnterMessage(ChatMessage chatMessage) {
         chatMessage.setMessage("[알림] " + chatMessage.getUserDisplayName() + "이 입장하셨습니다.");
         return chatMessage;
     }
 
-    private ChatMessage leaveRoom(ChatMessage chatMessage) {
+    private ChatMessage setLeaveMessage(ChatMessage chatMessage) {
         chatMessage.setMessage("[알림] " + chatMessage.getUserDisplayName() + "이 퇴장하셨습니다.");
         return chatMessage;
     }
