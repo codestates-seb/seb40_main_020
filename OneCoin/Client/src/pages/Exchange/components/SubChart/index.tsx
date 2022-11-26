@@ -32,6 +32,15 @@ interface Props {
 }
 
 function SubChart({ code, time, chartSelector }: Props) {
+	const coinData = useRecoilValue(coinDataState);
+
+	const [updateData, setUpdateData] = useState<DataType>({
+		time: 0,
+		open: 0,
+		high: 0,
+		low: 0,
+		close: 0,
+	});
 	const { textColor, upColor, downColor } = {
 		textColor: 'black',
 		upColor: 'red',
@@ -44,6 +53,33 @@ function SubChart({ code, time, chartSelector }: Props) {
 
 	let chart: any;
 	let newSeries: any;
+
+	useEffect(() => {
+		const coin = coinData.filter((v) => v.code === code)[0];
+		const tradePrice = coin.ticker?.trade_price as number;
+		const lastClose = data[data.length - 1]?.close;
+
+		const unl = Object.values(updateData);
+		if (unl.includes(undefined) || unl.includes(0)) {
+			setUpdateData({
+				time: data[data.length - 1]?.time + 1,
+				open: data[data.length - 1]?.open,
+				high: data[data.length - 1]?.high,
+				low: data[data.length - 1]?.low,
+				close: data[data.length - 1]?.close,
+			});
+		} else {
+			const newUpdateData = { ...updateData };
+			newUpdateData.time = (coin.ticker?.timestamp as number) / 1000;
+			newUpdateData.close = tradePrice;
+			newUpdateData.low =
+				newUpdateData.low < tradePrice ? newUpdateData.low : tradePrice;
+			newUpdateData.high =
+				newUpdateData.high > tradePrice ? newUpdateData.high : tradePrice;
+			setUpdateData(newUpdateData);
+		}
+	}, [coinData]);
+
 	const api = async (type: string) => {
 		const res = await axios.get(
 			`https://api.upbit.com/v1/candles/minutes/${time}?market=${code}&count=200&to=${date.toISOString()}`
@@ -106,15 +142,30 @@ function SubChart({ code, time, chartSelector }: Props) {
 				borderDownColor: downColor,
 				wickColor: 'black',
 			});
-
 			newSeries.setData(data);
+			const unl = Object.values(updateData);
+			if (!(unl.includes(undefined) || unl.includes(0))) {
+				const prevT = new Date(data[data.length - 1].time * 1000).getMinutes();
+				const nxtT = new Date(updateData.time * 1000).getMinutes();
+				if (nxtT - prevT === time) {
+					setData([...data, updateData]);
+					newSeries.setData([...data, updateData]);
+					setUpdateData({
+						time: updateData.time + 1,
+						open: updateData.close,
+						high: updateData.close,
+						low: updateData.close,
+						close: updateData.close,
+					});
+				} else {
+					newSeries.update(updateData);
+				}
+			}
 			chart.timeScale({
 				timeVisible: true,
 				secondsVisible: false,
 			});
-
 			chart.timeScale().scrollToPosition(-barsAfter, false);
-
 			const handleResize = () => {
 				chart.applyOptions();
 			};
@@ -124,25 +175,22 @@ function SubChart({ code, time, chartSelector }: Props) {
 				chart.remove();
 			};
 		}
-	}, [data, chartSelector, barsAfter]);
+	}, [data, chartSelector, barsAfter, coinData, updateData]);
 
 	const mouseHandler = () => {
 		const barsInfo = newSeries?.barsInLogicalRange(
 			chart.timeScale().getVisibleLogicalRange()
 		);
+
 		if (barsInfo?.barsBefore <= 10) {
 			const d = 1000 * 60 * 200;
 			setDate(new Date(+date - d));
-			setBarsAfter(barsInfo.barsAfter);
 		}
+		setBarsAfter(barsInfo.barsAfter);
 	};
 	return (
 		<SubChartComponent className="chart-wrapper">
-			<div
-				ref={chartContainerRef}
-				onMouseUp={mouseHandler}
-				onWheel={mouseHandler}
-			></div>
+			<div ref={chartContainerRef} onMouseUp={mouseHandler}></div>
 		</SubChartComponent>
 	);
 }
