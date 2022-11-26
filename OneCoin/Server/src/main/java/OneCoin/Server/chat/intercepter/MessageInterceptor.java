@@ -3,7 +3,7 @@ package OneCoin.Server.chat.intercepter;
 import OneCoin.Server.chat.chatRoom.entity.UserInChatRoomInMemory;
 import OneCoin.Server.chat.chatRoom.service.ChatRoomInMemoryService;
 import OneCoin.Server.chat.constant.MessageType;
-import OneCoin.Server.chat.publisher.RedisPublisher;
+import OneCoin.Server.chat.chatMessage.publisher.RedisPublisher;
 import OneCoin.Server.config.auth.utils.AuthorizationUtilsForWebSocket;
 import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtilsForWebSocket;
 import OneCoin.Server.exception.BusinessLogicException;
@@ -32,20 +32,12 @@ public class MessageInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         StompCommand command = accessor.getCommand();
-        if (StompCommand.CONNECT.equals(command)) {
-            log.info("[CONNECT] start {}", accessor.getSessionId());
-            authorizationUtils.verifyAuthorization(accessor);
-            log.info("[CONNECT] complete {}", accessor.getSessionId());
-        } else if (StompCommand.SUBSCRIBE.equals(command)) {
+        if (StompCommand.SUBSCRIBE.equals(command)) {
             log.info("[SUBSCRIBE] start {}", accessor.getSessionId());
             registerUserAndSendEnterMessage(accessor);
             log.info("[SUBSCRIBE] complete {}", accessor.getSessionId());
         } else if (StompCommand.SEND.equals(command)) {
             log.info("[SEND] start {}", accessor.getSessionId());
-        } else if (StompCommand.UNSUBSCRIBE.equals(command)) {
-            log.info("[UNSUBSCRIBE] start {}", accessor.getSessionId());
-            //TODO
-            log.info("[UNSUBSCRIBE] complete {}", accessor.getSessionId());
         } else if (StompCommand.DISCONNECT.equals(command)) {
             log.info("[DISCONNECT] start {}", accessor.getSessionId());
             unregisterUserAndSendLeaveMessage(accessor);
