@@ -2,7 +2,7 @@ package OneCoin.Server.upbit.websocket.listener;
 
 import OneCoin.Server.upbit.entity.enums.SiseType;
 import OneCoin.Server.upbit.service.UpbitHandlingService;
-import OneCoin.Server.upbit.utils.JsonUtil;
+import OneCoin.Server.utils.JsonUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
