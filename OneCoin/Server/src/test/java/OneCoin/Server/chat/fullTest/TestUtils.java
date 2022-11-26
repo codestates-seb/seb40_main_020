@@ -95,12 +95,12 @@ public class TestUtils {
         return connectForListening.get(100, TimeUnit.SECONDS);
     }
 
-    public ChatRequestDto makeSendingMessage(String message, Long chatRoomId, User sentFrom) {
+    public ChatRequestDto makeSendingMessage(String message, Long chatRoomId, User sendingUser) {
         return ChatRequestDto.builder()
                 .chatRoomId(chatRoomId)
-                .userId(sentFrom.getUserId())
+                .userId(sendingUser.getUserId())
                 .type(MessageType.TALK)
-                .userDisplayName(sentFrom.getDisplayName())
+                .userDisplayName(sendingUser.getDisplayName())
                 .message(message)
                 .build();
     }
@@ -120,5 +120,14 @@ public class TestUtils {
         WebSocketStompClient client = new WebSocketStompClient(sockJsClient);
         client.setMessageConverter(new MappingJackson2MessageConverter());
         return client;
+    }
+
+    public ChatRequestDto makeUnsubscribeMessage(Long chatRoomId, User sendingUser) {
+        return ChatRequestDto.builder()
+                .chatRoomId(chatRoomId)
+                .userId(sendingUser.getUserId())
+                .type(MessageType.LEAVE)
+                .userDisplayName(sendingUser.getDisplayName())
+                .build();
     }
 }
