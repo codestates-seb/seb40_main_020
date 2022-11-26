@@ -7,6 +7,8 @@ import OneCoin.Server.upbit.entity.UnitInfo;
 import OneCoin.Server.upbit.entity.enums.CoinList;
 import OneCoin.Server.upbit.entity.enums.SiseType;
 import OneCoin.Server.upbit.mapper.OrderBookDtoMapper;
+import OneCoin.Server.upbit.repository.OrderBookRepository;
+import OneCoin.Server.upbit.repository.TickerRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,8 @@ public class UpbitHandlingService {
     private final ObjectMapper objectMapper;
     private final TradingService tradingService;
     private final OrderBookDtoMapper mapper;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final TickerRepository tickerRepository;
+    private final OrderBookRepository orderBookRepository;
 
     private String prevClosingPrice;
 
@@ -34,38 +37,18 @@ public class UpbitHandlingService {
     public void parsing(JsonNode jsonNode) {
         String orderType = jsonNode.get("type").asText();
 
-        if (orderType.equals(SiseType.TICKER.getType())) {
+        if (orderType.equals(SiseType.TICKER.getType())) { // 현재가 정보
             TickerDto tickerDto = objectMapper.readValue(jsonNode.toString(), TickerDto.class);
-            saveTicker(tickerDto);
+            tickerRepository.saveTicker(tickerDto);
             prevClosingPrice = tickerDto.getPrevClosingPrice();
             Trade trade = objectMapper.readValue(jsonNode.toString(), Trade.class);
 //            tradingService.completeOrders(trade);
         }
-        if (orderType.equals(SiseType.ORDER_BOOK.getType())) {
+        if (orderType.equals(SiseType.ORDER_BOOK.getType())) { // 호가 정보
             OrderBookDto orderBookDto = objectMapper.readValue(jsonNode.toString(), OrderBookDto.class);
             List<UnitInfo> unitInfos = Arrays.asList(objectMapper.readValue(jsonNode.get("orderbook_units").toString(), UnitInfo[].class));
             orderBookDto = mapper.unitInfoToOrderBookDto(orderBookDto, unitInfos, prevClosingPrice);
-            saveOrderBook(orderBookDto);
+            orderBookRepository.saveOrderBook(orderBookDto);
         }
-    }
-
-    private void saveTicker(TickerDto tickerDto) {
-        HashOperations<String, String, TickerDto> operations = redisTemplate.opsForHash();
-        operations.put(SiseType.TICKER.getType(), tickerDto.getCode(), tickerDto);
-    }
-
-    private void saveOrderBook(OrderBookDto orderBookDto) {
-        HashOperations<String, String, OrderBookDto> operations = redisTemplate.opsForHash();
-        operations.put(SiseType.ORDER_BOOK.getType(), orderBookDto.getCode(), orderBookDto);
-    }
-
-    public List<TickerDto> findTickers() {
-        HashOperations<String, String, TickerDto> operations = redisTemplate.opsForHash();
-        return operations.multiGet(SiseType.TICKER.getType(), CoinList.CODES);
-    }
-
-    public List<OrderBookDto> findOrderBooks() {
-        HashOperations<String, String, OrderBookDto> operations = redisTemplate.opsForHash();
-        return operations.multiGet(SiseType.ORDER_BOOK.getType(), CoinList.CODES);
     }
 }
