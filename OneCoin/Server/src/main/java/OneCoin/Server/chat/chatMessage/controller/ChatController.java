@@ -23,7 +23,8 @@ public class ChatController {
     public void message(ChatRequestDto requestMessage) {
         log.info("message received: {}", requestMessage);
         ChatMessage convertedChatMessage = chatMapper.requestDtoToChatMessage(requestMessage);
-        ChatMessage chatMessage = chatService.delegate(requestMessage.getType(), convertedChatMessage);
+        //TODO : delegate를 저장으로 바꿔도 될 것 같은데
+        ChatMessage chatMessage = chatService.saveMessage(convertedChatMessage);
         ChatResponseDto chatResponseDto = chatMapper.chatMessageToResponseDto(chatMessage);
         log.info("[CONTROLLER] message is ready for sending");
         log.info("[MESSAGE] {}", chatResponseDto);
