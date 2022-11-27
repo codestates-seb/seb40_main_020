@@ -2,10 +2,11 @@ package OneCoin.Server.chat.fullTest;
 
 import OneCoin.Server.chat.chatMessage.dto.ChatRequestDto;
 import OneCoin.Server.chat.chatMessage.dto.ChatResponseDto;
-import OneCoin.Server.chat.chatRoom.entity.UserInChatRoomInMemory;
-import OneCoin.Server.chat.chatRoom.repository.ChatRoomInMemoryRepository;
+import OneCoin.Server.chat.chatMessage.repository.ChatMessageRepository;
+import OneCoin.Server.chat.chatRoom.entity.UserInChatRoom;
+import OneCoin.Server.chat.chatRoom.repository.ChatRoomRepository;
 import OneCoin.Server.chat.chatRoom.repository.UserInChatRoomRepository;
-import OneCoin.Server.chat.chatRoom.service.ChatRoomInMemoryService;
+import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
 import OneCoin.Server.config.auth.jwt.JwtTokenizer;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.repository.UserRepository;
@@ -16,12 +17,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.data.redis.connection.Subscription;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.web.socket.WebSocketHttpHeaders;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -39,14 +41,18 @@ public class ChattingFullTest {
     @Autowired
     private JwtTokenizer jwtTokenizer;
     @Autowired
-    private ChatRoomInMemoryRepository chatRoomInMemoryRepository;
+    private ChatRoomRepository chatRoomRepository;
     @Autowired
     private UserInChatRoomRepository userInChatRoomRepository;
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
     @Autowired
-    private ChatRoomInMemoryService chatRoomInMemoryService;
-    private Long chatRoomId;
+    private ChatRoomService chatRoomService;
+    @Autowired
+    private SimpUserRegistry simpUserRegistry;
+    @Autowired
+    private ChatMessageRepository chatMessageRepository;
+    private Integer chatRoomId;
     private TestUtils testUtils;
     private String url;
     private BlockingQueue<ChatResponseDto> receivedMessagesOfSender;
@@ -54,9 +60,8 @@ public class ChattingFullTest {
 
     @BeforeEach
     public void setUp() {
-        testUtils = new TestUtils(jwtTokenizer, chatRoomInMemoryRepository, userInChatRoomRepository,
-                userRepository, redisTemplate);
-        chatRoomId = 1L;
+        testUtils = new TestUtils(jwtTokenizer, chatRoomRepository, userInChatRoomRepository, chatMessageRepository, userRepository, redisTemplate);
+        chatRoomId = 1;
         testUtils.clearInMemory(chatRoomId);
         RestAssured.port = port;
         url = "ws://localhost:" + port + "/ws/chat";
@@ -69,19 +74,20 @@ public class ChattingFullTest {
     void enterUserAndBroadCastMessage() throws InterruptedException, ExecutionException, TimeoutException {
         /** user Setting */
         User sendingUser = userRepository.findAll().get(0);
-        String jwt = "Bearer " + testUtils.generateAccessToken(sendingUser);
+        String jwt = testUtils.generateAccessToken(sendingUser);
 
         /** message Setting */
         String message = "hello everyone";
         ChatRequestDto sendingMessage = testUtils.makeSendingMessage(message, chatRoomId, sendingUser);
         /** Connection for receiver, NonAuthenticatedUser*/
+        WebSocketStompClient receiverStompClient = testUtils.makeStompClient();
         StompSession receiver =
-                testUtils.getSessionAfterConnect(url, new WebSocketHttpHeaders(), new StompHeaders());
+                testUtils.getSessionAfterConnect(receiverStompClient, url, new WebSocketHttpHeaders(), new StompHeaders());
 
         /** Connection for sender, AuthenticatedUser */
-        WebSocketHttpHeaders httpHeaders = new WebSocketHttpHeaders();
-        httpHeaders.add("Authorization", jwt);
-        StompSession sender = testUtils.getSessionAfterConnect(url, httpHeaders, new StompHeaders());
+        WebSocketStompClient senderStompClient = testUtils.makeStompClient();
+        WebSocketHttpHeaders httpHeaders = testUtils.makeHttpHeadersWithJwt(jwt);
+        StompSession sender = testUtils.getSessionAfterConnect(senderStompClient, url, httpHeaders, new StompHeaders());
 
         /** receiver : Subscribe */
         receiver.subscribe(String.format("/topic/rooms/%d", chatRoomId), new StompFrameHandlerImpl(new ChatResponseDto(), receivedMessagesOfReceiver));
@@ -96,10 +102,10 @@ public class ChattingFullTest {
         ChatResponseDto senderMsgAfterSenderSubscribe = receivedMessagesOfSender.poll(1, TimeUnit.SECONDS);
 
         /** then : Number Of Chatters */
-        long numberOfChattersFirst = chatRoomInMemoryService.findVerifiedChatRoom(chatRoomId).getNumberOfChatters();
+        long numberOfChattersFirst = chatRoomService.getNumberOfUserInChatRoom(chatRoomId);
 
         /** then : authenticated Users In ChatRoom */
-        List<UserInChatRoomInMemory> usersFirst = chatRoomInMemoryService.findUsersInChatRoom(chatRoomId);
+        List<UserInChatRoom> usersFirst = chatRoomService.findUsersInChatRoom(chatRoomId);
 
         /** sender : send Message */
         sender.send("/app/rooms", sendingMessage);
@@ -113,13 +119,22 @@ public class ChattingFullTest {
         ChatResponseDto receiverMsgAfterSenderUnsubscribe = receivedMessagesOfReceiver.poll(1, TimeUnit.SECONDS);
         ChatResponseDto senderMsgAfterSenderUnsubscribe = receivedMessagesOfSender.poll(1, TimeUnit.SECONDS);
 
-        /** sender : disconnect */
-
         /** then : Number Of Chatters */
-        long numberOfChattersLast = chatRoomInMemoryService.findVerifiedChatRoom(chatRoomId).getNumberOfChatters();
+        long numberOfChattersLast = chatRoomService.getNumberOfUserInChatRoom(chatRoomId);
 
         /** then : authenticated Users In ChatRoom */
-        List<UserInChatRoomInMemory> usersLast = chatRoomInMemoryService.findUsersInChatRoom(chatRoomId);
+        List<UserInChatRoom> usersLast = chatRoomService.findUsersInChatRoom(chatRoomId);
+
+        /** sender : Subscribe again */
+        sender.subscribe(String.format("/topic/rooms/%d", chatRoomId), new StompFrameHandlerImpl(new ChatResponseDto(), receivedMessagesOfSender));
+        receivedMessagesOfReceiver.poll(1, TimeUnit.SECONDS);
+        receivedMessagesOfSender.poll(1, TimeUnit.SECONDS);
+
+        /** sender : 비정상적인 연결 종료시 */
+        senderStompClient.stop();
+        ChatResponseDto receiverMsgAfterSenderConnectionTerminated = receivedMessagesOfReceiver.poll(10, TimeUnit.SECONDS);
+        ChatResponseDto senderMsgAfterSenderConnectionTerminated = receivedMessagesOfSender.poll(1, TimeUnit.SECONDS);
+        int userCount = simpUserRegistry.getUserCount();
 
         /** Then : assert */
         /** After Receiver Subscribe */
@@ -136,6 +151,12 @@ public class ChattingFullTest {
         /** After Sender UnSubscribe */
         assertThat(receiverMsgAfterSenderUnsubscribe.getMessage()).contains("퇴장");
         assertThat(senderMsgAfterSenderUnsubscribe).isNull();
+        assertThat(numberOfChattersLast).isEqualTo(1L);
+        assertThat(usersLast.size()).isEqualTo(0L);
+        /** After Sender's Connection Terminated */
+        assertThat(userCount).isEqualTo(1);
+        assertThat(receiverMsgAfterSenderConnectionTerminated.getMessage()).contains("퇴장");
+        assertThat(senderMsgAfterSenderConnectionTerminated).isNull();
         assertThat(numberOfChattersLast).isEqualTo(1L);
         assertThat(usersLast.size()).isEqualTo(0L);
     }
