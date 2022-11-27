@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -15,6 +16,10 @@ public class WalletService {
 
     private final WalletRepository walletRepository;
 
+    public Wallet createWallet() {
+        return null;
+    }
+
     public Wallet updateWallet() {
 
 //        return walletRepository.save();
@@ -22,9 +27,8 @@ public class WalletService {
     }
 
     // ws
-    public List<Wallet> findWallets(String code) {
-        // User
-        return null;
+    public Wallet findMyWallet(long userId, String code) {
+        return walletRepository.findByUserIdAndCode(userId, code);
     }
 }
 
