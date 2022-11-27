@@ -24,5 +24,10 @@ public class CoinService {
         }
     }
 
+    public Coin findCoin(String code) {
+        Optional<Coin> optionalCoin = coinRepository.findByCode(code);
+        return optionalCoin.orElseThrow(() -> new BusinessLogicException(ExceptionCode.COIN_NOT_EXISTS));
+    }
+
     // TODO 관리자가 코인 등록
 }
