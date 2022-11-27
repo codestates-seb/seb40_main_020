@@ -1,6 +1,7 @@
 package OneCoin.Server.order.service;
 
 import OneCoin.Server.balance.BalanceService;
+import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtils;
 import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.order.entity.Order;
@@ -9,10 +10,12 @@ import OneCoin.Server.order.entity.enums.Commission;
 import OneCoin.Server.order.mapper.WalletMapper;
 import OneCoin.Server.order.repository.OrderRepository;
 import OneCoin.Server.order.repository.WalletRepository;
+import OneCoin.Server.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class WalletService {
     private final OrderRepository orderRepository;
     private final WalletMapper mapper;
     private final BalanceService balanceService;
+    private final LoggedInUserInfoUtils loggedInUserInfoUtils;
 
     public void createWallet(Order order, BigDecimal tradeVolume) {
         BigDecimal completedAmount = getCompletedAmount(order, tradeVolume);
@@ -51,6 +55,7 @@ public class WalletService {
 
         int comparison = orderAmount.compareTo(tradeVolume);
         if (comparison <= 0) { // 전부 체결된 주문
+            order.setCompletedAmount(order.getCompletedAmount().add(orderAmount));
             deleteCompletedOrder(order);
             return orderAmount;
         }
@@ -91,5 +96,14 @@ public class WalletService {
 
     public Wallet findMyWallet(long userId, String code) {
         return walletRepository.findByUserIdAndCode(userId, code);
+    }
+
+    public List<Wallet> findWallets() {
+        User user = loggedInUserInfoUtils.extractUser();
+        List<Wallet> wallets = walletRepository.findAllByUserId(user.getUserId());
+        if (wallets.isEmpty()) {
+            throw new BusinessLogicException(ExceptionCode.NO_EXISTS_WALLET);
+        }
+        return wallets;
     }
 }
