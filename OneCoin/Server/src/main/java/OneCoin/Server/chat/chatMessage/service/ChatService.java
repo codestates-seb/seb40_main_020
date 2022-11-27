@@ -18,9 +18,9 @@ public class ChatService {
     //데이터베이스에저장하기
     //유효성 검사하기
     private final ChatMessageRepository chatMessageRepository;
-    private final int NUMBER_OF_CHATS_TO_SEND = 30;
+    private final Long NUMBER_OF_CHATS_TO_SEND = 30L;
 
-    public ChatMessage makeEnterOrLeaveChatMessage(MessageType messageType, Long chatRoomId, User user) {
+    public ChatMessage makeEnterOrLeaveChatMessage(MessageType messageType, Integer chatRoomId, User user) {
         ChatMessage chatMessage = ChatMessage.builder()
                 .chatRoomId(chatRoomId)
                 .userId(user.getUserId())
@@ -56,7 +56,7 @@ public class ChatService {
         return chatMessage;
     }
 
-    public List<ChatMessage> getChatMessages(Long chatRoomId) {
+    public List<ChatMessage> getChatMessages(Integer chatRoomId) {
         return chatMessageRepository.getMessageFromRoomLimitN(chatRoomId, NUMBER_OF_CHATS_TO_SEND);
     }
 }

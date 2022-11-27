@@ -21,7 +21,7 @@ public class RedisPublisher {
     private final ChatMapper chatMapper;
     private final ChannelTopic channelTopic;
 
-    public void publishEnterOrLeaveMessage(MessageType type, Long chatRoomId, User user) {
+    public void publishEnterOrLeaveMessage(MessageType type, Integer chatRoomId, User user) {
         ChatMessage messageToUse = chatService.makeEnterOrLeaveChatMessage(type, chatRoomId, user);
         ChatResponseDto chatResponseDto = chatMapper.chatMessageToResponseDto(messageToUse);
         log.info("[PUBLISHER] {} message is ready for sending", type);

@@ -17,7 +17,7 @@ public class ChatMessage {
     @JsonProperty("user_id")
     private Long userId;
     @JsonProperty("chat_room_id")
-    private Long chatRoomId;
+    private Integer chatRoomId;
     @JsonProperty("user_display_name")
     private String userDisplayName;
 }
