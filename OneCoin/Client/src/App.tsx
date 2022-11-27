@@ -1,15 +1,19 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import SignUp from 'pages/SignUp/SignUp';
-import Login from 'pages/Login/Login';
-import FindPassword from 'pages/FindPassword/FindPassword';
-import ResetPassword from 'pages/FindPassword/ResetPassword';
 import Main from 'pages/Main/Main';
+
 const Balance = lazy(() => import('./pages/Balance'));
 const History = lazy(() => import('./pages/History'));
 const WaitOrders = lazy(() => import('./pages/WaitOrders'));
 const Balances = lazy(() => import('./pages/Balances'));
 const Exchange = lazy(() => import('./pages/Exchange'));
+const MyPage = lazy(() => import('./pages/MyPage'));
+const SignUp = lazy(() => import('./pages/SignUp'));
+const Login = lazy(() => import('pages/Login'));
+const FindPassword = lazy(() => import('pages/FindPassword'));
+const ResetPassword = lazy(() => import('pages/ResetPassword'));
+const Swap = lazy(() => import('pages/Swap'));
+const SwapResult = lazy(() => import('pages/SwapResult'));
 
 function App() {
 	return (
@@ -41,35 +45,31 @@ function App() {
 				/>
 				<Route
 					path="/signup"
-					element={
-						<Suspense fallback={<>...</>}>
-							<SignUp />
-						</Suspense>
-					}
+					element={<Suspense fallback={<>...</>}>{<SignUp />}</Suspense>}
 				/>
 				<Route
 					path="/login"
-					element={
-						<Suspense fallback={<>...</>}>
-							<Login />
-						</Suspense>
-					}
+					element={<Suspense fallback={<>...</>}>{<Login />}</Suspense>}
 				/>
 				<Route
 					path="/findpassword"
-					element={
-						<Suspense fallback={<>...</>}>
-							<FindPassword />
-						</Suspense>
-					}
+					element={<Suspense fallback={<>...</>}>{<FindPassword />}</Suspense>}
 				/>
 				<Route
 					path="/resetpassword"
-					element={
-						<Suspense fallback={<>...</>}>
-							<ResetPassword />
-						</Suspense>
-					}
+					element={<Suspense fallback={<>...</>}>{<ResetPassword />}</Suspense>}
+				/>
+				<Route
+					path="/swap"
+					element={<Suspense fallback={<>...</>}>{<Swap />}</Suspense>}
+				/>
+				<Route
+					path="/swapresult"
+					element={<Suspense fallback={<>…</>}>{<SwapResult />}</Suspense>}
+				/>
+				<Route
+					path="/mypage"
+					element={<Suspense fallback={<>...</>}>{<MyPage />}</Suspense>}
 				/>
 			</Routes>
 		</>
