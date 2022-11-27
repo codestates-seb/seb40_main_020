@@ -20,7 +20,8 @@ public enum ExceptionCode {
     USER_EXISTS(409, "User already exists"),
     INVALID_DESTINATION(400, "No match for the destination"),
     BALANCE_NOT_FOUND(404, "Balance not found"),
-    AUTHENTICATION_NOT_FOUND(404, "No authentication found in SecurityContextHolder");
+    AUTHENTICATION_NOT_FOUND(404, "No authentication found in SecurityContextHolder"),
+    INVALID_CHAT_ROOM_ID(409, "ChatRoomId is not valid");
 
     private final int code;
     private final String description;
