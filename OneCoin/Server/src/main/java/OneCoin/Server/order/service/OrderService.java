@@ -42,7 +42,7 @@ public class OrderService {
         }
         if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수
             BigDecimal price = getMyOrderPrice(order);
-            updateUserBalance(userId, price, amount);
+            subtractUserBalance(userId, price, amount);
             order.setCommission(calculateCommission(price, amount));
         }
         order.setUserId(user.getUserId());
@@ -59,7 +59,7 @@ public class OrderService {
         }
     }
 
-    private void updateUserBalance(long userId, BigDecimal price, BigDecimal amount) {
+    private void subtractUserBalance(long userId, BigDecimal price, BigDecimal amount) {
         BigDecimal totalBidPrice = price.multiply(amount).multiply(Commission.ORDER.getRate());
         balanceService.updateBalanceByBid(userId, totalBidPrice);
     }
