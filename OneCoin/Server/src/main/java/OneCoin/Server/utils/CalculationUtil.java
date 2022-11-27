@@ -43,8 +43,8 @@ public class CalculationUtil {
         return "";
     }
 
-    public BigDecimal calculateOrderCommission(BigDecimal price, BigDecimal amount) {
-        BigDecimal commissionRate = Commission.ORDER.getRate().subtract(BigDecimal.ONE); // 0.05
+    public BigDecimal calculateBySubtractingCommission(BigDecimal price, BigDecimal amount) {
+        BigDecimal commissionRate = BigDecimal.ONE.subtract(Commission.ORDER.getRate());
         return price.multiply(amount).multiply(commissionRate);
     }
 }

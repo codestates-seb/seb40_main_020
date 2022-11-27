@@ -6,11 +6,11 @@ import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.entity.Wallet;
-import OneCoin.Server.order.entity.enums.Commission;
 import OneCoin.Server.order.mapper.WalletOrderMapper;
 import OneCoin.Server.order.repository.OrderRepository;
 import OneCoin.Server.order.repository.WalletRepository;
 import OneCoin.Server.user.entity.User;
+import OneCoin.Server.utils.CalculationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +25,7 @@ public class WalletService {
     private final OrderRepository orderRepository;
     private final WalletOrderMapper mapper;
     private final BalanceService balanceService;
+    private final CalculationUtil calculationUtil;
     private final LoggedInUserInfoUtils loggedInUserInfoUtils;
 
     public void createWallet(Order order, BigDecimal tradeVolume) {
@@ -81,8 +82,7 @@ public class WalletService {
     }
 
     private void addUserBalance(long userId, BigDecimal price, BigDecimal completedAmount) {
-        BigDecimal commissionRate = Commission.ORDER.getRate().subtract(BigDecimal.ONE);
-        BigDecimal totalAskPrice = price.multiply(completedAmount).multiply(commissionRate);
+        BigDecimal totalAskPrice = calculationUtil.calculateBySubtractingCommission(price, completedAmount);
         balanceService.updateBalanceByAskOrCancelBid(userId, totalAskPrice);
     }
 
