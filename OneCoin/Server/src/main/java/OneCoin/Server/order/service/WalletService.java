@@ -5,6 +5,7 @@ import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.entity.Wallet;
 import OneCoin.Server.order.mapper.WalletMapper;
+import OneCoin.Server.order.repository.OrderRepository;
 import OneCoin.Server.order.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.List;
 public class WalletService {
 
     private final WalletRepository walletRepository;
+    private final OrderRepository orderRepository;
     private final WalletMapper mapper;
 
     public void createWallet(List<Order> orders, BigDecimal tradeVolume) {
@@ -44,9 +46,22 @@ public class WalletService {
 
         int comparison = orderAmount.compareTo(tradeVolume);
         if (comparison <= 0) { // 전부 체결된 주문
+            deleteCompletedOrder(order);
             return orderAmount;
         }
+        saveRemainingAmount(order, tradeVolume);
         return tradeVolume;
+    }
+
+    private void saveRemainingAmount(Order order, BigDecimal completedAmount) {
+        order.setAmount(order.getAmount().subtract(completedAmount));
+        order.setCompletedAmount(order.getCompletedAmount().add(completedAmount));
+        orderRepository.save(order);
+    }
+
+    private void deleteCompletedOrder(Order order) {
+        // TODO Transaction History 저장 (비동기)
+        orderRepository.delete(order);
     }
 
     private void updateWalletByBid(Wallet wallet, BigDecimal orderPrice, BigDecimal completedAmount) {

@@ -17,37 +17,16 @@ import java.util.List;
 public class TradingService {
 
     private final OrderRepository orderRepository;
-    private final WalletService walletService; // TODO 매도 채결시 wallet으로
+    private final WalletService walletService;
 
     public void completeOrders(Trade trade) {
-        String tradePrice = trade.getTradePrice();
-        List<Order> orders = orderRepository.findAllByLimitAndOrderTypeAndCode(new BigDecimal(tradePrice), trade.getOrderType(), trade.getCode());
+        BigDecimal tradePrice = new BigDecimal(trade.getTradePrice());
+        BigDecimal tradeVolume = new BigDecimal(trade.getTradeVolume());
+        String orderType = trade.getOrderType();
+
+        List<Order> orders = orderRepository.findAllByLimitAndOrderTypeAndCode(tradePrice, orderType, trade.getCode());
         if (orders.isEmpty()) {
             return;
-        }
-        subtractAmount(orders, trade.getTradeVolume());
-        updateAmountAfterTrade(orders);
-    }
-
-    private void subtractAmount(List<Order> orders, String amount) {
-        BigDecimal subtractionAmount = new BigDecimal(amount);
-        for (Order order : orders) {
-            BigDecimal newAmount = order.getAmount().subtract(subtractionAmount);
-            order.setAmount(newAmount);
-        }
-    }
-
-    private void updateAmountAfterTrade(List<Order> orders) {
-        for (Order order : orders) {
-            deleteAmountZeroEntity(order);
-        }
-        orderRepository.saveAll(orders);
-    }
-
-    private void deleteAmountZeroEntity(Order order) {
-        BigDecimal zero = BigDecimal.ZERO;
-        if (order.getAmount().compareTo(zero) <= 0) {
-            orderRepository.delete(order);
         }
     }
 }
