@@ -67,12 +67,11 @@ public class OrderService {
     private BigDecimal getMyOrderPrice(Order order) {
         BigDecimal price = null;
         BigDecimal zero = BigDecimal.ZERO;
+
         if (order.getLimit().compareTo(zero) != 0) {
             price = order.getLimit();
         } else if (order.getMarket().compareTo(zero) != 0) {
             price = order.getMarket();
-        } else if (order.getStopLimit().compareTo(zero) != 0) {
-            price = order.getStopLimit();
         }
         return price;
     }
