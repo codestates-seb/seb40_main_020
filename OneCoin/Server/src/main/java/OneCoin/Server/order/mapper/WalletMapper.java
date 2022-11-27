@@ -32,4 +32,13 @@ public class WalletMapper {
         wallet.setAmount(totalAmount);
         return wallet;
     }
+
+    public Wallet askOrderToUpdatedWallet(Wallet wallet, BigDecimal orderPrice, BigDecimal completedAmount) {
+        BigDecimal averagePrice = calculationUtil.calculateAvgPriceByAsk(wallet.getAveragePrice(), wallet.getAmount(), orderPrice, completedAmount);
+        BigDecimal totalAmount = wallet.getAmount().subtract(completedAmount);
+
+        wallet.setAveragePrice(averagePrice);
+        wallet.setAmount(totalAmount);
+        return wallet;
+    }
 }
