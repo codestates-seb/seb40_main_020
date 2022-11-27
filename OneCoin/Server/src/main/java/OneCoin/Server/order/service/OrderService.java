@@ -41,7 +41,7 @@ public class OrderService {
             checkUserCoinAmount(wallet, amount);
         }
         if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수
-            BigDecimal price = getMyOrderPrice(order);
+            BigDecimal price = order.getLimit();
             subtractUserBalance(userId, price, amount);
             order.setCommission(calculateCommission(price, amount));
         }
@@ -62,18 +62,6 @@ public class OrderService {
     private void subtractUserBalance(long userId, BigDecimal price, BigDecimal amount) {
         BigDecimal totalBidPrice = price.multiply(amount).multiply(Commission.ORDER.getRate());
         balanceService.updateBalanceByBid(userId, totalBidPrice);
-    }
-
-    private BigDecimal getMyOrderPrice(Order order) {
-        BigDecimal price = null;
-        BigDecimal zero = BigDecimal.ZERO;
-
-        if (order.getLimit().compareTo(zero) != 0) {
-            price = order.getLimit();
-        } else if (order.getMarket().compareTo(zero) != 0) {
-            price = order.getMarket();
-        }
-        return price;
     }
 
     private BigDecimal calculateCommission(BigDecimal price, BigDecimal amount) {
@@ -106,7 +94,7 @@ public class OrderService {
     }
 
     private void giveBalanceBack(long userId, Order order) {
-        BigDecimal cancelPrice = getMyOrderPrice(order);
+        BigDecimal cancelPrice = order.getLimit();
         BigDecimal totalCancelPrice = cancelPrice.multiply(order.getAmount()).multiply(Commission.ORDER.getRate());
         balanceService.updateBalanceByAskOrCancelBid(userId, totalCancelPrice);
     }
