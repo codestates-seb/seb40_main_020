@@ -52,4 +52,8 @@ public class CalculationUtil {
         BigDecimal commissionRate = BigDecimal.ONE.add(Commission.ORDER.getRate());
         return price.multiply(amount).multiply(commissionRate);
     }
+
+    public BigDecimal calculateOrderCommission(BigDecimal price, BigDecimal amount) {
+        return price.multiply(amount).multiply(Commission.ORDER.getRate());
+    }
 }
