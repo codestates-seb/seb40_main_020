@@ -9,19 +9,17 @@ import java.math.BigDecimal;
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
 
-    default Order redisPostDtoToRedisOrder(OrderDto.Post redisPostDto) {
-        if (redisPostDto == null) {
+    default Order postDtoToOrder(OrderDto.Post postDto) {
+        if (postDto == null) {
             return null;
         }
 
         return Order.builder()
-                .limit(new BigDecimal(String.valueOf(redisPostDto.getLimit())))
-                .market(new BigDecimal(String.valueOf(redisPostDto.getMarket())))
-                .stopLimit(new BigDecimal(String.valueOf(redisPostDto.getStopLimit())))
-                .amount(new BigDecimal(String.valueOf(redisPostDto.getAmount())))
-                .orderType(redisPostDto.getOrderType())
+                .limit(new BigDecimal(String.valueOf(postDto.getLimit())))
+                .market(new BigDecimal(String.valueOf(postDto.getMarket())))
+                .stopLimit(new BigDecimal(String.valueOf(postDto.getStopLimit())))
+                .amount(new BigDecimal(String.valueOf(postDto.getAmount())))
+                .orderType(postDto.getOrderType())
                 .build();
     }
-
-    OrderDto.PostResponse redisOrderToRedisPostResponse(Order order);
 }

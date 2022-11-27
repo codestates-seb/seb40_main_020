@@ -35,12 +35,6 @@ public class OrderDto {
 
     @Getter
     @Setter
-    public static class PostResponse {
-        private Long orderId;
-    }
-
-    @Getter
-    @Setter
     public static class GetResponse {
         private String code;
         private LocalDateTime orderTime;

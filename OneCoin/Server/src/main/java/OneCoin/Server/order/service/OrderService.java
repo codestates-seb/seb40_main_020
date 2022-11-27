@@ -30,7 +30,7 @@ public class OrderService {
     private final LoggedInUserInfoUtils loggedInUserInfoUtils;
     private final BalanceService balanceService;
 
-    public Order createOrder(Order order, String code) {
+    public void createOrder(Order order, String code) {
         User user = loggedInUserInfoUtils.extractUser();
         coinService.verifyCoinExists(code);
         long userId = user.getUserId();
@@ -47,7 +47,7 @@ public class OrderService {
         }
         order.setUserId(user.getUserId());
         order.setCode(code);
-        return orderRepository.save(order);
+        orderRepository.save(order);
     }
 
     private void checkUserCoinAmount(Wallet wallet, BigDecimal amount) {
