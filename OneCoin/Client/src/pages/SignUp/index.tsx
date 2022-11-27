@@ -1,7 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import {
-	SignUpBox,
 	DoubleCheckBox,
 	Errormsg,
 	Input,
@@ -12,6 +13,7 @@ import {
 	StyledDiv,
 	SubDiv,
 } from './style';
+import Layout from 'components/Layout';
 
 type Inputs = {
 	displayName: string;
@@ -21,20 +23,61 @@ type Inputs = {
 };
 
 function SignUp() {
+	const [error, setError] = useState('');
+	const navigate = useNavigate();
 	const {
 		register,
 		handleSubmit,
 		watch,
 		formState: { errors },
 	} = useForm<Inputs>({ mode: 'onChange' });
-	const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+
+	const onSubmit: SubmitHandler<Inputs> = async (data) => {
+		// 회원가입 api 자리
+		const userData = {
+			memberEmail: data.email,
+			memberName: data.displayName,
+			memberPwd: data.password,
+		};
+		return axios
+			.post('/api/users', { ...userData })
+			.then((res) => {
+				navigate('/login');
+			})
+			.catch((err) => {
+				setError(err.response.data.message);
+				setTimeout(() => {
+					setError('');
+				}, 2000);
+			});
+	};
+
+	// const onLogin = async (data: any) => {
+	// 	// 회원가입 api 자리
+	// 	const userData = {
+	// 		memberEmail: data.email,
+	// 		memberName: data.displayName,
+	// 		memberPwd: data.password,
+	// 	};
+	// 	return axios
+	// 		.post('http://13.209.194.104:8080/users', { ...userData })
+	// 		.then((res) => {
+	// 			navigate('/login');
+	// 		})
+	// 		.catch((err) => {
+	// 			setError(err.response.data.message);
+	// 			setTimeout(() => {
+	// 				setError('');
+	// 			}, 2000);
+	// 		});
+	// };
 
 	const password = useRef<string | null>(null);
 	password.current = watch('password');
 
 	return (
 		<div>
-			<SignUpBox>
+			<Layout isLeftSidebar={false}>
 				<Form onSubmit={handleSubmit(onSubmit)}>
 					<StyledDiv>회원가입</StyledDiv>
 					<SubDiv>로그인 ID(이메일) 및 비밀번호를 설정해주세요.</SubDiv>
@@ -128,7 +171,7 @@ function SignUp() {
 					</InputContainer>
 					<SubmitButton type={'submit'}>회원가입</SubmitButton>
 				</Form>
-			</SignUpBox>
+			</Layout>
 		</div>
 	);
 }

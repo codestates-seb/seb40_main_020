@@ -7,6 +7,7 @@ interface Props {
 
 export const Wapper = styled.main<Props>`
 	${container}
+	min-height: calc(100vh - 270px);
 	aside {
 		margin-left: ${(props) => (props.isLeftMargin ? '30px' : '0')};
 	}
