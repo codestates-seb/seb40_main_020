@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 public class WalletMapper {
     public final CalculationUtil calculationUtil;
 
-    public Wallet bidOrderToWallet(Order order, BigDecimal completedAmount) {
+    public Wallet bidOrderToNewWallet(Order order, BigDecimal completedAmount) {
         BigDecimal averagePrice = calculationUtil.calculateAvgPriceByBid(BigDecimal.ZERO, BigDecimal.ZERO, order.getLimit(), completedAmount);
 
         return Wallet.builder()
@@ -22,5 +22,14 @@ public class WalletMapper {
                 .userId(order.getUserId())
                 .code(order.getCode())
                 .build();
+    }
+
+    public Wallet bidOrderToUpdatedWallet(Wallet wallet, BigDecimal orderPrice, BigDecimal completedAmount) {
+        BigDecimal averagePrice = calculationUtil.calculateAvgPriceByBid(wallet.getAveragePrice(), wallet.getAmount(), orderPrice, completedAmount);
+        BigDecimal totalAmount = wallet.getAmount().add(completedAmount);
+
+        wallet.setAveragePrice(averagePrice);
+        wallet.setAmount(totalAmount);
+        return wallet;
     }
 }
