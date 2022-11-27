@@ -2,24 +2,21 @@ import React, { useState } from 'react';
 import { ChartListComponent } from './style';
 import Chart from '../Chart';
 import SubChart from '../SubChart';
+import { CoinInfo } from '../../../../utills/types';
 
 interface Props {
-	symbol: {
-		coin: string;
-		code: string;
-		symbol: string;
-	};
+	coinInfo: CoinInfo;
 }
-function ChartList({ symbol }: Props) {
+function ChartList({ coinInfo }: Props) {
 	const [time, setTime] = useState(1);
 	const [chartSelector, setChartSelector] = useState(1);
 	const minArray = [1, 3, 5, 15, 30, 60, 240];
 	const chartArray = [1, 2];
 	const selectHandler = (
-		s: number,
+		item: number,
 		set: React.Dispatch<React.SetStateAction<number>>
 	) => {
-		set(s);
+		set(item);
 	};
 
 	return (
@@ -53,12 +50,12 @@ function ChartList({ symbol }: Props) {
 			</div>
 			{chartSelector === 1 ? (
 				<SubChart
-					code={symbol.code}
+					code={coinInfo.code}
 					time={time}
 					chartSelector={chartSelector}
 				/>
 			) : (
-				<Chart symbol={symbol.symbol} />
+				<Chart symbol={coinInfo.symbol} />
 			)}
 		</ChartListComponent>
 	);

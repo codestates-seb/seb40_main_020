@@ -1,14 +1,15 @@
 import Button from 'components/Button';
 import React, { useState, useEffect } from 'react';
 import { OrderComponent } from './style';
+import { CoinInfo } from '../../../../utills/types';
 
 interface Props {
 	inputPrice: number;
 	setInputPrice: React.Dispatch<React.SetStateAction<number>>;
-	symbol: { coin: string; code: string; symbol: string };
+	coinInfo: CoinInfo;
 }
 
-function Order({ inputPrice, setInputPrice, symbol }: Props) {
+function Order({ inputPrice, setInputPrice, coinInfo }: Props) {
 	const money = 50000000;
 	const coin = 2.64345;
 
@@ -21,7 +22,7 @@ function Order({ inputPrice, setInputPrice, symbol }: Props) {
 	useEffect(() => {
 		setQuantity('0');
 		setTotal(0);
-	}, [symbol.symbol]);
+	}, [coinInfo.symbol]);
 	useEffect(() => {
 		setTotal(Math.round(inputPrice * +quantity));
 	}, [inputPrice]);
@@ -69,6 +70,13 @@ function Order({ inputPrice, setInputPrice, symbol }: Props) {
 		console.log(Math.round(newInputPrice * +quantity).toLocaleString());
 		setTotal(Math.round(newInputPrice * +quantity));
 	};
+
+	const tradeHandler = () => {
+		console.log(
+			`price = ${inputPrice}, quantity = ${quantity}, total=${total}`
+		);
+	};
+
 	return (
 		<OrderComponent className="order-wrapper">
 			<div className="order-menu">
@@ -88,7 +96,7 @@ function Order({ inputPrice, setInputPrice, symbol }: Props) {
 					<div>
 						{order === '매수'
 							? `${money.toLocaleString()} KRW`
-							: `${coin} ${symbol.symbol.replace('KRW', '')}`}
+							: `${coin} ${coinInfo.symbol.replace('KRW', '')}`}
 					</div>
 				</div>
 				<div className="order-price order">
@@ -137,7 +145,10 @@ function Order({ inputPrice, setInputPrice, symbol }: Props) {
 					</div>
 				</div>
 				<div className="order-btn">
-					<Button style={{ width: 455, height: 50, border: 'none' }}>
+					<Button
+						style={{ width: 455, height: 50, border: 'none' }}
+						onClick={tradeHandler}
+					>
 						{order}
 					</Button>
 				</div>

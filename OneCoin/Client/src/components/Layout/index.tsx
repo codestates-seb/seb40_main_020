@@ -25,14 +25,17 @@ function Layout({
 		code: 'KRW-BTC',
 		symbol: 'BTCKRW',
 	});
-	const symbolHandler = (item: T) => setSymbol(item);
+	const coinInfoHandler = (item: T) => setSymbol(item);
 
 	return (
 		<>
 			<Header />
 			<Wapper isLeftMargin={isLeftMargin}>
 				<Container>{children}</Container>
-				<Aside symbolHandler={symbolHandler} isLeftSidebar={isLeftSidebar} />
+				<Aside
+					coinInfoHandler={coinInfoHandler}
+					isLeftSidebar={isLeftSidebar}
+				/>
 			</Wapper>
 			<Footer />
 		</>
