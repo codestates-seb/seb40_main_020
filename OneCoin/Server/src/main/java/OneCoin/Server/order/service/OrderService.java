@@ -59,7 +59,8 @@ public class OrderService {
     }
 
     private void subtractUserBalance(long userId, BigDecimal price, BigDecimal amount) {
-        BigDecimal totalBidPrice = price.multiply(amount).multiply(Commission.ORDER.getRate());
+        BigDecimal commissionRate = Commission.ORDER.getRate().add(BigDecimal.ONE);
+        BigDecimal totalBidPrice = price.multiply(amount).multiply(commissionRate); // price * amount * 1.0005
         balanceService.updateBalanceByBid(userId, totalBidPrice);
     }
 
@@ -68,8 +69,9 @@ public class OrderService {
         long userId = verifyUserOrder(order);
 
         if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수 주문 취소 시 balance 환불
-            giveBalanceBack(userId, order);
+            giveBalanceBack(userId, order.getLimit(), order.getAmount());
         }
+        // TODO 일부 체결된 것 Transaction History 저장
         orderRepository.delete(order);
     }
 
@@ -87,9 +89,9 @@ public class OrderService {
         return userId;
     }
 
-    private void giveBalanceBack(long userId, Order order) {
-        BigDecimal cancelPrice = order.getLimit();
-        BigDecimal totalCancelPrice = cancelPrice.multiply(order.getAmount()).multiply(Commission.ORDER.getRate());
+    private void giveBalanceBack(long userId, BigDecimal cancelPrice, BigDecimal cancelAmount) {
+        BigDecimal commissionRate = Commission.ORDER.getRate().add(BigDecimal.ONE);
+        BigDecimal totalCancelPrice = cancelPrice.multiply(cancelAmount).multiply(commissionRate);
         balanceService.updateBalanceByAskOrCancelBid(userId, totalCancelPrice);
     }
 
