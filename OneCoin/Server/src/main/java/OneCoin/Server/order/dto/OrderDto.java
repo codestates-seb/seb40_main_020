@@ -36,11 +36,12 @@ public class OrderDto {
     @Getter
     @Setter
     public static class GetResponse {
+        private long orderId;
         private String code;
         private LocalDateTime orderTime;
-        private boolean askBid;
+        private String orderType;
         private String limit;
-        private String market; // 시장가에도 전부 체결되지 않을 가능성
+        private String market;
         private String stopLimit;
         private String amount;
         private String completedAmount;
