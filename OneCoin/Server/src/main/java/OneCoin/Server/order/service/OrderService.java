@@ -30,6 +30,7 @@ public class OrderService {
     private final LoggedInUserInfoUtils loggedInUserInfoUtils;
     private final CalculationUtil calculationUtil;
     private final BalanceService balanceService;
+    private final TransactionHistoryService transactionHistoryService;
 
     public void createOrder(Order order, String code) {
         User user = loggedInUserInfoUtils.extractUser();
@@ -71,7 +72,7 @@ public class OrderService {
         if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수 주문 취소 시 balance 환불
             giveBalanceBack(userId, order.getLimit(), order.getAmount());
         }
-        // TODO 일부 체결된 것 Transaction History 저장 (수수료: completedAmount * limit * commissionRate)
+        transactionHistoryService.createTransactionHistory(order);
         orderRepository.delete(order);
     }
 

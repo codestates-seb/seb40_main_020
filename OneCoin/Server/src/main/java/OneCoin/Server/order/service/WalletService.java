@@ -25,6 +25,7 @@ public class WalletService {
     private final OrderRepository orderRepository;
     private final WalletOrderMapper mapper;
     private final BalanceService balanceService;
+    private final TransactionHistoryService transactionHistoryService;
     private final CalculationUtil calculationUtil;
     private final LoggedInUserInfoUtils loggedInUserInfoUtils;
 
@@ -71,7 +72,7 @@ public class WalletService {
     }
 
     private void deleteCompletedOrder(Order order) {
-        // TODO Transaction History 저장 (비동기)
+        transactionHistoryService.createTransactionHistory(order);
         orderRepository.delete(order);
     }
 
