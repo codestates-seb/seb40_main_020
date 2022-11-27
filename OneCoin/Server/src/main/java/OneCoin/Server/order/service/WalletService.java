@@ -9,14 +9,10 @@ import OneCoin.Server.order.repository.OrderRepository;
 import OneCoin.Server.order.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class WalletService {
 
@@ -24,21 +20,16 @@ public class WalletService {
     private final OrderRepository orderRepository;
     private final WalletMapper mapper;
 
-    public void createWallet(List<Order> orders, BigDecimal tradeVolume) {
-        List<Wallet> wallets = new ArrayList<>();
+    public void createWallet(Order order, BigDecimal tradeVolume) {
+        BigDecimal completedAmount = getCompletedAmount(order, tradeVolume);
+        Wallet newWallet = mapper.bidOrderToNewWallet(order, completedAmount);
+        walletRepository.save(newWallet);
+    }
 
-        for (Order order : orders) {
-            BigDecimal completedAmount = getCompletedAmount(order, tradeVolume);
-            Wallet findWallet = findMyWallet(order.getUserId(), order.getCode());
-            if (findWallet != null) { // 지갑에 이미 존재할 때
-                updateWalletByBid(findWallet, order.getLimit(), completedAmount);
-                continue;
-            }
-
-            Wallet wallet = mapper.bidOrderToNewWallet(order, completedAmount);
-            wallets.add(wallet);
-        }
-        walletRepository.saveAll(wallets);
+    public void updateWalletByBid(Wallet wallet, Order order, BigDecimal tradeVolume) {
+        BigDecimal completedAmount = getCompletedAmount(order, tradeVolume);
+        Wallet updatedWallet = mapper.bidOrderToUpdatedWallet(wallet, order.getLimit(), completedAmount);
+        walletRepository.save(updatedWallet);
     }
 
     private BigDecimal getCompletedAmount(Order order, BigDecimal tradeVolume) {
@@ -64,11 +55,6 @@ public class WalletService {
         orderRepository.delete(order);
     }
 
-    private void updateWalletByBid(Wallet wallet, BigDecimal orderPrice, BigDecimal completedAmount) {
-        Wallet updatedWallet = mapper.bidOrderToUpdatedWallet(wallet, orderPrice, completedAmount);
-        walletRepository.save(updatedWallet);
-    }
-
     public Wallet findVerifiedWalletWithCoin(long userId, String code) {
         Wallet wallet = findMyWallet(userId, code);
         if (wallet == null) {
@@ -77,7 +63,7 @@ public class WalletService {
         return wallet;
     }
 
-    private Wallet findMyWallet(long userId, String code) {
+    public Wallet findMyWallet(long userId, String code) {
         return walletRepository.findByUserIdAndCode(userId, code);
     }
 }
