@@ -96,10 +96,10 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<Order> findOrders(String code) {
-        coinService.verifyCoinExists(code);
-        long userId = loggedInUserInfoUtils.extractUserId();
-        List<Order> myOrders = orderRepository.findAllByUserIdAndCode(userId, code);
+    public List<Order> findOrders() {
+        User user = loggedInUserInfoUtils.extractUser();
+        List<Order> myOrders = orderRepository.findAllByUserId(user.getUserId());
+
         if (myOrders.isEmpty()) {
             throw new BusinessLogicException(ExceptionCode.NO_EXISTS_ORDER);
         }
