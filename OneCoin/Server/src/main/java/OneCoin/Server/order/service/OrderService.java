@@ -7,10 +7,10 @@ import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.entity.Wallet;
-import OneCoin.Server.order.entity.enums.Commission;
 import OneCoin.Server.order.entity.enums.TransactionType;
 import OneCoin.Server.order.repository.OrderRepository;
 import OneCoin.Server.user.entity.User;
+import OneCoin.Server.utils.CalculationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +28,7 @@ public class OrderService {
     private final CoinService coinService;
     private final WalletService walletService;
     private final LoggedInUserInfoUtils loggedInUserInfoUtils;
+    private final CalculationUtil calculationUtil;
     private final BalanceService balanceService;
 
     public void createOrder(Order order, String code) {
@@ -59,8 +60,7 @@ public class OrderService {
     }
 
     private void subtractUserBalance(long userId, BigDecimal price, BigDecimal amount) {
-        BigDecimal commissionRate = Commission.ORDER.getRate().add(BigDecimal.ONE);
-        BigDecimal totalBidPrice = price.multiply(amount).multiply(commissionRate); // price * amount * 1.0005
+        BigDecimal totalBidPrice = calculationUtil.calculateByAddingCommission(price, amount);
         balanceService.updateBalanceByBid(userId, totalBidPrice);
     }
 
@@ -90,8 +90,7 @@ public class OrderService {
     }
 
     private void giveBalanceBack(long userId, BigDecimal cancelPrice, BigDecimal cancelAmount) {
-        BigDecimal commissionRate = Commission.ORDER.getRate().add(BigDecimal.ONE);
-        BigDecimal totalCancelPrice = cancelPrice.multiply(cancelAmount).multiply(commissionRate);
+        BigDecimal totalCancelPrice = calculationUtil.calculateByAddingCommission(cancelPrice, cancelAmount);
         balanceService.updateBalanceByAskOrCancelBid(userId, totalCancelPrice);
     }
 

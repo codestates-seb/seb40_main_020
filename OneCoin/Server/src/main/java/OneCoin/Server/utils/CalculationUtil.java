@@ -47,4 +47,9 @@ public class CalculationUtil {
         BigDecimal commissionRate = BigDecimal.ONE.subtract(Commission.ORDER.getRate());
         return price.multiply(amount).multiply(commissionRate);
     }
+
+    public BigDecimal calculateByAddingCommission(BigDecimal price, BigDecimal amount) {
+        BigDecimal commissionRate = BigDecimal.ONE.add(Commission.ORDER.getRate());
+        return price.multiply(amount).multiply(commissionRate);
+    }
 }
