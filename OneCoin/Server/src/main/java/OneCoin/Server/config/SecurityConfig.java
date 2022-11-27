@@ -81,7 +81,7 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(List.of("*"));   // 일단 테스트, 공식 문서에서는 좀 더 유연하다고 하는데... 뭔차이지?
 //        configuration.setAllowedOrigins(List.of("*"));   // 모든 origin 허용
         configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));  // 허용 메소드 설정
-        configuration.setAllowedHeaders(List.of("*"));     // 요청 헤더 허용 설정
+        configuration.setAllowedHeaders(List.of("*", "connection", "upgrade"));     // 요청 헤더 허용 설정
         configuration.setAllowCredentials(true);        // 크레덴셜 지원 설정
         configuration.setExposedHeaders(List.of("*"));       // 응답 헤더 허용 설정
 
