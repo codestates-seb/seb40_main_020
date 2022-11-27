@@ -9,8 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -22,7 +20,7 @@ public class ChatController {
     private final SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/rooms")//여기에는 @Payload가 생략되어 있음. body를 객체로 mapping시켜줌
-    public void message(ChatRequestDto requestMessage) {
+    public void sendMessage(ChatRequestDto requestMessage) {
         log.info("message received: {}", requestMessage);
         ChatMessage convertedChatMessage = chatMapper.requestDtoToChatMessage(requestMessage);
         ChatMessage chatMessage = chatService.saveMessage(convertedChatMessage);
