@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class OrderDto {
     @Getter
     @Setter
-    @MustHavePrice(limit = "limit", market = "market", stopLimit = "stopLimit")
+    @MustHavePrice(limit = "limit", market = "market")
     public static class Post {
 
         @PositiveOrZero(message = "음수 값은 허용하지 않습니다.")
