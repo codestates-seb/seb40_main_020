@@ -1,9 +1,11 @@
 package OneCoin.Server.order.service;
 
+import OneCoin.Server.balance.BalanceService;
 import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.entity.Wallet;
+import OneCoin.Server.order.entity.enums.Commission;
 import OneCoin.Server.order.mapper.WalletMapper;
 import OneCoin.Server.order.repository.OrderRepository;
 import OneCoin.Server.order.repository.WalletRepository;
@@ -19,6 +21,7 @@ public class WalletService {
     private final WalletRepository walletRepository;
     private final OrderRepository orderRepository;
     private final WalletMapper mapper;
+    private final BalanceService balanceService;
 
     public void createWallet(Order order, BigDecimal tradeVolume) {
         BigDecimal completedAmount = getCompletedAmount(order, tradeVolume);
@@ -30,6 +33,17 @@ public class WalletService {
         BigDecimal completedAmount = getCompletedAmount(order, tradeVolume);
         Wallet updatedWallet = mapper.bidOrderToUpdatedWallet(wallet, order.getLimit(), completedAmount);
         walletRepository.save(updatedWallet);
+    }
+
+    public void updateWalletByAsk(Wallet wallet, Order order, BigDecimal tradeVolume) {
+        BigDecimal completedAmount = getCompletedAmount(order, tradeVolume);
+        Wallet updatedWallet = mapper.askOrderToUpdatedWallet(wallet, order.getLimit(), completedAmount);
+        if (verifyWalletAmountZero(updatedWallet)) {
+            walletRepository.delete(updatedWallet);
+        } else {
+            walletRepository.save(updatedWallet);
+        }
+        addUserBalance(order.getUserId(), order.getLimit(), completedAmount);
     }
 
     private BigDecimal getCompletedAmount(Order order, BigDecimal tradeVolume) {
@@ -53,6 +67,18 @@ public class WalletService {
     private void deleteCompletedOrder(Order order) {
         // TODO Transaction History 저장 (비동기)
         orderRepository.delete(order);
+    }
+
+    private boolean verifyWalletAmountZero(Wallet wallet) {
+        BigDecimal amount = wallet.getAmount();
+        int comparison = amount.compareTo(BigDecimal.ZERO);
+        return comparison == 0;
+    }
+
+    private void addUserBalance(long userId, BigDecimal price, BigDecimal completedAmount) {
+        BigDecimal commissionRate = Commission.ORDER.getRate().subtract(BigDecimal.ONE);
+        BigDecimal totalAskPrice = price.multiply(completedAmount).multiply(commissionRate);
+        balanceService.updateBalanceByAskOrCancelBid(userId, totalAskPrice);
     }
 
     public Wallet findVerifiedWalletWithCoin(long userId, String code) {

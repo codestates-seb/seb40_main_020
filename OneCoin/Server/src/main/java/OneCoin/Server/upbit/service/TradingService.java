@@ -35,7 +35,7 @@ public class TradingService {
             tradeBid(orders, tradeVolume);
         }
         if (orderType.equals(TransactionType.ASK.getType())) {
-            tradeAsk();
+            tradeAsk(orders, tradeVolume);
         }
     }
 
@@ -51,7 +51,10 @@ public class TradingService {
         }
     }
 
-    private void tradeAsk() {
-
+    private void tradeAsk(List<Order> orders, BigDecimal tradeVolume) {
+        for (Order order : orders) {
+            Wallet findWallet = walletService.findMyWallet(order.getUserId(), order.getCode());
+            walletService.updateWalletByAsk(findWallet, order, tradeVolume);
+        }
     }
 }
