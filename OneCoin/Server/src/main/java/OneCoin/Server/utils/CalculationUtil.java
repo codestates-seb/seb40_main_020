@@ -1,5 +1,6 @@
 package OneCoin.Server.utils;
 
+import OneCoin.Server.order.entity.enums.Commission;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -22,5 +23,28 @@ public class CalculationUtil {
         BigDecimal totalAmount = holdingAmount.subtract(newAmount);
 
         return prevTotal.subtract(curTotal).divide(totalAmount, 2, RoundingMode.HALF_UP);
+    }
+
+    public String calculateChangeRate(String price, String prevClosingPrice) {
+        BigDecimal curPrice = new BigDecimal(price);
+        BigDecimal prePrice = new BigDecimal(prevClosingPrice);
+        BigDecimal changeRate = curPrice
+                .subtract(prePrice)
+                .multiply(new BigDecimal(100))
+                .divide(prePrice, 2, RoundingMode.HALF_UP);
+        return getSign(changeRate) + changeRate + "%";
+    }
+
+    private String getSign(BigDecimal changeRate) {
+        int comparison = changeRate.compareTo(BigDecimal.ZERO);
+        if (comparison > 0) {
+            return "+";
+        }
+        return "";
+    }
+
+    public BigDecimal calculateOrderCommission(BigDecimal price, BigDecimal amount) {
+        BigDecimal commissionRate = Commission.ORDER.getRate().subtract(BigDecimal.ONE); // 0.05
+        return price.multiply(amount).multiply(commissionRate);
     }
 }

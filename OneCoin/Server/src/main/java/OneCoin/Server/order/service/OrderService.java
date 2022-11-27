@@ -11,6 +11,7 @@ import OneCoin.Server.order.entity.enums.Commission;
 import OneCoin.Server.order.entity.enums.TransactionType;
 import OneCoin.Server.order.repository.OrderRepository;
 import OneCoin.Server.user.entity.User;
+import OneCoin.Server.utils.CalculationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ public class OrderService {
     private final WalletService walletService;
     private final LoggedInUserInfoUtils loggedInUserInfoUtils;
     private final BalanceService balanceService;
+    private final CalculationUtil calculationUtil;
 
     public void createOrder(Order order, String code) {
         User user = loggedInUserInfoUtils.extractUser();
@@ -43,7 +45,7 @@ public class OrderService {
         if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수
             BigDecimal price = order.getLimit();
             subtractUserBalance(userId, price, amount);
-            order.setCommission(calculateCommission(price, amount));
+            order.setCommission(calculationUtil.calculateOrderCommission(price, amount));
         }
         order.setUserId(user.getUserId());
         order.setCode(code);
@@ -62,11 +64,6 @@ public class OrderService {
     private void subtractUserBalance(long userId, BigDecimal price, BigDecimal amount) {
         BigDecimal totalBidPrice = price.multiply(amount).multiply(Commission.ORDER.getRate());
         balanceService.updateBalanceByBid(userId, totalBidPrice);
-    }
-
-    private BigDecimal calculateCommission(BigDecimal price, BigDecimal amount) {
-        BigDecimal commissionRate = Commission.ORDER.getRate().subtract(BigDecimal.ONE); // 0.05
-        return price.multiply(amount).multiply(commissionRate);
     }
 
     public void cancelOrder(long orderId) {
