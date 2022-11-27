@@ -71,7 +71,7 @@ public class OrderService {
         if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수 주문 취소 시 balance 환불
             giveBalanceBack(userId, order.getLimit(), order.getAmount());
         }
-        // TODO 일부 체결된 것 Transaction History 저장
+        // TODO 일부 체결된 것 Transaction History 저장 (수수료: completedAmount * limit * commissionRate)
         orderRepository.delete(order);
     }
 
@@ -97,6 +97,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public List<Order> findOrders(String code) {
+        coinService.verifyCoinExists(code);
         long userId = loggedInUserInfoUtils.extractUserId();
         List<Order> myOrders = orderRepository.findAllByUserIdAndCode(userId, code);
         if (myOrders.isEmpty()) {

@@ -5,6 +5,7 @@ import OneCoin.Server.order.entity.Order;
 import org.mapstruct.Mapper;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
@@ -22,4 +23,6 @@ public interface OrderMapper {
                 .orderType(postDto.getOrderType())
                 .build();
     }
+
+    List<OrderDto.GetResponse> orderToGetResponse(List<Order> orders);
 }
