@@ -1,7 +1,8 @@
 package OneCoin.Server.chat.fullTest;
 
 import OneCoin.Server.chat.chatMessage.dto.ChatRequestDto;
-import OneCoin.Server.chat.chatRoom.repository.ChatRoomInMemoryRepository;
+import OneCoin.Server.chat.chatMessage.repository.ChatMessageRepository;
+import OneCoin.Server.chat.chatRoom.repository.ChatRoomRepository;
 import OneCoin.Server.chat.chatRoom.repository.UserInChatRoomRepository;
 import OneCoin.Server.chat.constant.MessageType;
 import OneCoin.Server.config.auth.jwt.JwtTokenizer;
@@ -10,7 +11,6 @@ import OneCoin.Server.user.entity.Role;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.repository.UserRepository;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -33,17 +33,17 @@ import java.util.concurrent.TimeoutException;
 
 public class TestUtils {
     private final JwtTokenizer jwtTokenizer;
-    private final ChatRoomInMemoryRepository chatRoomInMemoryRepository;
+    private final ChatRoomRepository chatRoomRepository;
     private final UserInChatRoomRepository userInChatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
     private final UserRepository userRepository;
     private final RedisTemplate redisTemplate;
 
-    public TestUtils(JwtTokenizer jwtTokenizer, ChatRoomInMemoryRepository chatRoomInMemoryRepository,
-                     UserInChatRoomRepository userInChatRoomRepository, UserRepository userRepository,
-                     RedisTemplate redisTemplate) {
+    public TestUtils(JwtTokenizer jwtTokenizer, ChatRoomRepository chatRoomRepository, UserInChatRoomRepository userInChatRoomRepository, ChatMessageRepository chatMessageRepository, UserRepository userRepository, RedisTemplate redisTemplate) {
         this.jwtTokenizer = jwtTokenizer;
-        this.chatRoomInMemoryRepository = chatRoomInMemoryRepository;
+        this.chatRoomRepository = chatRoomRepository;
         this.userInChatRoomRepository = userInChatRoomRepository;
+        this.chatMessageRepository = chatMessageRepository;
         this.userRepository = userRepository;
         this.redisTemplate = redisTemplate;
     }
@@ -60,8 +60,9 @@ public class TestUtils {
 
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 
-        return jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
+        return "Bearer " + jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
     }
+
     public User makeUser(String name) {
         return User.builder()
                 .userRole(Role.ROLE_USER)
@@ -72,12 +73,10 @@ public class TestUtils {
                 .build();
     }
 
-    public void clearInMemory(Long chatRoomId) {
-        chatRoomInMemoryRepository.deleteAll();
-        userInChatRoomRepository.deleteAll();
-        String key = "ChatRoom" + String.valueOf(chatRoomId) + "Message";
-        ZSetOperations<String, Object> operations = redisTemplate.opsForZSet();
-        operations.removeRange(key, Long.MIN_VALUE, Long.MAX_VALUE);
+    public void clearInMemory(Integer chatRoomId) {
+        chatRoomRepository.delete(chatRoomId);
+        userInChatRoomRepository.removeAllInChatRoom(chatRoomId);
+        chatMessageRepository.removeAllInChatRoom(chatRoomId);
     }
 
     public void saveUsers() {
@@ -87,15 +86,15 @@ public class TestUtils {
         userRepository.save(makeUser("sangdi"));
 
     }
-    public StompSession getSessionAfterConnect(String url, WebSocketHttpHeaders httpHeaders, StompHeaders stompHeaders) throws ExecutionException, InterruptedException, TimeoutException {
-        WebSocketStompClient stompClient = makeStompClient();
+
+    public StompSession getSessionAfterConnect(WebSocketStompClient stompClient, String url, WebSocketHttpHeaders httpHeaders, StompHeaders stompHeaders) throws ExecutionException, InterruptedException, TimeoutException {
         ListenableFuture<StompSession> connection = stompClient
                 .connect(url, httpHeaders, stompHeaders, new StompSessionHandlerAdapter() {
                 });
         return connection.get(100, TimeUnit.SECONDS);
     }
 
-    public ChatRequestDto makeSendingMessage(String message, Long chatRoomId, User sendingUser) {
+    public ChatRequestDto makeSendingMessage(String message, Integer chatRoomId, User sendingUser) {
         return ChatRequestDto.builder()
                 .chatRoomId(chatRoomId)
                 .userId(sendingUser.getUserId())
@@ -103,12 +102,6 @@ public class TestUtils {
                 .userDisplayName(sendingUser.getDisplayName())
                 .message(message)
                 .build();
-    }
-
-    public StompHeaders makeStompHeaderWithJwt(String jwt) {
-        StompHeaders stompHeaders = new StompHeaders();
-        stompHeaders.add("Authorization", jwt);
-        return stompHeaders;
     }
 
     public WebSocketStompClient makeStompClient() {
@@ -121,4 +114,11 @@ public class TestUtils {
         client.setMessageConverter(new MappingJackson2MessageConverter());
         return client;
     }
+
+    public WebSocketHttpHeaders makeHttpHeadersWithJwt(String jwt) {
+        WebSocketHttpHeaders httpHeaders = new WebSocketHttpHeaders();
+        httpHeaders.add("Authorization", jwt);
+        return httpHeaders;
+    }
+
 }
