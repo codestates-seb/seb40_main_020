@@ -7,7 +7,7 @@ import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.entity.Wallet;
 import OneCoin.Server.order.entity.enums.Commission;
-import OneCoin.Server.order.mapper.WalletMapper;
+import OneCoin.Server.order.mapper.WalletOrderMapper;
 import OneCoin.Server.order.repository.OrderRepository;
 import OneCoin.Server.order.repository.WalletRepository;
 import OneCoin.Server.user.entity.User;
@@ -23,7 +23,7 @@ public class WalletService {
 
     private final WalletRepository walletRepository;
     private final OrderRepository orderRepository;
-    private final WalletMapper mapper;
+    private final WalletOrderMapper mapper;
     private final BalanceService balanceService;
     private final LoggedInUserInfoUtils loggedInUserInfoUtils;
 

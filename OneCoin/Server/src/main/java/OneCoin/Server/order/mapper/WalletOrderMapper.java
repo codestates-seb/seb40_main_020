@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 
 @Component
 @RequiredArgsConstructor
-public class WalletMapper {
+public class WalletOrderMapper {
     public final CalculationUtil calculationUtil;
 
     public Wallet bidOrderToNewWallet(Order order, BigDecimal completedAmount) {
