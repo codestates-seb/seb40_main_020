@@ -4,12 +4,20 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { coinDataState } from '../../../store';
 import { useRecoilState } from 'recoil';
 import { Props } from '../index';
+import { CoinDataType } from '../../../utills/types';
 
-function CoinList({ symbolHandler }: Props) {
+function CoinList({ coinInfoHandler }: Props) {
 	const [coinlist, setCoinlist] = useRecoilState(coinDataState);
 	const newcoinlist = [...coinlist];
 	const subTitleMenu = ['코인명', '현재가', '전일대비'];
 	const coinCodes = coinlist.map((v) => v.code);
+	const [searchResult, setSearchResult] = useState<CoinDataType[]>([]);
+	const searchInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const newSearchResult = coinlist.filter((v) =>
+			v.coin.includes(e.target.value)
+		);
+		setSearchResult(newSearchResult);
+	};
 
 	useEffect(() => {
 		const socket = new WebSocket('wss://api.upbit.com/websocket/v1');
@@ -36,19 +44,46 @@ function CoinList({ symbolHandler }: Props) {
 			{ type: 'orderbook', codes: coinCodes },
 		];
 		socketAPI(codes);
-	}, []);
-
-	useEffect(() => {
 		const coinPriceInterval = setInterval(() => {
 			setCoinlist([...newcoinlist]);
 		}, 1000);
 		return () => clearInterval(coinPriceInterval);
 	}, []);
 
+	const isShow = (v: CoinDataType, i: number) => {
+		const ticker = v?.ticker;
+		const change = ticker?.change;
+		const todayRate = change === 'FALL' ? 'fall' : 'rise';
+		const tradePrice = ticker?.trade_price ? ticker.trade_price : 0;
+		const changeRate = ticker?.signed_change_rate
+			? ticker.signed_change_rate
+			: 0;
+		const changePrice = ticker?.signed_change_price
+			? ticker.signed_change_price
+			: 0;
+		const newCoinInfo = { coin: v.coin, code: v.code, symbol: v.symbol };
+
+		return (
+			<tr key={i} onClick={() => coinInfoHandler(newCoinInfo)}>
+				<td>{v.coin}</td>
+				<td className={todayRate}>{tradePrice.toLocaleString()}</td>
+				<td className={todayRate}>
+					<div>
+						<span>{(changeRate * 100).toFixed(2) + '%'}</span>
+						<span>{changePrice.toLocaleString()}</span>
+					</div>
+				</td>
+			</tr>
+		);
+	};
 	return (
 		<CoinListComponent>
 			<div className="coin-search">
-				<input type="text" placeholder="코인명 검색" />
+				<input
+					type="text"
+					placeholder="코인명 검색"
+					onChange={searchInputHandler}
+				/>
 				<div className="serach-icon">
 					<AiOutlineSearch />
 				</div>
@@ -62,46 +97,9 @@ function CoinList({ symbolHandler }: Props) {
 					</tr>
 				</thead>
 				<tbody>
-					{coinlist &&
-						coinlist.map((v, i) => {
-							const change = v?.ticker?.change;
-							let todayRate = '';
-							if (change === 'FALL') todayRate = 'fall';
-							else if (change === 'RISE') todayRate = 'rise';
-							return (
-								<tr
-									key={i}
-									onClick={() =>
-										symbolHandler({
-											coin: v.coin,
-											code: v.code,
-											symbol: v.symbol,
-										})
-									}
-								>
-									<td>{v.coin}</td>
-									<td className={todayRate}>
-										{v?.ticker?.trade_price
-											? v.ticker.trade_price.toLocaleString()
-											: 0}
-									</td>
-									<td className={todayRate}>
-										<div>
-											<span>
-												{v?.ticker?.signed_change_rate
-													? `${(v.ticker.signed_change_rate * 100).toFixed(2)}%`
-													: '0%'}
-											</span>
-											<span>
-												{v?.ticker?.signed_change_price
-													? v.ticker.signed_change_price.toLocaleString()
-													: 0}
-											</span>
-										</div>
-									</td>
-								</tr>
-							);
-						})}
+					{searchResult.length
+						? searchResult.map(isShow)
+						: coinlist.map(isShow)}
 				</tbody>
 			</table>
 		</CoinListComponent>
