@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef, memo } from 'react';
 import { createChart } from 'lightweight-charts';
-import axios from 'axios';
 import { SubChartComponent } from './style';
 import { useRecoilValue } from 'recoil';
 import { coinDataState } from '../../../../store';
@@ -16,10 +15,10 @@ interface Props {
 function SubChart({ code, time, chartSelector }: Props) {
 	const UPDATE_INITIAL_DATA = {
 		time: 0,
-		open: 0,
-		high: 0,
-		low: 0,
-		close: 0,
+		open: '0',
+		high: '0',
+		low: '0',
+		close: '0',
 	};
 	const coinData = useRecoilValue(coinDataState);
 
@@ -36,29 +35,30 @@ function SubChart({ code, time, chartSelector }: Props) {
 
 	let chart: any;
 	let newSeries: any;
-
 	useEffect(() => {
 		const coin = coinData.filter((v) => v.code === code)[0];
-		const tradePrice = coin.ticker?.trade_price as number;
-		const lastData = data[data.length - 1];
-		const unl = Object.values(updateData);
-		if (unl.includes(undefined) || unl.includes(0)) {
-			setUpdateData({
-				time: lastData?.time + 1,
-				open: lastData?.open,
-				high: lastData?.high,
-				low: lastData?.low,
-				close: lastData?.close,
-			});
-		} else {
-			const newUpdateData = { ...updateData };
-			newUpdateData.time = (coin.ticker?.timestamp as number) / 1000;
-			newUpdateData.close = tradePrice;
-			newUpdateData.low =
-				newUpdateData.low < tradePrice ? newUpdateData.low : tradePrice;
-			newUpdateData.high =
-				newUpdateData.high > tradePrice ? newUpdateData.high : tradePrice;
-			setUpdateData(newUpdateData);
+		if (coin?.ticker?.code as string) {
+			const tradePrice = coin?.ticker?.trade_price as string;
+			const lastData = data[data.length - 1];
+			const unl = Object.values(updateData);
+			if (unl.includes(undefined) || unl.includes(0)) {
+				setUpdateData({
+					time: lastData?.time + 1,
+					open: lastData?.open,
+					high: lastData?.high,
+					low: lastData?.low,
+					close: lastData?.close,
+				});
+			} else {
+				const newUpdateData = { ...updateData };
+				newUpdateData.time = Number(coin.ticker?.timestamp as string) / 1000;
+				newUpdateData.close = tradePrice;
+				newUpdateData.low =
+					newUpdateData.low < tradePrice ? newUpdateData.low : tradePrice;
+				newUpdateData.high =
+					newUpdateData.high > tradePrice ? newUpdateData.high : tradePrice;
+				setUpdateData(newUpdateData);
+			}
 		}
 	}, [coinData]);
 
@@ -67,18 +67,18 @@ function SubChart({ code, time, chartSelector }: Props) {
 		const newData: ChartData[] = [];
 		for (let i = res.length - 1; i >= 0; i--) {
 			const obj: ChartData = {
-				time: Math.floor((res[i].timestamp as number) / 1000),
-				open: res[i].opening_price as number,
-				high: res[i].high_price as number,
-				low: res[i].low_price as number,
-				close: res[i].trade_price as number,
+				time: Math.floor(Number(res[i].timestamp as string) / 1000),
+				open: res[i].opening_price as string,
+				high: res[i].high_price as string,
+				low: res[i].low_price as string,
+				close: res[i].trade_price as string,
 			};
 			newData.push(obj);
 		}
 
 		if (type === 'date') {
 			for (let i = 0; i < data.length; i++) {
-				if (newData[newData.length - 1].time >= data[0].time) {
+				if (Number(newData[newData.length - 1].time) >= Number(data[0].time)) {
 					newData.pop();
 				} else break;
 			}
@@ -99,9 +99,9 @@ function SubChart({ code, time, chartSelector }: Props) {
 	}, [code]);
 	useEffect(() => {
 		if (chartSelector === 1) {
-			const myPriceFormatter = (p: number) => {
-				if (p > 100) return p;
-				else return p.toFixed(2);
+			const myPriceFormatter = (p: string) => {
+				if (Number(p) > 100) return p;
+				else return Number(p).toFixed(2);
 			};
 
 			chart = createChart(chartContainerRef.current, {
@@ -126,7 +126,7 @@ function SubChart({ code, time, chartSelector }: Props) {
 			});
 			newSeries.setData(data);
 			const unl = Object.values(updateData);
-			if (!(unl.includes(undefined) || unl.includes(0))) {
+			if (!(unl.includes(undefined) || unl.includes('0'))) {
 				const prevT = new Date(data[data.length - 1].time * 1000).getMinutes();
 				const nxtT = new Date(updateData.time * 1000).getMinutes();
 				if (nxtT - prevT === time) {

@@ -1,55 +1,48 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Quote from '../Quote';
 import { QuoteListComponent } from './style';
-import { OrderbookType, OrderType } from '../../../../utills/types';
+import { OrderBook, AskOrder } from '../../../../utills/types';
 
 interface Props {
-	coinOrderbook?: OrderbookType;
-	tradePrice?: number;
+	orderBook?: OrderBook;
+	tradePrice?: string;
 	prcieClickHandler: (price: number) => void;
 }
 
-function QuoteList({ coinOrderbook, prcieClickHandler, tradePrice }: Props) {
+function QuoteList({ orderBook, prcieClickHandler, tradePrice }: Props) {
 	const scrollRef = useRef<null | HTMLDivElement>(null);
-	const [askPrice, setAskPrice] = useState<OrderType[]>([]);
-	const [bidPrice, setBidPrice] = useState<OrderType[]>([]);
-	useEffect(() => {
-		if (coinOrderbook?.orderbook_units !== undefined) {
-			const newAskPrice = coinOrderbook.orderbook_units.map((v) => {
-				const obj = { price: v.ask_price, size: v.ask_size };
-				return obj;
-			});
-			setAskPrice(newAskPrice.sort((a, b) => b.price - a.price));
-			const newBidPrice = coinOrderbook.orderbook_units.map((v) => {
-				const obj = { price: v.bid_price, size: v.bid_size };
-				return obj;
-			});
-			setBidPrice(newBidPrice);
-		}
-	}, [coinOrderbook]);
+	const [ask, setAsk] = useState<AskOrder[]>([]);
 
+	useEffect(() => {
+		const askInfo = orderBook?.askInfo as AskOrder[];
+		if (askInfo) {
+			setAsk([...askInfo].reverse());
+		}
+	}, [orderBook]);
 	return (
 		<QuoteListComponent className="quote-wrapper" ref={scrollRef}>
 			<div className="normal">일반호가</div>
 			<div className="ask">
-				{askPrice.map((ask, i) => (
+				{ask.map((ask, i) => (
 					<Quote
-						price={ask.price}
-						size={ask.size}
+						price={ask.askPrice}
+						size={ask.askSize}
+						changeRate={ask.changeRate}
 						key={i}
 						prcieClickHandler={prcieClickHandler}
-						tradePrice={tradePrice}
+						tradePrice={Number(tradePrice as string)}
 					/>
 				))}
 			</div>
 			<div className="bid">
-				{bidPrice.map((bid, i) => (
+				{orderBook?.bidInfo.map((bid, i) => (
 					<Quote
-						price={bid.price}
-						size={bid.size}
+						price={bid.bidPrice}
+						size={bid.bidSize}
+						changeRate={bid.changeRate}
 						key={i}
 						prcieClickHandler={prcieClickHandler}
-						tradePrice={tradePrice}
+						tradePrice={Number(tradePrice as string)}
 					/>
 				))}
 			</div>
