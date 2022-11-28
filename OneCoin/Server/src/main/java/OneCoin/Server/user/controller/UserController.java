@@ -32,6 +32,15 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
+    @PostMapping("/authentication-email")
+    public ResponseEntity authenticationEmail(@Valid @RequestBody UserDto.Post requestBody) {
+        userService.authenticationEmail(userMapper.userPostToUser(requestBody));
+
+        return new ResponseEntity<>(
+                new SingleResponseDto<>("Send Email"), HttpStatus.CREATED
+        );
+    }
+
     @PostMapping
     public ResponseEntity postUser(@Valid @RequestBody UserDto.Post requestBody) {
         User user = userService.createUser(userMapper.userPostToUser(requestBody));
