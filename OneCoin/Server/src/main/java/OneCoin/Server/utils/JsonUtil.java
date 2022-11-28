@@ -1,4 +1,4 @@
-package OneCoin.Server.upbit.utils;
+package OneCoin.Server.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

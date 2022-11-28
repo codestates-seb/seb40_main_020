@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 @AllArgsConstructor
@@ -29,5 +30,5 @@ public class Balance extends Auditable {
     private List<Deposit> deposit;
 
     @Column(nullable = false)
-    private Long balance;
+    private BigDecimal balance;
 }

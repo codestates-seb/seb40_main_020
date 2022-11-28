@@ -33,4 +33,7 @@ public class TickerDto {
 
     @JsonProperty("acc_trade_price_24h")
     private String accTradePrice24h; // 24시간 누적 거래 대금
+
+    @JsonProperty("timestamp")
+    private String timeStamp;
 }
