@@ -6,7 +6,7 @@ export const LoginBox = styled.div`
 	justify-content: center;
 	align-items: center;
 	width: 100%;
-	height: calc(100vh - 50px);
+	height: 600px;
 `;
 
 export const Input = styled.input`
@@ -21,21 +21,21 @@ export const Form = styled.form`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	/* height: 100%;
-	width: 100%; */
-	padding: 60px;
+	width: 500px;
+	padding: 30px;
 	background: white;
 `;
 
 export const SubmitButton = styled.button`
-	width: 320px;
+	width: 420px;
 	height: 44px;
-	margin-left: 8px;
 	background: white;
 	font-size: 16px;
 	border: 1px;
 	border-width: 1px;
 	background: var(--yellow);
+	margin-top: 10px;
+	cursor: pointer;
 `;
 
 export const Errormsg = styled.p`
@@ -59,7 +59,7 @@ export const StyledDiv = styled.div`
 	width: 400px;
 	font-size: 24px;
 	height: 43px;
-	margin-bottom: 10px;
+	margin-bottom: 20px;
 `;
 
 export const MentDiv = styled.div`
@@ -68,7 +68,19 @@ export const MentDiv = styled.div`
 `;
 
 export const MentSpan = styled.span`
-	margin-top: 40px;
+	margin-top: 50px;
 	/* margin-right: 40px; */
 	width: 90px;
+	cursor: pointer;
+`;
+
+export const KakaoButton = styled.button`
+	margin-top: 10px;
+	background: white;
+	border: 1px;
+	border-width: 1px;
+	padding: 5px 160px;
+	display: flex;
+
+	cursor: pointer;
 `;

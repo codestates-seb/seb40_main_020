@@ -14,6 +14,7 @@ export const HeaderComponent = styled.header`
 		img {
 			width: 115px;
 			height: 80px;
+			cursor: pointer;
 		}
 		.nav {
 			display: flex;
@@ -21,6 +22,7 @@ export const HeaderComponent = styled.header`
 			> div {
 				margin: 0.5rem 0.5rem;
 				cursor: pointer;
+				display: flex;
 			}
 		}
 	}

@@ -6,7 +6,7 @@ export const SwapBox = styled.div`
 	justify-content: center;
 	align-items: center;
 	width: 100%;
-	height: calc(100vh - 50px);
+	height: calc(100vh - 270px);
 `;
 
 export const Form = styled.form`
@@ -15,6 +15,11 @@ export const Form = styled.form`
 	align-items: center;
 	padding: 70px;
 	background: white;
+	& .exchangeBTN {
+		cursor: pointer;
+		background: white;
+		border: none;
+	}
 `;
 
 export const StyledDiv = styled.div`
@@ -29,25 +34,29 @@ export const StyledDiv = styled.div`
 export const InputContainer = styled.div`
 	margin: 20px 0px 20px 0px;
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	align-self: center;
+	border: 1px solid var(--borderColor);
+	& .coin {
+		border: none;
+	}
 `;
 
 export const Input = styled.input`
-	width: 500px;
+	width: 435px;
 	height: 50px;
 	padding-left: 15px;
-	border: 1px solid var(—borderColor);
+	border: none;
 	box-sizing: border-box;
 `;
 
 export const SubmitButton = styled.button`
-	width: 320px;
+	width: 500px;
 	height: 44px;
-	margin: 20px 0px 0px 8px;
-	background: white;
+	margin: 20px 0px 0px 0px;
 	font-size: 16px;
 	border: 1px;
 	border-width: 1px;
-	background: var(—yellow);
+	background: var(--yellow);
+	cursor: pointer;
 `;
