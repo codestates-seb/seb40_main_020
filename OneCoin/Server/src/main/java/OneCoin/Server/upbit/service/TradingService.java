@@ -1,6 +1,8 @@
 package OneCoin.Server.upbit.service;
 
 import OneCoin.Server.order.entity.Order;
+import OneCoin.Server.order.entity.Wallet;
+import OneCoin.Server.order.entity.enums.TransactionType;
 import OneCoin.Server.order.repository.OrderRepository;
 import OneCoin.Server.order.service.WalletService;
 import OneCoin.Server.upbit.entity.Trade;
@@ -17,37 +19,42 @@ import java.util.List;
 public class TradingService {
 
     private final OrderRepository orderRepository;
-    private final WalletService walletService; // TODO 매도 채결시 wallet으로
+    private final WalletService walletService;
 
     public void completeOrders(Trade trade) {
-        String tradePrice = trade.getTradePrice();
-        List<Order> orders = orderRepository.findAllByLimitAndOrderTypeAndCode(new BigDecimal(tradePrice), trade.getOrderType(), trade.getCode());
+        BigDecimal tradePrice = new BigDecimal(trade.getTradePrice());
+        BigDecimal tradeVolume = new BigDecimal(trade.getTradeVolume());
+        String orderType = trade.getOrderType();
+
+        List<Order> orders = orderRepository.findAllByLimitAndOrderTypeAndCode(tradePrice, orderType, trade.getCode());
         if (orders.isEmpty()) {
             return;
         }
-        subtractAmount(orders, trade.getTradeVolume());
-        updateAmountAfterTrade(orders);
-    }
 
-    private void subtractAmount(List<Order> orders, String amount) {
-        BigDecimal subtractionAmount = new BigDecimal(amount);
-        for (Order order : orders) {
-            BigDecimal newAmount = order.getAmount().subtract(subtractionAmount);
-            order.setAmount(newAmount);
+        if (orderType.equals(TransactionType.BID.getType())) {
+            tradeBid(orders, tradeVolume);
+        }
+        if (orderType.equals(TransactionType.ASK.getType())) {
+            tradeAsk(orders, tradeVolume);
         }
     }
 
-    private void updateAmountAfterTrade(List<Order> orders) {
+    private void tradeBid(List<Order> orders, BigDecimal tradeVolume) {
         for (Order order : orders) {
-            deleteAmountZeroEntity(order);
+            Wallet findWallet = walletService.findMyWallet(order.getUserId(), order.getCode());
+
+            if (findWallet != null) { // 지갑에 이미 존재할 때
+                walletService.updateWalletByBid(findWallet, order, tradeVolume);
+            } else {
+                walletService.createWallet(order, tradeVolume);
+            }
         }
-        orderRepository.saveAll(orders);
     }
 
-    private void deleteAmountZeroEntity(Order order) {
-        BigDecimal zero = BigDecimal.ZERO;
-        if (order.getAmount().compareTo(zero) <= 0) {
-            orderRepository.delete(order);
+    private void tradeAsk(List<Order> orders, BigDecimal tradeVolume) {
+        for (Order order : orders) {
+            Wallet findWallet = walletService.findMyWallet(order.getUserId(), order.getCode());
+            walletService.updateWalletByAsk(findWallet, order, tradeVolume);
         }
     }
 }

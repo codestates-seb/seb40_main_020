@@ -7,10 +7,10 @@ import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.entity.Wallet;
-import OneCoin.Server.order.entity.enums.Commission;
 import OneCoin.Server.order.entity.enums.TransactionType;
 import OneCoin.Server.order.repository.OrderRepository;
 import OneCoin.Server.user.entity.User;
+import OneCoin.Server.utils.CalculationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,9 @@ public class OrderService {
     private final CoinService coinService;
     private final WalletService walletService;
     private final LoggedInUserInfoUtils loggedInUserInfoUtils;
+    private final CalculationUtil calculationUtil;
     private final BalanceService balanceService;
+    private final TransactionHistoryService transactionHistoryService;
 
     public void createOrder(Order order, String code) {
         User user = loggedInUserInfoUtils.extractUser();
@@ -41,9 +43,8 @@ public class OrderService {
             checkUserCoinAmount(wallet, amount);
         }
         if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수
-            BigDecimal price = getMyOrderPrice(order);
+            BigDecimal price = order.getLimit();
             subtractUserBalance(userId, price, amount);
-            order.setCommission(calculateCommission(price, amount));
         }
         order.setUserId(user.getUserId());
         order.setCode(code);
@@ -60,25 +61,8 @@ public class OrderService {
     }
 
     private void subtractUserBalance(long userId, BigDecimal price, BigDecimal amount) {
-        BigDecimal totalBidPrice = price.multiply(amount).multiply(Commission.ORDER.getRate());
+        BigDecimal totalBidPrice = calculationUtil.calculateByAddingCommission(price, amount);
         balanceService.updateBalanceByBid(userId, totalBidPrice);
-    }
-
-    private BigDecimal getMyOrderPrice(Order order) {
-        BigDecimal price = null;
-        BigDecimal zero = BigDecimal.ZERO;
-
-        if (order.getLimit().compareTo(zero) != 0) {
-            price = order.getLimit();
-        } else if (order.getMarket().compareTo(zero) != 0) {
-            price = order.getMarket();
-        }
-        return price;
-    }
-
-    private BigDecimal calculateCommission(BigDecimal price, BigDecimal amount) {
-        BigDecimal commissionRate = Commission.ORDER.getRate().subtract(BigDecimal.ONE); // 0.05
-        return price.multiply(amount).multiply(commissionRate);
     }
 
     public void cancelOrder(long orderId) {
@@ -86,8 +70,9 @@ public class OrderService {
         long userId = verifyUserOrder(order);
 
         if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수 주문 취소 시 balance 환불
-            giveBalanceBack(userId, order);
+            giveBalanceBack(userId, order.getLimit(), order.getAmount());
         }
+        transactionHistoryService.createTransactionHistory(order);
         orderRepository.delete(order);
     }
 
@@ -105,16 +90,16 @@ public class OrderService {
         return userId;
     }
 
-    private void giveBalanceBack(long userId, Order order) {
-        BigDecimal cancelPrice = getMyOrderPrice(order);
-        BigDecimal totalCancelPrice = cancelPrice.multiply(order.getAmount()).multiply(Commission.ORDER.getRate());
+    private void giveBalanceBack(long userId, BigDecimal cancelPrice, BigDecimal cancelAmount) {
+        BigDecimal totalCancelPrice = calculationUtil.calculateByAddingCommission(cancelPrice, cancelAmount);
         balanceService.updateBalanceByAskOrCancelBid(userId, totalCancelPrice);
     }
 
     @Transactional(readOnly = true)
-    public List<Order> findOrders(String code) {
-        long userId = loggedInUserInfoUtils.extractUserId();
-        List<Order> myOrders = orderRepository.findAllByUserIdAndCode(userId, code);
+    public List<Order> findOrders() {
+        User user = loggedInUserInfoUtils.extractUser();
+        List<Order> myOrders = orderRepository.findAllByUserId(user.getUserId());
+
         if (myOrders.isEmpty()) {
             throw new BusinessLogicException(ExceptionCode.NO_EXISTS_ORDER);
         }

@@ -38,9 +38,11 @@ public class OrderController {
     }
 
     @GetMapping("/non-trading")
-    public ResponseEntity getNonTradingOrder(@RequestParam("code") String code) {
-        List<Order> orders = orderService.findOrders(code);
-        return new ResponseEntity(new MultiResponseDto<>(orders), HttpStatus.OK);
+    public ResponseEntity getNonTradingOrder() {
+        List<Order> orders = orderService.findOrders();
+        List<OrderDto.GetResponse> responseDto = mapper.orderToGetResponse(orders);
+
+        return new ResponseEntity(new MultiResponseDto<>(responseDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/non-trading/{order-id}")

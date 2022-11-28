@@ -6,6 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum TransactionType {
+    ALL("ALL"),
     ASK("ASK"),
     BID("BID"),
     DEPOSIT("DEPOSIT"),

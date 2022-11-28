@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Getter
 public enum Commission {
-    ORDER(new BigDecimal("1.05"));
+    ORDER(new BigDecimal("0.0005"));
 
     private final BigDecimal rate;
 }
