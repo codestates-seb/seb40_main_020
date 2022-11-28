@@ -148,3 +148,18 @@ export interface ChartData {
 	low: number;
 	close: number;
 }
+
+export interface ChatMsg {
+	type: string;
+	userDisplayName: string;
+	userId: number;
+	chatRoomId: number;
+	message: string;
+}
+
+export interface ChatData {
+	chatAt: string;
+	chatRoomId: number;
+	message: string;
+	userDisplayName: string;
+}

@@ -28,8 +28,15 @@ function QuoteList({ coinOrderbook, prcieClickHandler, tradePrice }: Props) {
 		}
 	}, [coinOrderbook]);
 
+	useEffect(() => {
+		scrollRef?.current?.scrollIntoView({
+			behavior: 'smooth',
+			block: 'center',
+			inline: 'nearest',
+		});
+	}, [scrollRef]);
 	return (
-		<QuoteListComponent className="quote-wrapper" ref={scrollRef}>
+		<QuoteListComponent className="quote-wrapper">
 			<div className="normal">일반호가</div>
 			<div className="ask">
 				{askPrice.map((ask, i) => (
@@ -42,6 +49,7 @@ function QuoteList({ coinOrderbook, prcieClickHandler, tradePrice }: Props) {
 					/>
 				))}
 			</div>
+			<div ref={scrollRef}></div>
 			<div className="bid">
 				{bidPrice.map((bid, i) => (
 					<Quote

@@ -43,4 +43,15 @@ export const ChatBoxComponent = styled.div`
 			background: #dddddd;
 		}
 	}
+	.chat-body {
+		overflow: auto;
+		overflow: auto;
+		::-webkit-scrollbar {
+			width: 10px;
+		}
+		::-webkit-scrollbar-thumb {
+			border-radius: 8px;
+			background-color: #d9d9d9;
+		}
+	}
 `;
