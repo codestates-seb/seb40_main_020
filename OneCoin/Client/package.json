@@ -13,6 +13,7 @@
     "@types/react-paginate": "^7.1.1",
     "axios": "^1.1.3",
     "lightweight-charts": "^3.8.0",
+    "net": "^1.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.39.4",
@@ -24,6 +25,8 @@
     "react-slick": "^0.29.0",
     "react-ts-tradingview-widgets": "^1.0.12",
     "recoil": "^0.7.6",
+    "sockjs-client": "^1.6.1",
+    "stompjs": "^2.3.3",
     "styled-components": "^5.3.6",
     "styled-reset": "^4.4.2",
     "web-vitals": "^2.1.4"
@@ -47,6 +50,8 @@
     ]
   },
   "devDependencies": {
+    "@types/sockjs-client": "^1.5.1",
+    "@types/stompjs": "^2.3.5",
     "@types/react-slick": "^0.23.10",
     "@types/styled-components": "^5.1.26",
     "@typescript-eslint/eslint-plugin": "^5.42.1",

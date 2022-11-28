@@ -15,6 +15,10 @@ export const QuoteComponent = styled.div<Props>`
 	padding: 1rem;
 	margin-top: 2px;
 	.price {
+		display: flex;
 		width: 365px;
+		.rate {
+			margin-left: 1rem;
+		}
 	}
 `;

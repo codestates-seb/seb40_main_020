@@ -10,7 +10,7 @@ import Aside from 'components/Aside';
 import HoldList from './components/HoldList';
 import Layout from '../../components/Layout';
 import ChartList from './components/ChartList';
-import { CoinInfo } from '../../utills/types';
+import { CoinInfo, CoinDataType } from '../../utills/types';
 
 function Exchange() {
 	const COIN_INFO_INITIAL_DATA = {
@@ -20,56 +20,59 @@ function Exchange() {
 	};
 	const coinData = useRecoilValue(coinDataState);
 	const [coinInfo, setCoinInfo] = useState<CoinInfo>(COIN_INFO_INITIAL_DATA);
-	const [coin, setCoin] = useState(
-		coinData.filter((v) => v.coin === coinInfo.coin)[0]
-	);
+	const [coin, setCoin] = useState<CoinDataType>();
 	const coinInfoHandler = (item: CoinInfo) => setCoinInfo(item);
-
 	const [inputPrice, setInputPrice] = useState<number>(0);
 	const prcieClickHandler = (price: number) => setInputPrice(price);
 	useEffect(() => {
 		const newData = coinData.filter((v) => v.coin === coinInfo.coin)[0];
+		const price = newData?.ticker?.trade_price
+			? newData.ticker.trade_price
+			: '0';
 		setCoin(newData);
-		setInputPrice(newData.ticker?.trade_price ? newData.ticker.trade_price : 0);
+		setInputPrice(+price);
 	}, [coinInfo]);
 	useEffect(() => {
 		const newData = coinData.filter((v) => v.coin === coinInfo.coin)[0];
-		const price = newData?.ticker?.trade_price ? newData.ticker.trade_price : 0;
-		setInputPrice(price);
+		const price = newData?.ticker?.trade_price
+			? newData.ticker.trade_price
+			: '0';
+		setInputPrice(+price);
 	}, []);
+	useEffect(() => {
+		setCoin(coinData.filter((v) => v?.ticker?.code === coinInfo.code)[0]);
+	}, [coinData]);
+	const tradePrice = coin?.ticker?.trade_price as string;
+	const changeRate = coin?.ticker?.change_rate as string;
+	const changePrice = coin?.ticker?.change_price as string;
+	const change = coin?.ticker?.change as string;
 	return (
 		<Layout isLeftSidebar={false} isLeftMargin={false}>
 			<ExchangeComponent
 				todayChange={coin?.ticker?.change && coin.ticker.change}
 			>
 				<div className="coin-title">
-					<h1>{coin.coin}</h1>
+					<h1>{coin?.coin}</h1>
 					<div>
 						<h2 className="current-price today-range">
-							{coin?.ticker?.trade_price
-								? coin.ticker.trade_price.toLocaleString()
-								: ''}
+							{(+tradePrice).toLocaleString()}
 						</h2>
 						<div className="today-price">
 							<span>전일대비</span>
 							<span className="today-range">
-								{coin?.ticker?.signed_change_rate
-									? (coin.ticker.signed_change_rate * 100).toFixed(2) + ' %'
-									: ''}
+								{(Number(changeRate) * 100).toFixed(2)}
 							</span>
 							<span>
-								{coin?.ticker?.change && coin.ticker.change === 'RISE' ? (
+								{change === 'RISE' ? (
 									<GoTriangleUp className="today-range" />
-								) : coin?.ticker?.change && coin.ticker.change === 'FALL' ? (
+								) : change === 'FALL' ? (
 									<GoTriangleDown className="today-range" />
 								) : (
 									<></>
 								)}
 							</span>
 							<span className="today-range">
-								{coin?.ticker?.signed_change_price
-									? coin.ticker.signed_change_price.toLocaleString()
-									: ''}
+								{Number(changePrice).toLocaleString()}
 							</span>
 						</div>
 					</div>
@@ -77,9 +80,9 @@ function Exchange() {
 
 				<ChartList coinInfo={coinInfo} />
 				<QuoteList
-					coinOrderbook={coin?.orderbook && coin.orderbook}
+					orderBook={coin?.orderBook && coin.orderBook}
 					prcieClickHandler={prcieClickHandler}
-					tradePrice={coin?.ticker?.trade_price && coin.ticker.trade_price}
+					tradePrice={coin?.ticker?.trade_price}
 				/>
 
 				<Order

@@ -1,77 +1,3 @@
-export interface TickerType {
-	acc_ask_volume?: number;
-	acc_bid_volume?: number;
-	acc_trade_price?: number;
-	acc_trade_price_24h?: number;
-	acc_trade_volume?: number;
-	acc_trade_volume_24h?: number;
-	ask_bid?: string;
-	change?: string;
-	change_price?: number;
-	change_rate?: number;
-	code?: string;
-	delisting_date?: null;
-	high_price?: number;
-	highest_52_week_date?: string;
-	highest_52_week_price?: number;
-	is_trading_suspended?: boolean;
-	low_price?: number;
-	lowest_52_week_date?: string;
-	lowest_52_week_price?: number;
-	market_state?: string;
-	market_warning?: string;
-	opening_price?: number;
-	prev_closing_price?: number;
-	signed_change_price?: number;
-	signed_change_rate?: number;
-	stream_type?: string;
-	timestamp?: number;
-	trade_date?: string;
-	trade_price?: number;
-	trade_time?: string;
-	trade_timestamp?: number;
-	trade_volume?: number;
-	type?: string;
-}
-
-export interface OrderbookType {
-	code?: string;
-	orderbook_units?: {
-		ask_price: number;
-		bid_price: number;
-		ask_size: number;
-		bid_size: number;
-	}[];
-	stream_type?: string;
-	timestamp?: number;
-	total_ask_size?: number;
-	total_bid_size?: number;
-	type?: string;
-}
-
-export interface CoinDataType {
-	coin: string;
-	symbol: string;
-	code: string;
-	ticker?: TickerType;
-	orderbook?: OrderbookType;
-}
-
-export interface coinAsiderData {
-	coin: string;
-	symbol: string;
-	code: string;
-	tradePrice?: number;
-	change?: string;
-	signedChangePrice?: number;
-	signedChangeRate?: number;
-}
-// enum
-export interface OrderType {
-	price: number;
-	size: number;
-}
-
 interface CoinBase {
 	code?: string;
 	amount?: string;
@@ -102,29 +28,50 @@ export interface NonTradingOders extends CoinBase {
 	market?: string;
 	stopLimit?: string;
 }
-interface Ticker {
+
+export interface CoinDataType {
+	coin: string;
+	symbol: string;
 	code: string;
-	highPrice: number;
-	lowPrice: number;
-	tradePrice: number;
-	prevClosingPrice: number;
-	change: string;
-	changePrice: number;
-	changeRate: number;
-	accTradeVolume24h: number;
-	accTradePrice24h: number;
+	ticker?: Ticker;
+	orderBook?: OrderBook;
 }
-interface Order {
-	askPrice: number;
-	askSize: number;
+
+export interface Ticker {
+	code: string;
+	high_price: string;
+	low_price: string;
+	trade_price: string;
+	prev_closing_price: string;
+	change: string;
+	change_price: string;
+	change_rate: string;
+	acc_trade_volume_24h: string;
+	acc_trade_price_24h: string;
+	timestamp: string;
+}
+export interface QuoteType {
+	price: string;
+	size: string;
 	changeRate: string;
 }
-interface Orderbook {
+
+export interface AskOrder {
+	askPrice: string;
+	askSize: string;
+	changeRate: string;
+}
+interface BidOrder {
+	bidPrice: string;
+	bidSize: string;
+	changeRate: string;
+}
+export interface OrderBook {
 	code: string;
-	totalAskSize: number;
-	totalBidSize: number;
-	askInfo: Order[];
-	bidInfo: Order[];
+	total_ask_size: string;
+	total_bid_size: string;
+	askInfo: AskOrder[];
+	bidInfo: BidOrder[];
 }
 interface Trade {
 	limit: number;
@@ -143,8 +90,8 @@ interface HoldingCoin extends CoinBase {
 
 export interface ChartData {
 	time: number;
-	open: number;
-	high: number;
-	low: number;
-	close: number;
+	open: string;
+	high: string;
+	low: string;
+	close: string;
 }
