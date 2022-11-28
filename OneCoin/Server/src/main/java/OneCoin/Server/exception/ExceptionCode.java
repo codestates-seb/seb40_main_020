@@ -22,7 +22,8 @@ public enum ExceptionCode {
     INVALID_DESTINATION(400, "No match for the destination"),
     BALANCE_NOT_FOUND(404, "Balance not found"),
     AUTHENTICATION_NOT_FOUND(404, "No authentication found in SecurityContextHolder"),
-    NOT_CORRECT_PERIOD(400, "It`s not correct period.");
+    NOT_CORRECT_PERIOD(400, "It`s not correct period."),
+    NOT_CORRECT_TYPE(400, "It`s not correct type.");
 
     private final int code;
     private final String description;
