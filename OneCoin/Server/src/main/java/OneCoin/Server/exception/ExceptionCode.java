@@ -21,7 +21,8 @@ public enum ExceptionCode {
     USER_EXISTS(409, "User already exists"),
     INVALID_DESTINATION(400, "No match for the destination"),
     BALANCE_NOT_FOUND(404, "Balance not found"),
-    AUTHENTICATION_NOT_FOUND(404, "No authentication found in SecurityContextHolder");
+    AUTHENTICATION_NOT_FOUND(404, "No authentication found in SecurityContextHolder"),
+    NOT_CORRECT_PERIOD(400, "It`s not correct period.");
 
     private final int code;
     private final String description;
