@@ -100,4 +100,13 @@ public class TransactionHistoryService {
         Coin coin = coinService.findCoin(code);
         return transactionHistoryRepository.findTop10ByUserAndCoinOrderByCreatedAtDesc(user, coin);
     }
+
+    public void sumAllBids(Long userId) {
+        transactionHistoryRepository.findAll();
+    }
+
+    public void sumAllAsks(Long userId) {
+
+    }
+
 }

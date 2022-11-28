@@ -1,16 +1,59 @@
 package OneCoin.Server.chat.chatRoom.repository;
 
-import OneCoin.Server.chat.chatRoom.entity.UserInChatRoomInMemory;
-import org.springframework.data.repository.CrudRepository;
+import OneCoin.Server.chat.chatRoom.entity.UserInChatRoom;
+import OneCoin.Server.chat.chatRoom.utils.ChatRoomUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 @Repository
-public interface UserInChatRoomRepository extends CrudRepository<UserInChatRoomInMemory, Long> {
-    List<UserInChatRoomInMemory> findAllByChatRoomId(Long chatRoomId);
+@RequiredArgsConstructor
+public class UserInChatRoomRepository {
+    private final ObjectMapper objectMapper;
+    private final ChatRoomUtils chatRoomUtils;
+    private final RedisTemplate<String, Object> redisTemplate;
+    //<ChatRoomIdKey, SessionId, UserInChatRoom>
+    private HashOperations<String, String, Object> hashOperations;
 
-    List<UserInChatRoomInMemory> findAllByChatRoomIdAndUserId(Long chatRoomId, Long userId);
+    @PostConstruct
+    private void init() {
+        hashOperations = redisTemplate.opsForHash();
+    }
 
-    List<UserInChatRoomInMemory> findAllByUserId(Long userId);
+    public void addUser(Integer chatRoomId, String sessionId, UserInChatRoom user) {
+        hashOperations.put(chatRoomUtils.getKey(chatRoomId), sessionId, user);
+    }
+
+    // return 0 when nothing is removed;
+    public long removeUserBySessionId(String chatRoomKey, String sessionId) {
+        return hashOperations.delete(chatRoomKey, sessionId);
+    }
+
+    public long getNumberOfUserInChatRoom(Integer chatRoomId) {
+        return hashOperations.size(chatRoomUtils.getKey(chatRoomId));
+    }
+
+    public void removeAllInChatRoom(Integer chatRoomId) {
+        redisTemplate.delete(chatRoomUtils.getKey(chatRoomId));
+    }
+
+    public List<UserInChatRoom> findAllByChatRoomId(Integer chatRoomId) {
+        return Arrays.asList(objectMapper.convertValue(hashOperations.values(chatRoomUtils.getKey(chatRoomId)), UserInChatRoom[].class));
+    }
+
+    public boolean contain(String chatRoomIdKey, String sessionId) {
+        return hashOperations.hasKey(chatRoomIdKey, sessionId);
+    }
+
+    public UserInChatRoom findBySessionId(String chatRoomIdKey, String sessionId) {
+        return objectMapper.convertValue(hashOperations.get(chatRoomIdKey, sessionId), UserInChatRoom.class);
+    }
 }

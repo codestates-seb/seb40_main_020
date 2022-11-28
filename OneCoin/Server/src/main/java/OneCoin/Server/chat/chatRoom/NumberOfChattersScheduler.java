@@ -1,7 +1,7 @@
 package OneCoin.Server.chat.chatRoom;
 
-import OneCoin.Server.chat.chatRoom.entity.ChatRoomInMemory;
-import OneCoin.Server.chat.chatRoom.service.ChatRoomInMemoryService;
+import OneCoin.Server.chat.chatRoom.entity.ChatRoom;
+import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,11 +13,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NumberOfChattersScheduler {
     private final SimpMessagingTemplate messagingTemplate;
-    private final ChatRoomInMemoryService chatRoomInMemoryService;
+    private final ChatRoomService chatRoomService;
 
     @Scheduled(fixedDelay = 1000)
     public void sendNumberOfChatters() {
-        List<ChatRoomInMemory> rooms = chatRoomInMemoryService.getChatRooms();
+        List<ChatRoom> rooms = chatRoomService.getChatRooms();
         messagingTemplate.convertAndSend("/topic/rooms-info", rooms);
     }
 }
