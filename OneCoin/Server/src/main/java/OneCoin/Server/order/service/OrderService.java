@@ -1,13 +1,16 @@
 package OneCoin.Server.order.service;
 
-import OneCoin.Server.coin.entity.Coin;
+import OneCoin.Server.balance.BalanceService;
 import OneCoin.Server.coin.service.CoinService;
 import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtils;
 import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.order.entity.Order;
+import OneCoin.Server.order.entity.Wallet;
+import OneCoin.Server.order.entity.enums.TransactionType;
 import OneCoin.Server.order.repository.OrderRepository;
 import OneCoin.Server.user.entity.User;
+import OneCoin.Server.utils.CalculationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,40 +26,33 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final CoinService coinService;
+    private final WalletService walletService;
     private final LoggedInUserInfoUtils loggedInUserInfoUtils;
+    private final CalculationUtil calculationUtil;
+    private final BalanceService balanceService;
+    private final TransactionHistoryService transactionHistoryService;
 
-    public Order createOrder(Order order, String code) {
-        // TODO User mapping
+    public void createOrder(Order order, String code) {
         User user = loggedInUserInfoUtils.extractUser();
-        Coin coin = coinService.findVerifiedCoin(code);
-        if (order.getOrderType().equals("ASK")) { // 매도 // TODO ask, bid enum으로
-            checkUserHasCoin(coin);
-            checkUserCoinAmount(1L, order.getAmount());
+        coinService.verifyCoinExists(code);
+        long userId = user.getUserId();
+        BigDecimal amount = order.getAmount();
+
+        if (order.getOrderType().equals(TransactionType.ASK.getType())) { // 매도
+            Wallet wallet = walletService.findVerifiedWalletWithCoin(userId, code);
+            checkUserCoinAmount(wallet, amount);
         }
-        if (order.getOrderType().equals("BID")) { // 매수
-            // 예외 확인
+        if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수
+            BigDecimal price = order.getLimit();
+            subtractUserBalance(userId, price, amount);
         }
         order.setUserId(user.getUserId());
         order.setCode(code);
-        return orderRepository.save(order);
+        orderRepository.save(order);
     }
 
-    // TODO 코인, 가격, 똑같은 주문이 있으면 덮어쓰기
-    private long checkUserHasCoin(Coin coin) { // user가 해당 코인을 가지고 있는지 확인 - User로 리턴
-        // TODO jwt User확인, wallet에 코인 있는지 확인
-        long userId = 1L;
-        // walletService ..
-        // if(Wallet.)
-        if (1 == 0) {
-            throw new BusinessLogicException(ExceptionCode.HAVE_NO_COIN);
-        }
-        return userId;
-    }
-
-    private void checkUserCoinAmount(long userId, BigDecimal amount) { // user가 보유한 코인의 양보다 작거나 같은지 확인 - user의 지갑
-        // TODO parameter User로 변경
-        // BigDecimal myAmount = use
-        BigDecimal myAmount = BigDecimal.valueOf(1000);
+    private void checkUserCoinAmount(Wallet wallet, BigDecimal amount) {
+        BigDecimal myAmount = wallet.getAmount();
         int comparison = myAmount.compareTo(amount);
 
         if (comparison < 0) {
@@ -64,45 +60,49 @@ public class OrderService {
         }
     }
 
-    private void updateUserBalance(User user, BigDecimal price, BigDecimal amount) {
-        BigDecimal balance = new BigDecimal(String.valueOf(100000000)); // user.getBalance();
-        BigDecimal totalBidPrice = price.multiply(amount);
-        checkEnoughBalance(balance, totalBidPrice);
-
-        // TODO user balance 업데이트 - user쪽 서비스 로직으로 진행
-    }
-
-    private void checkEnoughBalance(BigDecimal balance, BigDecimal totalBidPrice) {
-        int comparison = balance.compareTo(totalBidPrice);
-        if (comparison < 0) {
-            throw new BusinessLogicException(ExceptionCode.NOT_ENOUGH_BALANCE);
-        }
+    private void subtractUserBalance(long userId, BigDecimal price, BigDecimal amount) {
+        BigDecimal totalBidPrice = calculationUtil.calculateByAddingCommission(price, amount);
+        balanceService.updateBalanceByBid(userId, totalBidPrice);
     }
 
     public void cancelOrder(long orderId) {
-        Order order = verifiedOrder(orderId);
-        isSameUser(order);
+        Order order = findVerifiedOrder(orderId);
+        long userId = verifyUserOrder(order);
 
+        if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수 주문 취소 시 balance 환불
+            giveBalanceBack(userId, order.getLimit(), order.getAmount());
+        }
+        transactionHistoryService.createTransactionHistory(order);
         orderRepository.delete(order);
     }
 
-    private Order verifiedOrder(long orderId) {
+    private Order findVerifiedOrder(long orderId) {
         Optional<Order> optionalRedisOrder = orderRepository.findById(orderId);
         return optionalRedisOrder.orElseThrow(() -> new BusinessLogicException(ExceptionCode.NO_EXISTS_ORDER));
     }
 
-    private void isSameUser(Order order) {
-        // TODO redisOrder에 매핑된 UserId와 취소를 요청하는 UserId가 같은지 확인
-        long userId = 1L;
+    private long verifyUserOrder(Order order) {
+        User user = loggedInUserInfoUtils.extractUser();
+        long userId = user.getUserId();
         if (order.getUserId() != userId) {
             throw new BusinessLogicException(ExceptionCode.NOT_YOUR_ORDER);
         }
+        return userId;
+    }
+
+    private void giveBalanceBack(long userId, BigDecimal cancelPrice, BigDecimal cancelAmount) {
+        BigDecimal totalCancelPrice = calculationUtil.calculateByAddingCommission(cancelPrice, cancelAmount);
+        balanceService.updateBalanceByAskOrCancelBid(userId, totalCancelPrice);
     }
 
     @Transactional(readOnly = true)
-    public List<Order> findOrders(String code) {
-        // TODO jwt User의 것만 찾기
-        long userId = 1L;
-        return orderRepository.findAllByUserIdAndCode(userId, code);
+    public List<Order> findOrders() {
+        User user = loggedInUserInfoUtils.extractUser();
+        List<Order> myOrders = orderRepository.findAllByUserId(user.getUserId());
+
+        if (myOrders.isEmpty()) {
+            throw new BusinessLogicException(ExceptionCode.NO_EXISTS_ORDER);
+        }
+        return myOrders;
     }
 }

@@ -1,28 +1,21 @@
 package OneCoin.Server.chat.chatRoom.dto;
 
-import lombok.*;
+import OneCoin.Server.chat.chatRoom.entity.UserInChatRoom;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class UsersInRoomResponseDto {
-    private Long chatRoomId;
-    private List<UserInfo> userInfos = new ArrayList<>();
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UserInfo {
-        private String displayName;
-        private String email;
-    }
+    private Integer chatRoomId;
+    private List<UserInChatRoom> displayNames;
 
-    public void addUserInfo(UserInfo userInfo) {
-        this.userInfos.add(userInfo);
+    public UsersInRoomResponseDto(Integer chatRoomId, List<UserInChatRoom> displayNames) {
+        this.chatRoomId = chatRoomId;
+        this.displayNames = displayNames;
     }
 }

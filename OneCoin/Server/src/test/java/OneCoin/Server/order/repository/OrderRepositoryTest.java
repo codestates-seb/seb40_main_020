@@ -25,7 +25,7 @@ public class OrderRepositoryTest {
 
     @BeforeEach
     void saveEntity() {
-        Order order = StubData.MockRedisOrder.getMockEntity();
+        Order order = StubData.MockOrder.getMockEntity();
         orderRepository.save(order);
     }
 
@@ -35,10 +35,17 @@ public class OrderRepositoryTest {
     }
 
     @Test
+    @DisplayName("Redis에 key-value 형태로 저장된다.")
+    void redisConnectTest() {
+        Order findOrder = orderRepository.findById(1L).orElseThrow();
+        assertThat(findOrder.getOrderId()).isEqualTo(1L);
+    }
+
+    @Test
     @DisplayName("@Indexed 어노테이션을 사용하면 해당 필드로 select 문이 실행된다.")
     void indexedTest() {
         // given
-        List<Order> orders = StubData.MockRedisOrder.getMockEntities();
+        List<Order> orders = StubData.MockOrder.getMockEntities();
         orderRepository.saveAll(orders);
 
         // when

@@ -30,6 +30,8 @@ public class Order {
 
     private BigDecimal amount; // 미체결량
 
+    private BigDecimal completedAmount; // 체결량 -> transaction history에서 수수료 계산할 때 필요
+
     private LocalDateTime orderTime = LocalDateTime.now();
 
     @Indexed

@@ -20,10 +20,10 @@ public class ChatController {
     private final SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/rooms")//여기에는 @Payload가 생략되어 있음. body를 객체로 mapping시켜줌
-    public void message(ChatRequestDto requestMessage) {
+    public void sendMessage(ChatRequestDto requestMessage) {
         log.info("message received: {}", requestMessage);
         ChatMessage convertedChatMessage = chatMapper.requestDtoToChatMessage(requestMessage);
-        ChatMessage chatMessage = chatService.delegate(requestMessage.getType(), convertedChatMessage);
+        ChatMessage chatMessage = chatService.saveMessage(convertedChatMessage);
         ChatResponseDto chatResponseDto = chatMapper.chatMessageToResponseDto(chatMessage);
         log.info("[CONTROLLER] message is ready for sending");
         log.info("[MESSAGE] {}", chatResponseDto);

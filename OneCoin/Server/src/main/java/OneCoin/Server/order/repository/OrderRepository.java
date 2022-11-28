@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface OrderRepository extends CrudRepository<Order, Long> {
 
-    List<Order> findAllByUserIdAndCode(Long userId, String code);
+    List<Order> findAllByUserId(Long userId);
 
-    List<Order> findAllByLimitAndOrderTypeAndCode(BigDecimal limit, String orderType, String code);
+    List<Order> findAllByLimitAndOrderTypeAndCode(BigDecimal limit, String orderType, String code); // TODO option : 가격 limit, market, stop-limit
 }

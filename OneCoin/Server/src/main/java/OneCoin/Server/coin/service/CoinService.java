@@ -17,12 +17,14 @@ public class CoinService {
 
     private final CoinRepository coinRepository;
 
-    @Transactional(readOnly = true)
-    public Coin findCoin(String code) {
-        return findVerifiedCoin(code);
+    public void verifyCoinExists(String code) {
+        Optional<Coin> optionalCoin = coinRepository.findByCode(code);
+        if (optionalCoin.isEmpty()) {
+            throw new BusinessLogicException(ExceptionCode.COIN_NOT_EXISTS);
+        }
     }
 
-    public Coin findVerifiedCoin(String code) {
+    public Coin findCoin(String code) {
         Optional<Coin> optionalCoin = coinRepository.findByCode(code);
         return optionalCoin.orElseThrow(() -> new BusinessLogicException(ExceptionCode.COIN_NOT_EXISTS));
     }

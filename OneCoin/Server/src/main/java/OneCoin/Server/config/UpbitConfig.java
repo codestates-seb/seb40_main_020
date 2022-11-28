@@ -3,7 +3,7 @@ package OneCoin.Server.config;
 import OneCoin.Server.upbit.websocket.listener.UpbitWebSocketListener;
 import OneCoin.Server.upbit.entity.enums.CoinList;
 import OneCoin.Server.upbit.service.UpbitHandlingService;
-import OneCoin.Server.upbit.utils.JsonUtil;
+import OneCoin.Server.utils.JsonUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import org.springframework.context.annotation.Bean;

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.Positive;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -26,7 +27,8 @@ public class BalanceService {
     public Balance updateBalance(Deposit deposit) {
         Balance findBalance = findBalance(deposit.getBalance().getBalanceId());
 
-        findBalance.setBalance(findBalance.getBalance() + deposit.getDepositAmount());
+        BigDecimal depositAmount = new BigDecimal(deposit.getDepositAmount());
+        findBalance.setBalance(findBalance.getBalance().add(depositAmount));
 
         return balanceRepository.save(findBalance);
     }
@@ -52,25 +54,25 @@ public class BalanceService {
     /**
      *  매수(BID) 체결 출금
      */
-    public Balance updateBalanceByBid(long userId, @Positive long price) {
+    public void updateBalanceByBid(long userId, @Positive BigDecimal price) {
         Balance balance = findBalanceByUserId(userId);
-
-        if (balance.getBalance() < price) {
+        int comparison = balance.getBalance().compareTo(price);
+        if (comparison < 0) {
             throw new BusinessLogicException(ExceptionCode.NOT_ENOUGH_BALANCE);
         }
-        balance.setBalance(balance.getBalance() - price);
+        balance.setBalance(balance.getBalance().subtract(price));
 
-        return balanceRepository.save(balance);
+        balanceRepository.save(balance);
     }
 
     /**
-     *  매도(ASK) 체결 입금
+     *  매도(ASK) 체결 입금, 미체결된 매수(BID) 취소 입금
      */
-    public Balance updateBalanceByAsk(long userId, @Positive long price) {
+    public void updateBalanceByAskOrCancelBid(long userId, @Positive BigDecimal price) {
         Balance balance = findBalanceByUserId(userId);
 
-        balance.setBalance(balance.getBalance() + price);
+        balance.setBalance(balance.getBalance().add(price));
 
-        return balanceRepository.save(balance);
+        balanceRepository.save(balance);
     }
 }

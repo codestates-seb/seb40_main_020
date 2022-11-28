@@ -11,8 +11,8 @@ on:
   push:
     branches: [ "main" ]
 #     paths: [ "OneCoin/Server/**" ]
-  pull_request:
-    branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
 
 permissions:
   contents: read
@@ -86,7 +86,3 @@ jobs:
         --deployment-config-name CodeDeployDefault.AllAtOnce
         --deployment-group-name OneCoinDeploy-group
         --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=onecoin.zip
-      
-#       with:
-#         gradle-version: 7.5.1
-#         arguments: build
