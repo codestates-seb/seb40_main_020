@@ -31,4 +31,13 @@ public class TransactionHistoryService {
 
         transactionHistoryRepository.save(transactionHistory);
     }
+
+    public void sumAllBids(Long userId) {
+        transactionHistoryRepository.findAll();
+    }
+
+    public void sumAllAsks(Long userId) {
+
+    }
+
 }

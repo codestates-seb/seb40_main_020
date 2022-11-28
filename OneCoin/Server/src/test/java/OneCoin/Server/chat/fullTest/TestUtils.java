@@ -94,6 +94,12 @@ public class TestUtils {
         return connection.get(100, TimeUnit.SECONDS);
     }
 
+    public StompHeaders makeStompHeadersWithAccessToken(String accessToken) {
+        StompHeaders headers = new StompHeaders();
+        headers.set("Authorization", accessToken);
+        return headers;
+    }
+
     public ChatRequestDto makeSendingMessage(String message, Integer chatRoomId, User sendingUser) {
         return ChatRequestDto.builder()
                 .chatRoomId(chatRoomId)
