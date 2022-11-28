@@ -1,4 +1,4 @@
-package OneCoin.Server.chat.listener;
+package OneCoin.Server.chat.chatMessage.listener;
 
 
 import OneCoin.Server.chat.chatMessage.dto.ChatResponseDto;

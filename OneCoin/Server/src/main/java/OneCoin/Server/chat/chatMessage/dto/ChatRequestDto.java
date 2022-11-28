@@ -19,7 +19,7 @@ public class ChatRequestDto {
     @NotBlank
     private Long userId;
     @NotBlank
-    private Long chatRoomId;
+    private Integer chatRoomId;
     @NotBlank
     private String message;
 
