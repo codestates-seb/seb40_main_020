@@ -37,4 +37,9 @@ const coinDataState = atom<CoinDataType[]>({
 	dangerouslyAllowMutability: true,
 });
 
-export { symbolState, coinDataState };
+const isLogin = atom({
+	key: 'isLogin',
+	default: false,
+});
+
+export { symbolState, coinDataState, isLogin };

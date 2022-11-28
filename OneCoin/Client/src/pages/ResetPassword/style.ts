@@ -6,7 +6,7 @@ export const FindPasswordBox = styled.div`
 	justify-content: center;
 	align-items: center;
 	width: 100%;
-	height: calc(100vh - 50px);
+	height: 600px;
 `;
 
 export const Form = styled.form`

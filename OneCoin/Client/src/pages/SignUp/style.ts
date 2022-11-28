@@ -6,7 +6,7 @@ export const SignUpBox = styled.div`
 	justify-content: center;
 	align-items: center;
 	width: 100%;
-	height: calc(100vh - 50px);
+	height: 600px;
 `;
 
 export const DoubleCheckBox = styled.button`
@@ -20,6 +20,7 @@ export const DoubleCheckBox = styled.button`
 	border-width: 1px;
 	box-shadow: var(--yellow) 0px 0px 0px 1px;
 	background: white;
+	cursor: pointer;
 `;
 
 export const Errormsg = styled.p`
@@ -55,9 +56,8 @@ export const Form = styled.form`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	/* height: 100%;
-	width: 100%; */
-	padding: 60px;
+	width: 500px;
+	padding: 30px;
 	background: white;
 `;
 
@@ -70,14 +70,14 @@ export const SecondInput = styled.input`
 `;
 
 export const SubmitButton = styled.button`
-	width: 320px;
+	width: 420px;
 	height: 44px;
-	margin-left: 8px;
 	background: white;
 	font-size: 16px;
 	border: 1px;
 	border-width: 1px;
 	background: var(--yellow);
+	cursor: pointer;
 `;
 
 export const StyledDiv = styled.div`
