@@ -8,9 +8,7 @@ type T = (
 ) => void;
 
 export const connection: T = (coinData, setCoinData) => {
-	const socket = new SockJS(
-		'https://0be1-124-5-120-166.jp.ngrok.io/ws/upbit-info'
-	);
+	const socket = new SockJS('http://13.209.194.104:8080/ws/upbit-info');
 	const client = StompJs.over(socket);
 	client.connect({}, () => {
 		setTimeout(() => {
