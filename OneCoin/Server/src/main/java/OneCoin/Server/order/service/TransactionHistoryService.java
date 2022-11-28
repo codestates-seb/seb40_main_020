@@ -17,11 +17,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Transactional
@@ -93,5 +93,11 @@ public class TransactionHistoryService {
         } else {
             throw new BusinessLogicException(ExceptionCode.NOT_CORRECT_TYPE);
         }
+    }
+
+    public List<TransactionHistory> findTransactionHistoryByCoin(String code) {
+        User user = loggedInUserInfoUtils.extractUser();
+        Coin coin = coinService.findCoin(code);
+        return transactionHistoryRepository.findTop10ByUserAndCoinOrderByCreatedAtDesc(user, coin);
     }
 }

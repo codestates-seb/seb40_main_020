@@ -9,13 +9,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface TransactionHistoryRepository extends JpaRepository<TransactionHistory, Long> {
 
     Page<TransactionHistory> findByUserAndCreatedAtAfter(User user, LocalDateTime searchPeriod, Pageable pageable); // 기간 page
     Page<TransactionHistory> findByUserAndTransactionTypeAndCreatedAtAfter(User user, TransactionType transactionType, LocalDateTime searchPeriod, Pageable pageable); // 기간, 타입 page
-
     Page<TransactionHistory> findByUserAndCoinAndCreatedAtAfter(User user, Coin coin, LocalDateTime searchPeriod, Pageable pageable); // 기간, 코인 page
     Page<TransactionHistory> findByUserAndTransactionTypeAndCoinAndCreatedAtAfter(User user, TransactionType transactionType, Coin coin, LocalDateTime searchPeriod, Pageable pageable); // 기간, 타입, 코인 page
-
+    List<TransactionHistory> findTop10ByUserAndCoinOrderByCreatedAtDesc(User user, Coin coin);
 }
