@@ -32,6 +32,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Optional<User> optionalUser = userRepository.findByEmail(username);
         User findUser = optionalUser.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
+        // 이메일 인증이 이루어지지 않은 계정이라면 로그인 못함
+        
         return new UserDetailsImpl(findUser);
     }
 

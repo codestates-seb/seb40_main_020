@@ -25,18 +25,19 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils customAuthorityUtils;
     private final JavaMailSender javaMailSender;
+    private final AuthService authService;
 
+    @Value("${spring.server.ip}")
+    private String ipAddress;
     @Value("${spring.mail.username}")
     private String authEmail;
 
-    @Value("${spring.mail.password}")
-    private String authPassword;
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils, JavaMailSender javaMailSender) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils, JavaMailSender javaMailSender, AuthService authService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.customAuthorityUtils = customAuthorityUtils;
         this.javaMailSender = javaMailSender;
+        this.authService = authService;
     }
 
     /**
@@ -62,15 +63,18 @@ public class UserService {
 
     /**
      *  <pre>
-     *      이메일 인증
+     *      회원가입 이메일 인증 발송
      *  </pre>
      */
     @Transactional
     public void authenticationEmail(User user) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
+        // 임시 비밀번호 + Auth 생성
+        String randomPassword = authService.createAuth(user);
+
         // 인증 링크
-        String link = "http://linktest.com";
+        String link = "http://" + ipAddress +"/api/users/authentication-email/" + randomPassword;
 
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
@@ -94,6 +98,20 @@ public class UserService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     *  <pre>
+     *      회원가입 이메일 인증 후처리
+     *      이메일 인증 링크 타고 오면 임시 발급 인증번호 대조 후 계정 활성화
+     *  </pre>
+     */
+    @Transactional
+    public void confirmEmail(String password) {
+        // password 값 비교
+
+        // 맟으면 계정 활성화
+
     }
 
     /**
@@ -209,4 +227,5 @@ public class UserService {
     public Boolean hasAccount(String email) {
         return userRepository.existsByEmail(email);
     }
+
 }

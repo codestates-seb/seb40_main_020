@@ -32,6 +32,7 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
+    // 이메일 인증
     @PostMapping("/authentication-email")
     public ResponseEntity authenticationEmail(@Valid @RequestBody UserDto.Post requestBody) {
         userService.authenticationEmail(userMapper.userPostToUser(requestBody));
@@ -108,6 +109,17 @@ public class UserController {
     public ResponseEntity getUser(@PathVariable("user-id") @Positive long userId) {
         User user = userService.findUser(userId);
         return new ResponseEntity<>(new SingleResponseDto<>(userMapper.userToUserResponse(user)), HttpStatus.OK);
+    }
+
+    // 이메일 인증 확인
+    @GetMapping("/authentication-email/{password}")
+    public ResponseEntity authenticationEmail(@PathVariable("password") String password,
+                                              @Valid @RequestBody UserDto.Post requestBody) {
+        userService.authenticationEmail(userMapper.userPostToUser(requestBody));
+
+        return new ResponseEntity<>(
+                new SingleResponseDto<>("Send Email"), HttpStatus.CREATED
+        );
     }
 
 }
