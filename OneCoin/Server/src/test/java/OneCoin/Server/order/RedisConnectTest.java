@@ -26,7 +26,7 @@ public class RedisConnectTest {
     @DisplayName("Redis에 key-value 형태로 저장된다.")
     void redisConnect() {
         // given
-        Order order = StubData.MockRedisOrder.getMockEntity();
+        Order order = StubData.MockOrder.getMockEntity();
 
         // when
         orderRepository.save(order);

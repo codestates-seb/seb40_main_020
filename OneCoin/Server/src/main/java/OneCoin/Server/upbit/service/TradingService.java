@@ -2,7 +2,6 @@ package OneCoin.Server.upbit.service;
 
 import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.repository.OrderRepository;
-import OneCoin.Server.order.service.OrderService;
 import OneCoin.Server.order.service.WalletService;
 import OneCoin.Server.upbit.entity.Trade;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +22,9 @@ public class TradingService {
     public void completeOrders(Trade trade) {
         String tradePrice = trade.getTradePrice();
         List<Order> orders = orderRepository.findAllByLimitAndOrderTypeAndCode(new BigDecimal(tradePrice), trade.getOrderType(), trade.getCode());
+        if (orders.isEmpty()) {
+            return;
+        }
         subtractAmount(orders, trade.getTradeVolume());
         updateAmountAfterTrade(orders);
     }

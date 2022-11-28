@@ -1,7 +1,6 @@
 package OneCoin.Server.order.controller;
 
 import OneCoin.Server.dto.MultiResponseDto;
-import OneCoin.Server.dto.SingleResponseDto;
 import OneCoin.Server.order.dto.OrderDto;
 import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.mapper.OrderMapper;
@@ -24,12 +23,11 @@ public class OrderController {
 
     @PostMapping("/{code}")
     public ResponseEntity postOrder(@PathVariable("code") String code,
-                                    @Valid @RequestBody OrderDto.Post redisPostDto) {
-        Order mappingOrder = mapper.redisPostDtoToRedisOrder(redisPostDto);
-        Order order = orderService.createOrder(mappingOrder, code);
-        OrderDto.PostResponse redisPostResponse = mapper.redisOrderToRedisPostResponse(order);
+                                    @Valid @RequestBody OrderDto.Post orderPostDto) {
+        Order order = mapper.postDtoToOrder(orderPostDto);
+        orderService.createOrder(order, code);
 
-        return new ResponseEntity(new SingleResponseDto<>(redisPostResponse), HttpStatus.CREATED);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @GetMapping("/completion")

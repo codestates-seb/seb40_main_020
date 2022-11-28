@@ -25,7 +25,7 @@ public class OrderRepositoryTest {
 
     @BeforeEach
     void saveEntity() {
-        Order order = StubData.MockRedisOrder.getMockEntity();
+        Order order = StubData.MockOrder.getMockEntity();
         orderRepository.save(order);
     }
 
@@ -38,7 +38,7 @@ public class OrderRepositoryTest {
     @DisplayName("@Indexed 어노테이션을 사용하면 해당 필드로 select 문이 실행된다.")
     void indexedTest() {
         // given
-        List<Order> orders = StubData.MockRedisOrder.getMockEntities();
+        List<Order> orders = StubData.MockOrder.getMockEntities();
         orderRepository.saveAll(orders);
 
         // when

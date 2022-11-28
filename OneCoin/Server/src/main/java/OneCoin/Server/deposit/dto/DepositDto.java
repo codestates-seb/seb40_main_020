@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Positive;
+import java.math.BigDecimal;
 
 public class DepositDto {
     @Getter
@@ -23,7 +24,7 @@ public class DepositDto {
     @AllArgsConstructor
     public static class Response {
         private Long depositAmount;
-        private Long remainingBalance;
+        private BigDecimal remainingBalance;
         private String createdAt;
     }
 }

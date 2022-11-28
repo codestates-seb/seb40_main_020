@@ -1,11 +1,13 @@
 package OneCoin.Server.order.service;
 
+import OneCoin.Server.balance.BalanceService;
 import OneCoin.Server.coin.service.CoinService;
 import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtils;
 import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.entity.Wallet;
+import OneCoin.Server.order.entity.enums.Commission;
 import OneCoin.Server.order.entity.enums.TransactionType;
 import OneCoin.Server.order.repository.OrderRepository;
 import OneCoin.Server.user.entity.User;
@@ -26,31 +28,26 @@ public class OrderService {
     private final CoinService coinService;
     private final WalletService walletService;
     private final LoggedInUserInfoUtils loggedInUserInfoUtils;
+    private final BalanceService balanceService;
 
-    public Order createOrder(Order order, String code) {
+    public void createOrder(Order order, String code) {
         User user = loggedInUserInfoUtils.extractUser();
+        coinService.verifyCoinExists(code);
         long userId = user.getUserId();
-        coinService.findVerifiedCoin(code);
+        BigDecimal amount = order.getAmount();
 
         if (order.getOrderType().equals(TransactionType.ASK.getType())) { // 매도
-            Wallet wallet = verifyCoinInMyWallet(userId, code);
-            checkUserCoinAmount(wallet, order.getAmount());
+            Wallet wallet = walletService.findVerifiedWalletWithCoin(userId, code);
+            checkUserCoinAmount(wallet, amount);
         }
         if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수
             BigDecimal price = getMyOrderPrice(order);
-            updateUserBalance(user, price, order.getAmount());
+            subtractUserBalance(userId, price, amount);
+            order.setCommission(calculateCommission(price, amount));
         }
         order.setUserId(user.getUserId());
         order.setCode(code);
-        return orderRepository.save(order);
-    }
-
-    private Wallet verifyCoinInMyWallet(long userId, String code) {
-        Wallet wallet = walletService.findMyWallet(userId, code);
-        if (wallet == null) {
-            throw new BusinessLogicException(ExceptionCode.HAVE_NO_COIN);
-        }
-        return wallet;
+        orderRepository.save(order);
     }
 
     private void checkUserCoinAmount(Wallet wallet, BigDecimal amount) {
@@ -62,40 +59,35 @@ public class OrderService {
         }
     }
 
-    private void updateUserBalance(User user, BigDecimal price, BigDecimal amount) {
-        BigDecimal balance = new BigDecimal(String.valueOf(100000000)); // TODO user.getBalance();
-        BigDecimal totalBidPrice = price.multiply(amount);
-        verifyEnoughBalance(balance, totalBidPrice);
-
-        // TODO user balance 업데이트 - user쪽 서비스 로직으로 진행
-    }
-
-    private void verifyEnoughBalance(BigDecimal balance, BigDecimal totalBidPrice) {
-        int comparison = balance.compareTo(totalBidPrice);
-        if (comparison < 0) {
-            throw new BusinessLogicException(ExceptionCode.NOT_ENOUGH_BALANCE);
-        }
+    private void subtractUserBalance(long userId, BigDecimal price, BigDecimal amount) {
+        BigDecimal totalBidPrice = price.multiply(amount).multiply(Commission.ORDER.getRate());
+        balanceService.updateBalanceByBid(userId, totalBidPrice);
     }
 
     private BigDecimal getMyOrderPrice(Order order) {
         BigDecimal price = null;
         BigDecimal zero = BigDecimal.ZERO;
+
         if (order.getLimit().compareTo(zero) != 0) {
             price = order.getLimit();
         } else if (order.getMarket().compareTo(zero) != 0) {
             price = order.getMarket();
-        } else if (order.getStopLimit().compareTo(zero) != 0) {
-            price = order.getStopLimit();
         }
         return price;
     }
 
+    private BigDecimal calculateCommission(BigDecimal price, BigDecimal amount) {
+        BigDecimal commissionRate = Commission.ORDER.getRate().subtract(BigDecimal.ONE); // 0.05
+        return price.multiply(amount).multiply(commissionRate);
+    }
+
     public void cancelOrder(long orderId) {
         Order order = findVerifiedOrder(orderId);
-        long userId = loggedInUserInfoUtils.extractUserId();
-        verifySameUser(order, userId);
-        // TODO balance 다시 돌려주기
+        long userId = verifyUserOrder(order);
 
+        if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수 주문 취소 시 balance 환불
+            giveBalanceBack(userId, order);
+        }
         orderRepository.delete(order);
     }
 
@@ -104,10 +96,19 @@ public class OrderService {
         return optionalRedisOrder.orElseThrow(() -> new BusinessLogicException(ExceptionCode.NO_EXISTS_ORDER));
     }
 
-    private void verifySameUser(Order order, long userId) {
+    private long verifyUserOrder(Order order) {
+        User user = loggedInUserInfoUtils.extractUser();
+        long userId = user.getUserId();
         if (order.getUserId() != userId) {
             throw new BusinessLogicException(ExceptionCode.NOT_YOUR_ORDER);
         }
+        return userId;
+    }
+
+    private void giveBalanceBack(long userId, Order order) {
+        BigDecimal cancelPrice = getMyOrderPrice(order);
+        BigDecimal totalCancelPrice = cancelPrice.multiply(order.getAmount()).multiply(Commission.ORDER.getRate());
+        balanceService.updateBalanceByAskOrCancelBid(userId, totalCancelPrice);
     }
 
     @Transactional(readOnly = true)
