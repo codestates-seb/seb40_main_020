@@ -60,6 +60,7 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.GET, "/ws/chat/**").permitAll()
                         .antMatchers(HttpMethod.GET, "/api/users/duplicate-display-name").permitAll()
                         .antMatchers(HttpMethod.GET, "/api/users/duplicate-email").permitAll()
+                        .antMatchers(HttpMethod.GET, "/api/users/authentication-email/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .antMatchers(HttpMethod.PATCH, "/api/users/**").hasRole("USER")
                         .antMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")

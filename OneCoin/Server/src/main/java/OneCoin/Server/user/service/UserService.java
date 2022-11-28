@@ -73,7 +73,7 @@ public class UserService {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         // 임시 비밀번호 + Auth 생성
-        Auth auth = authService.createAuth(user);
+        Auth auth = authService.createAuth(userRepository.findByEmail(user.getEmail()).orElseThrow(() ->new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)));
         String randomPassword = auth.getAuthPassword();
 
         // 인증 링크
@@ -89,8 +89,6 @@ public class UserService {
             body.append("<div>다음 링크로 이동하여 인증을 완료하십시오.</div>");
             body.append("<div><a href=\"" + link + "\" target=\"_blank\">인증 완료하기</a></div> </body></html>");
 
-            System.out.println(body);
-
             // MimeMessageHelper 설정
             mimeMessageHelper.setFrom(authEmail);    // 보내는 사람
             mimeMessageHelper.setTo(user.getEmail());   // 받는 사람
@@ -98,7 +96,7 @@ public class UserService {
             mimeMessageHelper.setText(body.toString(), true);       // 내용, html true
 
             // 전송
-//            javaMailSender.send(mimeMessage);
+            javaMailSender.send(mimeMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }
