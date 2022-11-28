@@ -2,6 +2,7 @@ package OneCoin.Server.config;
 
 import OneCoin.Server.chat.chatMessage.publisher.RedisPublisher;
 import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
+import OneCoin.Server.chat.intercepter.AuthUtilForWebsocket;
 import OneCoin.Server.chat.intercepter.MessageInterceptor;
 import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtilsForWebSocket;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final LoggedInUserInfoUtilsForWebSocket loggedInUserInfoUtilsForWebSocket;
     private final ChatRoomService chatRoomService;
     private final RedisPublisher redisPublisher;
+    private final AuthUtilForWebsocket authUtilForWebsocket;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -47,7 +49,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new MessageInterceptor(
-                loggedInUserInfoUtilsForWebSocket, chatRoomService, redisPublisher));
+                loggedInUserInfoUtilsForWebSocket, chatRoomService, redisPublisher, authUtilForWebsocket));
     }
 
 
