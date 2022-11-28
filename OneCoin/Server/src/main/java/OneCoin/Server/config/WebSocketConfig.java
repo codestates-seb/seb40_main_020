@@ -1,9 +1,8 @@
 package OneCoin.Server.config;
 
-import OneCoin.Server.chat.chatRoom.service.ChatRoomInMemoryService;
+import OneCoin.Server.chat.chatMessage.publisher.RedisPublisher;
+import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
 import OneCoin.Server.chat.intercepter.MessageInterceptor;
-import OneCoin.Server.chat.publisher.RedisPublisher;
-import OneCoin.Server.config.auth.utils.AuthorizationUtilsForWebSocket;
 import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtilsForWebSocket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -22,8 +21,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Order(Ordered.HIGHEST_PRECEDENCE + 99)
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final LoggedInUserInfoUtilsForWebSocket loggedInUserInfoUtilsForWebSocket;
-    private final AuthorizationUtilsForWebSocket authorizationUtilsForWebSocket;
-    private final ChatRoomInMemoryService chatRoomInMemoryService;
+    private final ChatRoomService chatRoomService;
     private final RedisPublisher redisPublisher;
 
     @Override
@@ -31,7 +29,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // (/ws/chat)엔드포인트로 들어온 http 을 웹소켓 통신으로 전환한다.
         //  요때 들어온 요청을 dispatcherServlet에서 같이 처리함.
         //  그래서 Spring mvc랑 함께 쓰기 좋다는 것.
-        registry.addEndpoint("/ws/chat")
+        registry.addEndpoint("/ws/chat", "/ws/upbit-info")
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
     }
@@ -48,7 +46,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new MessageInterceptor(loggedInUserInfoUtilsForWebSocket
-                , authorizationUtilsForWebSocket, chatRoomInMemoryService, redisPublisher));
+        registration.interceptors(new MessageInterceptor(
+                loggedInUserInfoUtilsForWebSocket, chatRoomService, redisPublisher));
     }
+
+
 }

@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ExceptionCode {
     HAVE_NO_COIN(400, "You don't have this coin."),
+    NO_EXISTS_WALLET(400, "No exists wallet."),
     NOT_ENOUGH_AMOUNT(400, "Not enough coin amount"),
     NOT_ENOUGH_BALANCE(400, "Not enough your balance"),
     NO_EXISTS_ORDER(400, "No exists order."),
@@ -20,7 +21,8 @@ public enum ExceptionCode {
     USER_EXISTS(409, "User already exists"),
     INVALID_DESTINATION(400, "No match for the destination"),
     BALANCE_NOT_FOUND(404, "Balance not found"),
-    AUTHENTICATION_NOT_FOUND(404, "No authentication found in SecurityContextHolder");
+    AUTHENTICATION_NOT_FOUND(404, "No authentication found in SecurityContextHolder"),
+    INVALID_CHAT_ROOM_ID(409, "ChatRoomId is not valid");
 
     private final int code;
     private final String description;

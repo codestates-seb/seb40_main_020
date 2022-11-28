@@ -5,9 +5,8 @@ import OneCoin.Server.chat.chatMessage.entity.ChatMessage;
 import OneCoin.Server.chat.chatMessage.mapper.ChatMapper;
 import OneCoin.Server.chat.chatMessage.service.ChatService;
 import OneCoin.Server.chat.chatRoom.dto.UsersInRoomResponseDto;
-import OneCoin.Server.chat.chatRoom.entity.UserInChatRoomInMemory;
-import OneCoin.Server.chat.chatRoom.mapper.ChatRoomMapper;
-import OneCoin.Server.chat.chatRoom.service.ChatRoomInMemoryService;
+import OneCoin.Server.chat.chatRoom.entity.UserInChatRoom;
+import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
 import OneCoin.Server.dto.SingleResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,20 +22,19 @@ import java.util.List;
 @RestController
 @RequestMapping("/ws/chat/rooms")
 public class ChatRoomController {
-    private final ChatRoomMapper chatRoomMapper;
-    private final ChatRoomInMemoryService chatRoomInMemoryService;
+    private final ChatRoomService chatRoomService;
     private final ChatService chatService;
     private final ChatMapper chatMapper;
 
     @GetMapping("/{room-id}/users")
-    public ResponseEntity getUserInRoom(@PathVariable("room-id") Long chatRoomId) {
-        List<UserInChatRoomInMemory> users = chatRoomInMemoryService.findUsersInChatRoom(chatRoomId);
-        UsersInRoomResponseDto response = chatRoomMapper.usersInRoomToResponseDto(users);
+    public ResponseEntity getUsersInRoom(@PathVariable("room-id") Integer chatRoomId) {
+        List<UserInChatRoom> users = chatRoomService.findUsersInChatRoom(chatRoomId);
+        UsersInRoomResponseDto response = new UsersInRoomResponseDto(chatRoomId, users);
         return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.CREATED);
     }
 
     @GetMapping("/{room-id}/messages")
-    public ResponseEntity getMessagesInRoom(@PathVariable("room-id") Long chatRoomId) {
+    public ResponseEntity getMessagesInRoom(@PathVariable("room-id") Integer chatRoomId) {
         List<ChatMessage> messages = chatService.getChatMessages(chatRoomId);
         List<ChatResponseDto> responses = chatMapper.chatMessagesToResponseDtos(messages);
         return new ResponseEntity<>(new SingleResponseDto<>(responses), HttpStatus.CREATED);

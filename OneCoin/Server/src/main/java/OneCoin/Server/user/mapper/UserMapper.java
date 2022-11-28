@@ -8,6 +8,7 @@ import OneCoin.Server.user.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -25,7 +26,7 @@ public interface UserMapper {
         user.setUserRole(Role.ROLE_USER);   // default : ROLE_USER
         user.setBalance(balance);
 
-        balance.setBalance(0L);
+        balance.setBalance(BigDecimal.ZERO);
         balance.setUser(user);
 
         return user;
