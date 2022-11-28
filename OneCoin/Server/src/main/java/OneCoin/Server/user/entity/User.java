@@ -5,6 +5,7 @@ import lombok.*;
 import OneCoin.Server.balance.entity.Balance;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @AllArgsConstructor
@@ -42,6 +43,9 @@ public class User extends Auditable {
     @Column
     @Enumerated(EnumType.STRING)
     private Role userRole;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Auth> auth;
 
     @Builder
     public User(String displayName, String email, String password, Platform platform, Role userRole) {

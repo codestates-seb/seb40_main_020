@@ -112,13 +112,13 @@ public class UserController {
     }
 
     // 이메일 인증 확인
-    @GetMapping("/authentication-email/{password}")
-    public ResponseEntity authenticationEmail(@PathVariable("password") String password,
-                                              @Valid @RequestBody UserDto.Post requestBody) {
-        userService.authenticationEmail(userMapper.userPostToUser(requestBody));
+    @GetMapping("/authentication-email/{user-id}/{password}")
+    public ResponseEntity authenticationEmail(@PathVariable("user-id") @Positive long userId,
+                                              @PathVariable("password") String password) {
+        userService.confirmEmail(userId, password);
 
         return new ResponseEntity<>(
-                new SingleResponseDto<>("Send Email"), HttpStatus.CREATED
+                new SingleResponseDto<>("Authorization Email!"), HttpStatus.OK
         );
     }
 

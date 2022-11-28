@@ -19,7 +19,7 @@ public class Auth extends CreatedOnlyAuditable {
     @Column(nullable = false)
     private String authPassword;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "auth_user_id")
     private User user;
 }

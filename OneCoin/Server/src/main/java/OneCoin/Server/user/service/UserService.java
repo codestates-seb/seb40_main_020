@@ -3,6 +3,8 @@ package OneCoin.Server.user.service;
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
 import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
+import OneCoin.Server.user.entity.Auth;
+import OneCoin.Server.user.entity.Role;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,10 +73,12 @@ public class UserService {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         // 임시 비밀번호 + Auth 생성
-        String randomPassword = authService.createAuth(user);
+        Auth auth = authService.createAuth(user);
+        String randomPassword = auth.getAuthPassword();
 
         // 인증 링크
-        String link = "http://" + ipAddress +"/api/users/authentication-email/" + randomPassword;
+        String link = "http://" + ipAddress +"/api/users/authentication-email/"
+                + auth.getAuthId().toString() + "/" + randomPassword;
 
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
@@ -94,7 +98,7 @@ public class UserService {
             mimeMessageHelper.setText(body.toString(), true);       // 내용, html true
 
             // 전송
-            javaMailSender.send(mimeMessage);
+//            javaMailSender.send(mimeMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -107,10 +111,19 @@ public class UserService {
      *  </pre>
      */
     @Transactional
-    public void confirmEmail(String password) {
-        // password 값 비교
+    public void confirmEmail(long authId, String password) {
+        Auth auth = authService.findVerifiedAuth(authId);
+        String dbPassword = auth.getAuthPassword();
 
-        // 맟으면 계정 활성화
+        // password 값 비교
+        if (password.equals(dbPassword)) {
+            // 맟으면 계정 활성화
+            User user = findUser(auth.getUser().getUserId());
+
+            user.setUserRole(Role.ROLE_USER);
+
+            userRepository.save(user);
+        }
 
     }
 
