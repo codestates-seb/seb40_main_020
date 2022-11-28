@@ -1,21 +1,30 @@
 import React, { useEffect } from 'react';
 import { QuoteComponent } from './style';
-import { OrderType } from '../../../../utills/types';
+import { QuoteType } from '../../../../utills/types';
 
-interface Props extends OrderType {
+interface Props extends QuoteType {
 	prcieClickHandler: (price: number) => void;
 	tradePrice?: number;
 }
 
-function Quote({ price, size, prcieClickHandler, tradePrice }: Props) {
+function Quote({
+	price,
+	size,
+	prcieClickHandler,
+	tradePrice,
+	changeRate,
+}: Props) {
 	return (
 		<QuoteComponent
 			tradePrice={tradePrice}
-			price={price}
-			onClick={() => prcieClickHandler(price)}
+			price={+price}
+			onClick={() => prcieClickHandler(+price)}
 		>
-			<div className="price">{price.toLocaleString()}</div>
-			<div className="size">{size.toFixed(3)}</div>
+			<div className="price">
+				<div>{Number(price).toLocaleString()}</div>
+				<div className="rate today-range">{changeRate}</div>
+			</div>
+			<div className="size">{Number(size).toFixed(2)}</div>
 		</QuoteComponent>
 	);
 }

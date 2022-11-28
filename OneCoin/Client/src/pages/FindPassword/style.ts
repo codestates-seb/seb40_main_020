@@ -6,7 +6,7 @@ export const FindPasswordBox = styled.div`
 	justify-content: center;
 	align-items: center;
 	width: 100%;
-	height: calc(100vh - 50px);
+	height: 600px;
 `;
 
 export const Form = styled.form`
@@ -37,9 +37,9 @@ export const InputContainer = styled.div`
 `;
 
 export const SubmitButton = styled.button`
-	width: 320px;
+	width: 420px;
 	height: 44px;
-	margin-left: 8px;
+	margin-top: 10px;
 	background: white;
 	font-size: 16px;
 	border: 1px;
@@ -52,6 +52,6 @@ export const StyledDiv = styled.div`
 	justify-content: start;
 	width: 400px;
 	font-size: 24px;
-	height: 43px;
+	height: 50px;
 	margin-bottom: 10px;
 `;

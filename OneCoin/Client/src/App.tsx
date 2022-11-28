@@ -2,6 +2,8 @@ import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Main from 'pages/Main/Main';
 import Chatting from 'pages/Chatting';
+import { useRecoilState } from 'recoil';
+import { isLogin } from 'store';
 
 const Balance = lazy(() => import('./pages/Balance'));
 const History = lazy(() => import('./pages/History'));
@@ -17,6 +19,7 @@ const Swap = lazy(() => import('pages/Swap'));
 const SwapResult = lazy(() => import('pages/SwapResult'));
 
 function App() {
+	const [isUseLogin, setIsUseLogin] = useRecoilState(isLogin);
 	return (
 		<>
 			<Routes>

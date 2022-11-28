@@ -6,7 +6,7 @@ export const SwapResultBox = styled.div`
 	justify-content: center;
 	align-items: center;
 	width: 100%;
-	height: calc(100vh - 50px);
+	height: calc(100vh - 270px);
 `;
 
 export const Form = styled.form`
@@ -14,6 +14,7 @@ export const Form = styled.form`
 	flex-direction: column;
 	align-items: center;
 	padding: 70px;
+	height: 336px;
 	background: white;
 `;
 
@@ -40,11 +41,12 @@ export const StyleButton = styled.button`
 	font-size: 16px;
 	border: 1px;
 	border-width: 1px;
+	cursor: pointer;
 
 	&.gray {
-		background: var(—borderColor);
+		background: var(-—borderColor);
 	}
 	&.yellow {
-		background: var(—yellow);
+		background: var(--yellow);
 	}
 `;
