@@ -71,3 +71,80 @@ export interface OrderType {
 	price: number;
 	size: number;
 }
+
+interface CoinBase {
+	code?: string;
+	amount?: string;
+}
+
+export interface CoinInfo {
+	coin: string;
+	code: string;
+	symbol: string;
+}
+
+export interface MyCoins extends CoinBase {
+	priceEvaluation?: string;
+	averagePrice?: string;
+	change?: string;
+	changePrice?: string;
+	changeRate?: string;
+}
+export interface CompleteOrders extends CoinBase {
+	completedTime?: string;
+	orderType?: string;
+	price?: string;
+}
+export interface NonTradingOders extends CoinBase {
+	orderTime?: string;
+	orderType?: string;
+	limit?: string;
+	market?: string;
+	stopLimit?: string;
+}
+interface Ticker {
+	code: string;
+	highPrice: number;
+	lowPrice: number;
+	tradePrice: number;
+	prevClosingPrice: number;
+	change: string;
+	changePrice: number;
+	changeRate: number;
+	accTradeVolume24h: number;
+	accTradePrice24h: number;
+}
+interface Order {
+	askPrice: number;
+	askSize: number;
+	changeRate: string;
+}
+interface Orderbook {
+	code: string;
+	totalAskSize: number;
+	totalBidSize: number;
+	askInfo: Order[];
+	bidInfo: Order[];
+}
+interface Trade {
+	limit: number;
+	market: string;
+	stopLimit: number;
+	amount: number;
+	orderType: string;
+}
+interface HoldingCoin extends CoinBase {
+	priceEvaluation: string;
+	averagePrice: string;
+	change: string;
+	changePrice: string;
+	changeRate: string;
+}
+
+export interface ChartData {
+	time: number;
+	open: number;
+	high: number;
+	low: number;
+	close: number;
+}

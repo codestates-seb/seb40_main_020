@@ -8,6 +8,7 @@ const History = lazy(() => import('./pages/History'));
 const WaitOrders = lazy(() => import('./pages/WaitOrders'));
 const Balances = lazy(() => import('./pages/Balances'));
 const Exchange = lazy(() => import('./pages/Exchange'));
+const MyPage = lazy(() => import('./pages/MyPage'));
 const SignUp = lazy(() => import('./pages/SignUp'));
 const Login = lazy(() => import('pages/Login'));
 const FindPassword = lazy(() => import('pages/FindPassword'));
@@ -66,6 +67,10 @@ function App() {
 				<Route
 					path="/swapresult"
 					element={<Suspense fallback={<>…</>}>{<SwapResult />}</Suspense>}
+				/>
+				<Route
+					path="/mypage"
+					element={<Suspense fallback={<>...</>}>{<MyPage />}</Suspense>}
 				/>
 			</Routes>
 			<Chatting />

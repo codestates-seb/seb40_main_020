@@ -1,82 +1,178 @@
-import React, { useState } from 'react';
+import Radio from 'components/Radio';
+import React, { useState, useEffect, memo } from 'react';
 import { HoldComponent } from './style';
-
+import {
+	myCoinsTitleMenu,
+	completeOrdersTitleMenu,
+	nonTradingOdersTitleMenu,
+} from '../../../../utills/constants/exchange';
+import {
+	MyCoins,
+	CompleteOrders,
+	NonTradingOders,
+} from '../../../../utills/types';
+const MY_COIN_DATA = [
+	{
+		code: 'KRW-BTC',
+		amount: '1.12345678',
+		priceEvaluation: '26962962',
+		averagePrice: '23000000',
+		change: 'FALL',
+		changeRate: '-0.57%',
+		changePrice: '129000',
+	},
+	{
+		code: 'KRW-ATOM',
+		amount: '1.12345678',
+		priceEvaluation: '26962962',
+		averagePrice: '23000000',
+		change: 'RISE',
+		changeRate: '+0.57%',
+		changePrice: '129000',
+	},
+];
+const NON_TRADING_ORDERS = [
+	{
+		code: 'KRW-BTC',
+		orderTime: '11.15 16:20',
+		orderType: '매수',
+		limit: '',
+		market: '',
+		stopLimit: '',
+		amount: '',
+	},
+	{
+		code: 'KRW-BTC',
+		orderTime: '11.15 16:20',
+		orderType: '매도',
+		limit: '',
+		market: '',
+		stopLimit: '',
+		amount: '',
+	},
+];
+const COMPLETE_ORDERS = [
+	{
+		code: 'KRW-BTC',
+		completedTime: '11.15 16:20',
+		orderType: '매수',
+		price: '',
+		amount: '',
+	},
+	{
+		code: 'KRW-BTC',
+		completedTime: '11.15 16:20',
+		orderType: '매도',
+		price: '',
+		amount: '',
+	},
+];
 interface Props {
 	title: string;
 }
 
 function Hold({ title }: Props) {
-	const subTitleMenu =
-		title === '보유 코인'
-			? ['코인명', '보유(평가금)', '매수평균가', '수익률']
-			: ['주문시간', '구분', '주문가격', '주문량', '미체결량', '취소'];
-	const item = [
-		{
-			date: '11.15 16:20',
-			order: '매수',
-			orderPrice: 23800000,
-			orderSize: 1.12345678,
-			notSignedSize: 0.065742,
-		},
-		{
-			date: '11.15 16:20',
-			order: '매도',
-			orderPrice: 23800000,
-			orderSize: 1.12345678,
-			notSignedSize: 0.065742,
-		},
-	];
-	const holdItem = [
-		{
-			coin: '비트코인',
-			hold: { size: 1.12345678, price: 26962962 },
-			avgPrice: 23000000,
-			yield: { yield: '+0.57%', proceeds: 129000 },
-		},
-		{
-			coin: '코스모스',
-			hold: { size: 1.12345678, price: 26962962 },
-			avgPrice: 23000000,
-			yield: { yield: '+0.57%', proceeds: 129000 },
-		},
-	];
+	const [myCoins, setMyCoins] = useState<MyCoins[]>([]);
+	const [completeOrders, setCompleteOrders] = useState<CompleteOrders[]>([]);
+	const [nonTradingOders, setNonTradingOrers] = useState<NonTradingOders[]>([]);
+	const [complete, setComplete] = useState('non-trading');
+
+	useEffect(() => {
+		setTimeout(() => {
+			setMyCoins(MY_COIN_DATA);
+			setNonTradingOrers(NON_TRADING_ORDERS);
+			setCompleteOrders(COMPLETE_ORDERS);
+		}, 1);
+	}, []);
+
+	const drawTitle = (v: string, i: number) => <td key={i}>{v}</td>;
+	const radioClickHandler = (value: string) => setComplete(value);
 	return (
 		<HoldComponent>
 			<table>
 				<thead>
+					{title !== '보유 코인' ? (
+						<tr className="trade-status">
+							<td>
+								<Radio
+									value="non-trading"
+									name="trade"
+									defaultChecked={true}
+									onClick={radioClickHandler}
+									complete={complete}
+								>
+									미체결
+								</Radio>
+								<Radio
+									value="complete"
+									name="trade"
+									onClick={radioClickHandler}
+									complete={complete}
+								>
+									체결
+								</Radio>
+							</td>
+						</tr>
+					) : (
+						<></>
+					)}
 					<tr className="hold-title">
-						{subTitleMenu.map((v, i) => (
-							<td key={i}>{v}</td>
-						))}
+						{title === '보유 코인'
+							? myCoinsTitleMenu.map(drawTitle)
+							: complete === 'non-trading'
+							? nonTradingOdersTitleMenu.map(drawTitle)
+							: completeOrdersTitleMenu.map(drawTitle)}
 					</tr>
 				</thead>
 
 				<tbody>
 					{title === '보유 코인'
-						? holdItem.map((v, i) => (
+						? myCoins.map((v, i) => (
 								<tr key={i} className="hold-item">
-									<td>{v.coin}</td>
-									<tr>
-										<td>{v.hold.size}</td>
-										<td>{`${v.hold.price.toLocaleString()} KRW`}</td>
-									</tr>
-									<td>{v.avgPrice.toLocaleString()}</td>
-									<tr className="today-range">
-										<td>{v.yield.yield}</td>
-										<td>{v.yield.proceeds.toLocaleString()}</td>
-									</tr>
+									<td>{v.code as string}</td>
+									<td>
+										<div>{v.amount as string}</div>
+										<div>{`${v.priceEvaluation as string} KRW`}</div>
+									</td>
+									<td>{v.averagePrice as string}</td>
+									<td
+										className={(v.change as string) === 'FALL' ? 'ask' : 'bid'}
+									>
+										<div>{v.changeRate as string}</div>
+										<div>{v.changePrice as string}</div>
+									</td>
 								</tr>
 						  ))
-						: item.map((v, i) => (
+						: complete === 'non-trading'
+						? nonTradingOders.map((v, i) => (
 								<tr key={i} className="hold-item">
-									<td>{v.date}</td>
-									<td className={v.order === '매수' ? 'bid' : 'ask'}>
-										{v.order}
+									<td>{v.code as string}</td>
+									<td
+										className={
+											(v.orderType as string) === '매수' ? 'bid' : 'ask'
+										}
+									>
+										{v.orderType as string}
 									</td>
-									<td>{v.orderPrice.toLocaleString()}</td>
-									<td>{v.orderSize}</td>
-									<td>{v.notSignedSize}</td>
+									<td>{v.limit as string}</td>
+									<td>{v.stopLimit as string}</td>
+									<td>{v.amount as string}</td>
 									<td className={'cancel'}>취소</td>
+								</tr>
+						  ))
+						: completeOrders.map((v, i) => (
+								<tr key={i}>
+									<td>{v.code as string}</td>
+									<td>{v.completedTime as string}</td>
+									<td
+										className={
+											(v.orderType as string) === '매수' ? 'bid' : 'ask'
+										}
+									>
+										{v.orderType as string}
+									</td>
+									<td>{v.price as string}</td>
+									<td>{v.amount as string}</td>
 								</tr>
 						  ))}
 				</tbody>
@@ -85,4 +181,4 @@ function Hold({ title }: Props) {
 	);
 }
 
-export default Hold;
+export default memo(Hold);
