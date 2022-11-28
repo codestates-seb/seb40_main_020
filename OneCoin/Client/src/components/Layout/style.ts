@@ -15,6 +15,7 @@ export const Wapper = styled.main<Props>`
 
 export const Container = styled.section`
 	flex: 1;
+	width: 100%;
 `;
 
 export const Aside = styled.aside`

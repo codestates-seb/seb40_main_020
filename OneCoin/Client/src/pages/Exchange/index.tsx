@@ -9,34 +9,33 @@ import Order from './components/Order';
 import Aside from 'components/Aside';
 import HoldList from './components/HoldList';
 import Layout from '../../components/Layout';
+import ChartList from './components/ChartList';
+import { CoinInfo } from '../../utills/types';
 
 function Exchange() {
-	interface T {
-		coin: string;
-		code: string;
-		symbol: string;
-	}
-	const coinData = useRecoilValue(coinDataState);
-	const [symbol, setSymbol] = useState<T>({
+	const COIN_INFO_INITIAL_DATA = {
 		coin: '비트코인',
 		code: 'KRW-BTC',
 		symbol: 'BTCKRW',
-	});
+	};
+	const coinData = useRecoilValue(coinDataState);
+	const [coinInfo, setCoinInfo] = useState<CoinInfo>(COIN_INFO_INITIAL_DATA);
 	const [coin, setCoin] = useState(
-		coinData.filter((v) => v.coin === symbol.coin)[0]
+		coinData.filter((v) => v.coin === coinInfo.coin)[0]
 	);
-	const symbolHandler = (item: T) => setSymbol(item);
+	const coinInfoHandler = (item: CoinInfo) => setCoinInfo(item);
 
 	const [inputPrice, setInputPrice] = useState<number>(0);
 	const prcieClickHandler = (price: number) => setInputPrice(price);
 	useEffect(() => {
-		const newData = coinData.filter((v) => v.coin === symbol.coin)[0];
+		const newData = coinData.filter((v) => v.coin === coinInfo.coin)[0];
 		setCoin(newData);
 		setInputPrice(newData.ticker?.trade_price ? newData.ticker.trade_price : 0);
-	}, [symbol]);
+	}, [coinInfo]);
 	useEffect(() => {
-		const newData = coinData.filter((v) => v.coin === symbol.coin)[0];
-		setInputPrice(newData.ticker?.trade_price ? newData.ticker.trade_price : 0);
+		const newData = coinData.filter((v) => v.coin === coinInfo.coin)[0];
+		const price = newData?.ticker?.trade_price ? newData.ticker.trade_price : 0;
+		setInputPrice(price);
 	}, []);
 	return (
 		<Layout isLeftSidebar={false} isLeftMargin={false}>
@@ -76,18 +75,21 @@ function Exchange() {
 					</div>
 				</div>
 
-				<Chart symbol={symbol.symbol} />
-
+				<ChartList coinInfo={coinInfo} />
 				<QuoteList
 					coinOrderbook={coin?.orderbook && coin.orderbook}
 					prcieClickHandler={prcieClickHandler}
 					tradePrice={coin?.ticker?.trade_price && coin.ticker.trade_price}
 				/>
 
-				<Order inputPrice={inputPrice} setInputPrice={setInputPrice} />
+				<Order
+					inputPrice={inputPrice}
+					setInputPrice={setInputPrice}
+					coinInfo={coinInfo}
+				/>
 				<HoldList />
 				<div className="aside-wrapper">
-					<Aside symbolHandler={symbolHandler} isLeftSidebar={true} />
+					<Aside coinInfoHandler={coinInfoHandler} isLeftSidebar={true} />
 				</div>
 			</ExchangeComponent>
 		</Layout>

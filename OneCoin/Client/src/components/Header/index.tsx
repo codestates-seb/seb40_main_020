@@ -2,7 +2,7 @@ import React from 'react';
 import { HeaderComponent } from './style';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/images/one.png';
-import { HEADER_LIST } from '../../utills/constants/investments';
+import { HEADER_LIST } from '../../utills/constants/header';
 
 function Header() {
 	const navigate = useNavigate();

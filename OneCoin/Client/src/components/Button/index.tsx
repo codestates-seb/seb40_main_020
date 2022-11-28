@@ -11,14 +11,19 @@ export interface StyleProps {
 		fontSize?: number;
 		fontWeight?: number;
 	};
+	onClick?: () => void;
 }
 
 interface Props extends StyleProps {
 	children: string;
 }
 
-function Button({ children, style }: Props) {
-	return <ButtonComponent style={style}>{children}</ButtonComponent>;
+function Button({ children, style, onClick }: Props) {
+	return (
+		<ButtonComponent style={style} onClick={onClick}>
+			{children}
+		</ButtonComponent>
+	);
 }
 
 export default Button;

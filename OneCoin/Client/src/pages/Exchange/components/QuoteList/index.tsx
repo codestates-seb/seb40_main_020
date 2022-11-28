@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Quote from '../Quote';
 import { QuoteListComponent } from './style';
 import { OrderbookType, OrderType } from '../../../../utills/types';
@@ -10,6 +10,7 @@ interface Props {
 }
 
 function QuoteList({ coinOrderbook, prcieClickHandler, tradePrice }: Props) {
+	const scrollRef = useRef<null | HTMLDivElement>(null);
 	const [askPrice, setAskPrice] = useState<OrderType[]>([]);
 	const [bidPrice, setBidPrice] = useState<OrderType[]>([]);
 	useEffect(() => {
@@ -28,7 +29,7 @@ function QuoteList({ coinOrderbook, prcieClickHandler, tradePrice }: Props) {
 	}, [coinOrderbook]);
 
 	return (
-		<QuoteListComponent className="quote-wrapper">
+		<QuoteListComponent className="quote-wrapper" ref={scrollRef}>
 			<div className="normal">일반호가</div>
 			<div className="ask">
 				{askPrice.map((ask, i) => (
