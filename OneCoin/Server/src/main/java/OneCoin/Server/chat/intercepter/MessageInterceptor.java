@@ -19,9 +19,11 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,12 +31,19 @@ public class MessageInterceptor implements ChannelInterceptor {
     private final LoggedInUserInfoUtilsForWebSocket loggedInUserInfoUtilsForWebSocket;
     private final ChatRoomService chatRoomService;
     private final RedisPublisher redisPublisher;
+    private final AuthUtilForWebsocket authUtil;
+    private final String AUTHORIZATION = "Authorization";
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         StompCommand command = accessor.getCommand();
         String sessionId = accessor.getSessionId();
+        if (StompCommand.CONNECT.equals(command)) {
+            log.info("[CONNECT] start {}", sessionId);
+            authenticate(accessor);
+            log.info("[CONNECT] complete {}", sessionId);
+        }
         if (StompCommand.SUBSCRIBE.equals(command)) {
             log.info("[SUBSCRIBE] start {}", sessionId);
             registerUserAndSendEnterMessage(accessor);
@@ -59,6 +68,13 @@ public class MessageInterceptor implements ChannelInterceptor {
         log.info("[ABNORMAL DISCONNECT] unregister start : user {}", sessionId);
         unregisterUserAndSendLeaveMessage(sessionId);
         log.info("[ABNORMAL DISCONNECT] unregister complete : user {}", sessionId);
+    }
+
+    private void authenticate(StompHeaderAccessor accessor) {
+        String accessToken = accessor.getFirstNativeHeader(AUTHORIZATION);
+        if(accessToken == null) return;
+        Authentication authentication = authUtil.authenticate(accessToken);
+        accessor.setUser(authentication);
     }
 
     //구독시에는 유저 방 정보에 유저가 몇 명 있고, 누가 있는지만 저장
