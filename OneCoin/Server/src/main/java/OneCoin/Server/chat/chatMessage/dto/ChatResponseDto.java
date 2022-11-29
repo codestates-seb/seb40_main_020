@@ -1,7 +1,6 @@
 package OneCoin.Server.chat.chatMessage.dto;
 
 import OneCoin.Server.chat.constant.MessageType;
-import OneCoin.Server.chat.constant.ResponseType;
 import lombok.*;
 
 @Getter
