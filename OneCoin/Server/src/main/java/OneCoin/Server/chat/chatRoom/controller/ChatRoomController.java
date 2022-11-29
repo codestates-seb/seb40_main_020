@@ -7,6 +7,7 @@ import OneCoin.Server.chat.chatMessage.service.ChatService;
 import OneCoin.Server.chat.chatRoom.dto.UsersInRoomResponseDto;
 import OneCoin.Server.chat.chatRoom.entity.UserInChatRoom;
 import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
+import OneCoin.Server.dto.MultiResponseDto;
 import OneCoin.Server.dto.SingleResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,6 @@ public class ChatRoomController {
     public ResponseEntity getMessagesInRoom(@PathVariable("room-id") Integer chatRoomId) {
         List<ChatMessage> messages = chatService.getChatMessages(chatRoomId);
         List<ChatResponseDto> responses = chatMapper.chatMessagesToResponseDtos(messages);
-        return new ResponseEntity<>(new SingleResponseDto<>(responses), HttpStatus.CREATED);
+        return new ResponseEntity<>(new MultiResponseDto<>(responses), HttpStatus.CREATED);
     }
 }
