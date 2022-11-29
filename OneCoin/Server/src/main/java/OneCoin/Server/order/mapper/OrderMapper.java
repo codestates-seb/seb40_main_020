@@ -20,6 +20,7 @@ public interface OrderMapper {
                 .market(new BigDecimal(String.valueOf(postDto.getMarket())))
                 .stopLimit(new BigDecimal(String.valueOf(postDto.getStopLimit())))
                 .amount(new BigDecimal(String.valueOf(postDto.getAmount())))
+                .completedAmount(BigDecimal.ZERO)
                 .orderType(postDto.getOrderType())
                 .build();
     }

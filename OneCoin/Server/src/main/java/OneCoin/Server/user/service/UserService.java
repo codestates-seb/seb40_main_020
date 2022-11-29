@@ -284,13 +284,12 @@ public class UserService {
 
     /**
      * <pre>
-     *     userId로 단일 회원 정보 가져오기
+     *     이메일로 단일 회원 정보 가져오기
      * </pre>
      */
     @Transactional(readOnly = true)
     public User findVerifiedUserByEmail(String email) {
-        User findUser = userRepository.findByEmail(email).orElseThrow(() ->new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
-        return findUser;
+        return userRepository.findByEmail(email).orElseThrow(() ->new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
     }
 
     /**

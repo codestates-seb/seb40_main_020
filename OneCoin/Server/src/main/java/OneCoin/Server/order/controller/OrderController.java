@@ -30,13 +30,6 @@ public class OrderController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
-    @GetMapping("/completion")
-    public ResponseEntity getCompletedOrder(@RequestParam("code") String code) { // 체결된 내역
-        // TODO
-        // transaction history에서 봐야함
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
     @GetMapping("/non-trading")
     public ResponseEntity getNonTradingOrder() {
         List<Order> orders = orderService.findOrders();
