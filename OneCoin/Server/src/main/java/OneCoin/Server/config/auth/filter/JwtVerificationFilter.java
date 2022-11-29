@@ -58,15 +58,14 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
                 Map<String, Object> claims = verifyRefreshJws(request);
 
                 // DB에 리프레시를 저장하여 판단하는 경우도 있지만, 일단 이렇게 구현
-                User user = userRepository.findByEmail(claims.get("sub").toString()).orElseThrow(() ->new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+                User user = userRepository.findByEmail(claims.get("sub").toString()).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
                 String accessToken = jwtAuthenticationFilter.delegateAccessToken(user);
                 String refreshToken = jwtAuthenticationFilter.delegateRefreshToken(user);
 
                 response.setHeader("Authorization", "Bearer " + accessToken);
                 response.setHeader("Refresh", refreshToken);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 request.setAttribute("exception", e);
             }
         } catch (Exception e) {

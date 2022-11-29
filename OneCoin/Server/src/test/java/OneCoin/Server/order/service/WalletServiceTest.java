@@ -1,6 +1,6 @@
 package OneCoin.Server.order.service;
 
-import OneCoin.Server.balance.BalanceService;
+import OneCoin.Server.balance.service.BalanceService;
 import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtils;
 import OneCoin.Server.helper.StubData;
 import OneCoin.Server.order.entity.Order;

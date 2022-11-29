@@ -27,7 +27,7 @@ public enum ExceptionCode {
     NOT_CORRECT_TYPE(400, "It`s not correct type."),
     NO_AUTHENTICATION_EMAIL(404, "Unauthenticated email"),
     AUTH_NOT_FOUND(404, "Auth data not found"),
-    OCCURRED_NEGATIVE_AMOUNT(500,"Negative amount has occurred.");
+    OCCURRED_NEGATIVE_AMOUNT(500, "Negative amount has occurred.");
 
     private final int code;
     private final String description;

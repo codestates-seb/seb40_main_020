@@ -136,7 +136,7 @@ public class UserController {
     // 비밀번호 변경 이메일 인증 확인
     @GetMapping("/authentication-email/password/{user-id}/{password}")
     public ResponseEntity authenticationEmailByPassword(@PathVariable("user-id") @Positive long userId,
-                                              @PathVariable("password") String password) throws URISyntaxException {
+                                                        @PathVariable("password") String password) throws URISyntaxException {
         userService.confirmEmailByPassword(userId, password);
 
         URI redirect = new URI("http://" + baseURL + "/reset/password");
@@ -159,7 +159,7 @@ public class UserController {
     public ResponseEntity findPassword(@Valid @RequestParam String email) {
         User user = userService.findVerifiedUserByEmail(email);
         userService.authenticationEmailForPassword(user);
-        
+
         return new ResponseEntity<>("Send Email", HttpStatus.OK);
     }
 
