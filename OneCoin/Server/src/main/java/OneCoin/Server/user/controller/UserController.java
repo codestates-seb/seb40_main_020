@@ -8,6 +8,7 @@ import OneCoin.Server.user.mapper.UserMapper;
 import OneCoin.Server.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +29,7 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
+    private final String baseURL = "localhost:3000";
 
     public UserController(UserService userService, UserMapper userMapper) {
         this.userService = userService;
@@ -112,14 +116,36 @@ public class UserController {
     }
 
     // 이메일 인증 확인
-    @GetMapping("/authentication-email/{user-id}/{password}")
+    @GetMapping("/authentication-email/signup/{user-id}/{password}")
     public ResponseEntity authenticationEmail(@PathVariable("user-id") @Positive long userId,
-                                              @PathVariable("password") String password) {
+                                              @PathVariable("password") String password) throws URISyntaxException {
         userService.confirmEmail(userId, password);
+
+        URI redirect = new URI("http://" + baseURL + "/login");
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(redirect);
+
+        return new ResponseEntity(httpHeaders, HttpStatus.SEE_OTHER);
+    }
+
+    // 비밀번호 변경 이메일 인증 확인
+    @GetMapping("/authentication-email/password/{user-id}/{password}")
+    public ResponseEntity authenticationEmailByPassword(@PathVariable("user-id") @Positive long userId,
+                                              @PathVariable("password") String password) {
+        userService.confirmEmailByPassword(userId, password);
 
         return new ResponseEntity<>(
                 new SingleResponseDto<>("Authorization Email!"), HttpStatus.OK
         );
+    }
+
+    // 비밀번호 찾기 이메일
+    @GetMapping("/find-password")
+    public ResponseEntity findPassword(@Valid @RequestParam String email) {
+        User user = userService.findVerifiedUserByEmail(email);
+        userService.authenticationEmailForPassword(user);
+        
+        return new ResponseEntity<>("Send Email", HttpStatus.OK);
     }
 
 }

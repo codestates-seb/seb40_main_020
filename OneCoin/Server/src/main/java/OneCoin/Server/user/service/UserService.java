@@ -71,11 +71,29 @@ public class UserService {
     @Transactional
     public void authenticationEmail(User user) {
         // 임시 비밀번호 + Auth 생성
-        Auth auth = authService.createAuth(userRepository.findByEmail(user.getEmail()).orElseThrow(() ->new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)));
+        Auth auth = authService.createAuth(findVerifiedUserByEmail(user.getEmail()));
         String randomPassword = auth.getAuthPassword();
 
         // 인증 링크
-        String link = "http://" + ipAddress +"/api/users/authentication-email/"
+        String link = "http://" + ipAddress +"/api/users/authentication-email/signup/"
+                + auth.getAuthId().toString() + "/" + randomPassword;
+
+        sendEmail(user, link);
+    }
+
+    /**
+     *  <pre>
+     *      비밀번호 재설정 이메일 인증 발송
+     *  </pre>
+     */
+    @Transactional
+    public void authenticationEmailForPassword(User user) {
+        // 임시 비밀번호 + Auth 생성
+        Auth auth = authService.createAuth(findVerifiedUserByEmail(user.getEmail()));
+        String randomPassword = auth.getAuthPassword();
+
+        // 인증 링크
+        String link = "http://" + ipAddress +"/api/users/authentication-email/password/"
                 + auth.getAuthId().toString() + "/" + randomPassword;
 
         sendEmail(user, link);
@@ -120,6 +138,29 @@ public class UserService {
      */
     @Transactional
     public void confirmEmail(long authId, String password) {
+        Auth auth = authService.findVerifiedAuth(authId);
+        String dbPassword = auth.getAuthPassword();
+
+        // password 값 비교
+        if (password.equals(dbPassword)) {
+            // 맟으면 계정 활성화
+            User user = findUser(auth.getUser().getUserId());
+
+            user.setUserRole(Role.ROLE_USER);
+
+            userRepository.save(user);
+        }
+
+    }
+
+    /**
+     *  <pre>
+     *      회원가입 이메일 인증 후처리
+     *      이메일 인증 링크 타고 오면 임시 발급 인증번호 대조 후 계정 활성화
+     *  </pre>
+     */
+    @Transactional
+    public void confirmEmailByPassword(long authId, String password) {
         Auth auth = authService.findVerifiedAuth(authId);
         String dbPassword = auth.getAuthPassword();
 
@@ -234,6 +275,17 @@ public class UserService {
     public User findVerifiedUser(long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         User findUser = optionalUser.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+        return findUser;
+    }
+
+    /**
+     * <pre>
+     *     userId로 단일 회원 정보 가져오기
+     * </pre>
+     */
+    @Transactional(readOnly = true)
+    public User findVerifiedUserByEmail(String email) {
+        User findUser = userRepository.findByEmail(email).orElseThrow(() ->new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
         return findUser;
     }
 
