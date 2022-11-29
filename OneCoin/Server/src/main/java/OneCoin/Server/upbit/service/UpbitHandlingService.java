@@ -50,7 +50,7 @@ public class UpbitHandlingService {
     @SneakyThrows
     private void handleOrderBook(JsonNode jsonNode) {
         String code = objectMapper.readValue(jsonNode.get("code").toString(), String.class);
-        String prevClosingPrice = tickerRepository.findPrevClosingPrice(code);
+        String prevClosingPrice = tickerRepository.findTickerByCode(code).getPrevClosingPrice();
 
         List<UnitInfo> unitInfos = Arrays.asList(objectMapper.readValue(jsonNode.get("orderbook_units").toString(), UnitInfo[].class));
         OrderBookDto orderBookDto = mapper.unitInfoToOrderBookDto(unitInfos, prevClosingPrice);
