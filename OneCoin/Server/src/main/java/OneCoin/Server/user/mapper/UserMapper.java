@@ -44,7 +44,7 @@ public interface UserMapper {
 
         user.setDisplayName((String) kakaoProfile.get("nickname"));
         user.setEmail((String) kakaoAccount.get("email"));
-        user.setPassword("KakaoOauth2!");
+        user.setPassword((String) requestBody.getAttributes().get("id") + "a!");    // kakao id 저장
         user.setImagePath((String)kakaoProfile.get("profile_image_url"));
         user.setPlatform(Platform.KAKAO);
         user.setUserRole(Role.ROLE_USER);
