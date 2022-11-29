@@ -70,8 +70,6 @@ public class UserService {
      */
     @Transactional
     public void authenticationEmail(User user) {
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-
         // 임시 비밀번호 + Auth 생성
         Auth auth = authService.createAuth(userRepository.findByEmail(user.getEmail()).orElseThrow(() ->new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)));
         String randomPassword = auth.getAuthPassword();
@@ -79,6 +77,18 @@ public class UserService {
         // 인증 링크
         String link = "http://" + ipAddress +"/api/users/authentication-email/"
                 + auth.getAuthId().toString() + "/" + randomPassword;
+
+        sendEmail(user, link);
+    }
+
+    /**
+     *  <pre>
+     *      link 를 연결해주는 이메일 인증 발송
+     *  </pre>
+     */
+    @Transactional
+    public void sendEmail(User user, String link) {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
