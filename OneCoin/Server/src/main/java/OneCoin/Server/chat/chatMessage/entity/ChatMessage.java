@@ -1,6 +1,7 @@
 package OneCoin.Server.chat.chatMessage.entity;
 
 
+import OneCoin.Server.chat.constant.MessageType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -10,6 +11,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ChatMessage {
+    @JsonProperty("type")
+    private MessageType type;
     @JsonProperty("message")
     private String message;
     @JsonProperty("chat_at")

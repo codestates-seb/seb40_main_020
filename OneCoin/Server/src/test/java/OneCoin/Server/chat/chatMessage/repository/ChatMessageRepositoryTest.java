@@ -1,7 +1,7 @@
 package OneCoin.Server.chat.chatMessage.repository;
 
 import OneCoin.Server.chat.chatMessage.entity.ChatMessage;
-import OneCoin.Server.chat.chatMessage.repository.ChatMessageRepository;
+import OneCoin.Server.chat.constant.MessageType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class ChatMessageRepositoryTest {
 
     @BeforeEach
     void init() {
-        for(long i = 60L; i <= 70L; i++) {
+        for (long i = 60L; i <= 70L; i++) {
             chatMessageRepository.save(chatMessageMaker(i, 20));
         }
     }
@@ -35,10 +35,11 @@ public class ChatMessageRepositoryTest {
 
     private ChatMessage chatMessageMaker(long userId, Integer chatRoomId) {
         return new ChatMessage(
+                MessageType.TALK,
                 "hello" + userId,
                 LocalDateTime.now().toString(),
                 userId,
                 chatRoomId,
-                String.valueOf(userId*100L));
+                String.valueOf(userId * 100L));
     }
 }
