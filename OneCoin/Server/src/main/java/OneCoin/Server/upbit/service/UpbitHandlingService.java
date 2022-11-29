@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -21,11 +22,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UpbitHandlingService {
     private final ObjectMapper objectMapper;
-    private final TradingService tradingService;
     private final OrderBookDtoMapper mapper;
     private final TickerRepository tickerRepository;
     private final OrderBookRepository orderBookRepository;
-
+    private final ApplicationEventPublisher publisher;
     private String prevClosingPrice;
 
     public void parsing(JsonNode jsonNode) {
@@ -46,7 +46,7 @@ public class UpbitHandlingService {
         tickerRepository.saveTicker(tickerDto);
 
         Trade trade = objectMapper.readValue(jsonNode.toString(), Trade.class);
-        tradingService.completeOrders(trade);
+        publisher.publishEvent(trade); // 체결 이벤트 발급
     }
 
     @SneakyThrows
