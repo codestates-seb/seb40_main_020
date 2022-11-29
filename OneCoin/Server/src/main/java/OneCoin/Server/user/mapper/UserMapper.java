@@ -23,7 +23,7 @@ public interface UserMapper {
         user.setEmail(requestBody.getEmail());
         user.setPassword(requestBody.getPassword());
         user.setPlatform(Platform.ORIGIN);
-        user.setUserRole(Role.ROLE_USER);   // default : ROLE_USER
+        user.setUserRole(Role.ROLE_NOT_AUTH);   // default : ROLE_NOT_AUTH
         user.setBalance(balance);
 
         balance.setBalance(BigDecimal.ZERO);
