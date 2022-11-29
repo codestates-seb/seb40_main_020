@@ -51,9 +51,12 @@ public class UpbitHandlingService {
 
     @SneakyThrows
     private void handleOrderBook(JsonNode jsonNode) {
-        OrderBookDto orderBookDto = objectMapper.readValue(jsonNode.toString(), OrderBookDto.class);
         List<UnitInfo> unitInfos = Arrays.asList(objectMapper.readValue(jsonNode.get("orderbook_units").toString(), UnitInfo[].class));
-        orderBookDto = mapper.unitInfoToOrderBookDto(orderBookDto, unitInfos, prevClosingPrice);
+        OrderBookDto orderBookDto = mapper.unitInfoToOrderBookDto(unitInfos, prevClosingPrice);
+
+        orderBookDto.setCode(objectMapper.readValue(jsonNode.get("code").toString(), String.class));
+        orderBookDto.setTotalAskSize(objectMapper.readValue(jsonNode.get("total_ask_size").toString(), String.class));
+        orderBookDto.setTotalBidSize(objectMapper.readValue(jsonNode.get("total_bid_size").toString(), String.class));
         orderBookRepository.saveOrderBook(orderBookDto);
     }
 }

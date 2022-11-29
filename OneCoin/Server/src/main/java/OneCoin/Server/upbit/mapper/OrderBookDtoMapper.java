@@ -5,35 +5,29 @@ import OneCoin.Server.upbit.dto.orderbook.BidInfo;
 import OneCoin.Server.upbit.dto.orderbook.OrderBookDto;
 import OneCoin.Server.upbit.entity.UnitInfo;
 import OneCoin.Server.utils.CalculationUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Context;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Component
-@RequiredArgsConstructor
-public class OrderBookDtoMapper {
-    private final CalculationUtil calculationUtil;
+@Mapper(componentModel = "spring")
+public abstract class OrderBookDtoMapper {
+    @Autowired
+    protected CalculationUtil calculationUtil;
 
-    public OrderBookDto unitInfoToOrderBookDto(OrderBookDto orderBookDto, List<UnitInfo> unitInfos, String prevClosingPrice) {
-        List<AskInfo> askInfos = new ArrayList<>();
-        List<BidInfo> bidInfos = new ArrayList<>();
+    @Mapping(target = "askInfo", expression = "java(toAskInfos(unitInfos, prevClosingPrice))")
+    @Mapping(target = "bidInfo", expression = "java(toBidInfos(unitInfos, prevClosingPrice))")
+    public abstract OrderBookDto unitInfoToOrderBookDto(List<UnitInfo> unitInfos, String prevClosingPrice);
 
-        for (UnitInfo unitInfo : unitInfos) {
-            String askPrice = unitInfo.getAskPrice();
-            String askSize = unitInfo.getAskSize();
-            String bidPrice = unitInfo.getBidPrice();
-            String bidSize = unitInfo.getBidSize();
+    protected abstract List<AskInfo> toAskInfos(List<UnitInfo> unitInfos, @Context String prevClosingPrice);
 
-            AskInfo askInfo = new AskInfo(askPrice, askSize, calculationUtil.calculateChangeRate(askPrice, prevClosingPrice));
-            BidInfo bidInfo = new BidInfo(bidPrice, bidSize, calculationUtil.calculateChangeRate(bidPrice, prevClosingPrice));
-            askInfos.add(askInfo);
-            bidInfos.add(bidInfo);
+    protected abstract List<BidInfo> toBidInfos(List<UnitInfo> unitInfos, @Context String prevClosingPrice);
 
-        }
-        orderBookDto.setAskInfo(askInfos);
-        orderBookDto.setBidInfo(bidInfos);
-        return orderBookDto;
-    }
+    @Mapping(target = "changeRate", expression = "java(calculationUtil.calculateChangeRate(unitInfo.getAskPrice(), prevClosingPrice))")
+    protected abstract AskInfo unitInfoToAskInfo(UnitInfo unitInfo, @Context String prevClosingPrice);
+
+    @Mapping(target = "changeRate", expression = "java(calculationUtil.calculateChangeRate(unitInfo.getBidPrice(), prevClosingPrice))")
+    protected abstract BidInfo unitInfoToBidInfo(UnitInfo unitInfo, @Context String prevClosingPrice);
 }
