@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     private final CustomAuthorityUtils customAuthorityUtils;
     private final JavaMailSender javaMailSender;
     private final AuthService authService;
@@ -38,9 +39,8 @@ public class UserService {
     @Value("${spring.mail.username}")
     private String authEmail;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils, JavaMailSender javaMailSender, AuthService authService) {
+    public UserService(UserRepository userRepository, CustomAuthorityUtils customAuthorityUtils, JavaMailSender javaMailSender, AuthService authService) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
         this.customAuthorityUtils = customAuthorityUtils;
         this.javaMailSender = javaMailSender;
         this.authService = authService;
