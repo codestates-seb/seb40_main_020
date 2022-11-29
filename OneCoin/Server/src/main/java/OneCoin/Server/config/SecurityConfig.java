@@ -9,6 +9,8 @@ import OneCoin.Server.config.auth.handler.UserAuthenticationSuccessHandler;
 import OneCoin.Server.config.auth.jwt.JwtTokenizer;
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
 import OneCoin.Server.user.repository.UserRepository;
+import OneCoin.Server.user.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -33,11 +35,14 @@ public class SecurityConfig {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils customAuthorityUtils;
     private final UserRepository userRepository;
+    @Autowired
+    private final UserService userService;
 
-    public SecurityConfig(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils, UserRepository userRepository) {
+    public SecurityConfig(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils, UserRepository userRepository, UserService userService) {
         this.jwtTokenizer = jwtTokenizer;
         this.customAuthorityUtils = customAuthorityUtils;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Bean
@@ -70,7 +75,8 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.GET, "/api/users/**").hasAnyRole("USER", "ADMIN")
                         .antMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("USER")
                         .anyRequest().permitAll()                // 일단 허용
-                );
+                )
+                .oauth2Login();
         return http.build();
     }
 
