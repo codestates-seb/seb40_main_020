@@ -3,6 +3,7 @@ package OneCoin.Server.helper;
 import OneCoin.Server.coin.entity.Coin;
 import OneCoin.Server.order.dto.OrderDto;
 import OneCoin.Server.order.entity.Order;
+import OneCoin.Server.order.entity.Wallet;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -18,6 +19,7 @@ public class StubData {
                     .orderId(1L)
                     .limit(new BigDecimal("22525000"))
                     .amount(new BigDecimal("10"))
+                    .completedAmount(BigDecimal.ZERO)
                     .orderType("BID")
                     .code("KRW-BTC")
                     .userId(1L)
@@ -31,6 +33,7 @@ public class StubData {
                     .orderId(orderId)
                     .limit(new BigDecimal(limit))
                     .amount(new BigDecimal(amount))
+                    .completedAmount(BigDecimal.ZERO)
                     .orderType(orderType)
                     .code(code)
                     .userId(userId)
@@ -117,6 +120,18 @@ public class StubData {
                     "]" +
                     "}";
 
+        }
+    }
+
+    public static class MockWallet {
+        public static Wallet getMockEntity() {
+            return Wallet
+                    .builder()
+                    .amount(new BigDecimal("1"))
+                    .averagePrice(new BigDecimal("22523000"))
+                    .userId(1L)
+                    .code("KRW-BTC")
+                    .build();
         }
     }
 }
