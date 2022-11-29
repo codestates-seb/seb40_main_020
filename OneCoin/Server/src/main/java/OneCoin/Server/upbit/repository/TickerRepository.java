@@ -32,6 +32,10 @@ public class TickerRepository {
         return operations.multiGet(SiseType.TICKER.getType(), CoinList.CODES);
     }
 
+    public TickerDto findTickerByCode(String code) {
+        return objectMapper.convertValue(operations.get(SiseType.TICKER.getType(), code), TickerDto.class);
+    }
+
     public String findPrevClosingPrice(String code) {
         TickerDto tickerDto = objectMapper.convertValue(operations.get(SiseType.TICKER.getType(), code), TickerDto.class);
         return tickerDto.getPrevClosingPrice();

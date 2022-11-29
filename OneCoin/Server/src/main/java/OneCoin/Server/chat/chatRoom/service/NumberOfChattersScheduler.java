@@ -1,7 +1,6 @@
-package OneCoin.Server.chat.chatRoom;
+package OneCoin.Server.chat.chatRoom.service;
 
 import OneCoin.Server.chat.chatRoom.entity.ChatRoom;
-import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;

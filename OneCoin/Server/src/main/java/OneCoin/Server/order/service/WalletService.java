@@ -1,6 +1,6 @@
 package OneCoin.Server.order.service;
 
-import OneCoin.Server.balance.BalanceService;
+import OneCoin.Server.balance.service.BalanceService;
 import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtils;
 import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;

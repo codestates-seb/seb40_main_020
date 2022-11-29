@@ -8,6 +8,7 @@ import OneCoin.Server.config.auth.handler.UserAuthenticationFailureHandler;
 import OneCoin.Server.config.auth.handler.UserAuthenticationSuccessHandler;
 import OneCoin.Server.config.auth.jwt.JwtTokenizer;
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
+import OneCoin.Server.user.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,10 +32,12 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils customAuthorityUtils;
+    private final UserRepository userRepository;
 
-    public SecurityConfig(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils) {
+    public SecurityConfig(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils, UserRepository userRepository) {
         this.jwtTokenizer = jwtTokenizer;
         this.customAuthorityUtils = customAuthorityUtils;
+        this.userRepository = userRepository;
     }
 
     @Bean
@@ -58,7 +61,9 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.GET, "/api/order/**").hasRole("USER")
                         .antMatchers(HttpMethod.POST, "/api/order/**").hasRole("USER")
                         .antMatchers(HttpMethod.GET, "/ws/chat/**").permitAll()
+                        .antMatchers(HttpMethod.GET, "/api/users/duplicate-display-name").permitAll()
                         .antMatchers(HttpMethod.GET, "/api/users/duplicate-email").permitAll()
+                        .antMatchers(HttpMethod.GET, "/api/users/authentication-email/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .antMatchers(HttpMethod.PATCH, "/api/users/**").hasRole("USER")
                         .antMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
@@ -103,7 +108,7 @@ public class SecurityConfig {
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(new UserAuthenticationSuccessHandler());
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new UserAuthenticationFailureHandler());
 
-            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, customAuthorityUtils);
+            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, customAuthorityUtils, jwtAuthenticationFilter, userRepository);
 
             // 커스텀한 필터를 필터 체인에 추가
             builder.addFilter(jwtAuthenticationFilter)

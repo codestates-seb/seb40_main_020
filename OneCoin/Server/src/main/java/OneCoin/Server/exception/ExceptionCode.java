@@ -25,8 +25,9 @@ public enum ExceptionCode {
     INVALID_CHAT_ROOM_ID(409, "ChatRoomId is not valid"),
     NOT_CORRECT_PERIOD(400, "It`s not correct period."),
     NOT_CORRECT_TYPE(400, "It`s not correct type."),
+    NO_AUTHENTICATION_EMAIL(404, "Unauthenticated email"),
+    AUTH_NOT_FOUND(404, "Auth data not found"),
     OCCURRED_NEGATIVE_AMOUNT(500,"Negative amount has occurred.");
-
 
     private final int code;
     private final String description;
