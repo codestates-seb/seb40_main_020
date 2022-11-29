@@ -71,7 +71,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     /**
      * AccessToken 생성 위임
      */
-    private String delegateAccessToken(User user) {
+    public String delegateAccessToken(User user) {
         // userInfo
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", user.getUserId());
@@ -90,7 +90,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     /**
      * RefreshToken 생성 위임
      */
-    private String delegateRefreshToken(User user) {
+    public String delegateRefreshToken(User user) {
         // userInfo
         String subject = user.getEmail();
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
