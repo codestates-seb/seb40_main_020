@@ -4,6 +4,9 @@ import OneCoin.Server.coin.entity.Coin;
 import OneCoin.Server.order.dto.OrderDto;
 import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.entity.Wallet;
+import OneCoin.Server.user.entity.Platform;
+import OneCoin.Server.user.entity.Role;
+import OneCoin.Server.user.entity.User;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -131,6 +134,19 @@ public class StubData {
                     .averagePrice(new BigDecimal("22523000"))
                     .userId(1L)
                     .code("KRW-BTC")
+                    .build();
+        }
+    }
+
+    public static class MockUser {
+        public static User getMockEntity() {
+            return User.builder()
+                    .userId(1L)
+                    .userRole(Role.ROLE_USER)
+                    .displayName("cococo")
+                    .email("cococo@google.com")
+                    .password("1q2w3e4r!@")
+                    .platform(Platform.KAKAO)
                     .build();
         }
     }
