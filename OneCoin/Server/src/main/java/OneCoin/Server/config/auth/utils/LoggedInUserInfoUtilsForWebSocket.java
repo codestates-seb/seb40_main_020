@@ -16,8 +16,7 @@ public class LoggedInUserInfoUtilsForWebSocket {
 
     public User extractUser(Principal principal) {
         try {
-            Authentication authentication = (Authentication) principal;
-            Map<String, Object> claims = (Map) authentication.getPrincipal();
+            Map<String, Object> claims = extractClaims(principal);
             Long userId = ((Integer) claims.get("id")).longValue();
             User user = userService.findUser(userId);
             return user;
@@ -25,4 +24,15 @@ public class LoggedInUserInfoUtilsForWebSocket {
             return null;
         }
     }
+
+    public Map<String, Object> extractClaims(Principal principal) {
+        try {
+            Authentication authentication = (Authentication) principal;
+            Map<String, Object> claims = (Map) authentication.getPrincipal();
+            return claims;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }

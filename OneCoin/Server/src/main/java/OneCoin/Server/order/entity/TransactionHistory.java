@@ -21,6 +21,7 @@ public class TransactionHistory extends CreatedOnlyAuditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long TransactionHistoryId;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10, updatable = false)
     private TransactionType transactionType;
 
