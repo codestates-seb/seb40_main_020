@@ -53,6 +53,8 @@ public class UserController {
     public ResponseEntity postUser(@Valid @RequestBody UserDto.Post requestBody) {
         User user = userService.createUser(userMapper.userPostToUser(requestBody));
 
+        userService.authenticationEmail(user);
+
         return new ResponseEntity<>(
                 new SingleResponseDto<>(userMapper.userToUserResponse(user)), HttpStatus.CREATED
         );
