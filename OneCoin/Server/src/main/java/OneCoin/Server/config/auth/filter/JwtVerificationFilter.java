@@ -61,8 +61,10 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
                 User user = userRepository.findByEmail(claims.get("sub").toString()).orElseThrow(() ->new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
                 String accessToken = jwtAuthenticationFilter.delegateAccessToken(user);
+                String refreshToken = jwtAuthenticationFilter.delegateRefreshToken(user);
 
                 response.setHeader("Authorization", "Bearer " + accessToken);
+                response.setHeader("Refresh", refreshToken);
             }
             catch (Exception e) {
                 request.setAttribute("exception", e);
