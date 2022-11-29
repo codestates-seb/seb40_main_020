@@ -79,6 +79,9 @@ public class WalletService {
     private boolean verifyWalletAmountZero(Wallet wallet) {
         BigDecimal amount = wallet.getAmount();
         int comparison = amount.compareTo(BigDecimal.ZERO);
+        if (comparison < 0) {
+            throw new BusinessLogicException(ExceptionCode.OCCURRED_NEGATIVE_AMOUNT);
+        }
         return comparison == 0;
     }
 
