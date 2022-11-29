@@ -1,6 +1,6 @@
 package OneCoin.Server.order.service;
 
-import OneCoin.Server.balance.BalanceService;
+import OneCoin.Server.balance.service.BalanceService;
 import OneCoin.Server.coin.service.CoinService;
 import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtils;
 import OneCoin.Server.exception.BusinessLogicException;
@@ -72,7 +72,7 @@ public class OrderService {
         if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수 주문 취소 시 balance 환불
             giveBalanceBack(userId, order.getLimit(), order.getAmount());
         }
-        transactionHistoryService.createTransactionHistory(order);
+        savePartialTradedOrdersToTransactionHistory(order);
         orderRepository.delete(order);
     }
 
@@ -93,6 +93,13 @@ public class OrderService {
     private void giveBalanceBack(long userId, BigDecimal cancelPrice, BigDecimal cancelAmount) {
         BigDecimal totalCancelPrice = calculationUtil.calculateByAddingCommission(cancelPrice, cancelAmount);
         balanceService.updateBalanceByAskOrCancelBid(userId, totalCancelPrice);
+    }
+
+    private void savePartialTradedOrdersToTransactionHistory(Order order) {
+        int comparison = order.getCompletedAmount().compareTo(BigDecimal.ZERO);
+        if (comparison > 0) {
+            transactionHistoryService.createTransactionHistory(order);
+        }
     }
 
     @Transactional(readOnly = true)

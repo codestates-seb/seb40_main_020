@@ -1,4 +1,4 @@
-package OneCoin.Server.balance;
+package OneCoin.Server.balance.service;
 
 import OneCoin.Server.balance.entity.Balance;
 import OneCoin.Server.balance.repository.BalanceRepository;
