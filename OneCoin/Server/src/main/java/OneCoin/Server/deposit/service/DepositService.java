@@ -1,6 +1,6 @@
 package OneCoin.Server.deposit.service;
 
-import OneCoin.Server.balance.BalanceService;
+import OneCoin.Server.balance.service.BalanceService;
 import OneCoin.Server.balance.entity.Balance;
 import OneCoin.Server.deposit.entity.Deposit;
 import OneCoin.Server.deposit.repository.DepositRepository;

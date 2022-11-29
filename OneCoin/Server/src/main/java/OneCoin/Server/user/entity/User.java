@@ -5,6 +5,7 @@ import lombok.*;
 import OneCoin.Server.balance.entity.Balance;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @AllArgsConstructor
@@ -18,7 +19,7 @@ public class User extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String displayName;
 
     @Column(nullable = false, updatable = false, unique = true)
@@ -26,6 +27,9 @@ public class User extends Auditable {
 
     @Column(nullable = false)
     private String password;
+
+    @Column
+    private String imagePath;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Balance balance;
@@ -39,6 +43,9 @@ public class User extends Auditable {
     @Column
     @Enumerated(EnumType.STRING)
     private Role userRole;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Auth> auth;
 
     @Builder
     public User(String displayName, String email, String password, Platform platform, Role userRole) {

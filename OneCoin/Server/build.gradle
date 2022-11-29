@@ -50,6 +50,9 @@ dependencies {
 
 	//RestAssure
 	testImplementation 'io.rest-assured:spring-web-test-client:5.3.0'
+
+	// mail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {
