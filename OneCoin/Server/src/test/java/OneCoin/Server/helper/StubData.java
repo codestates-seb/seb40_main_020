@@ -16,9 +16,9 @@ public class StubData {
             return Order
                     .builder()
                     .orderId(1L)
-                    .limit(new BigDecimal("333333"))
-                    .amount(new BigDecimal("113"))
-                    .orderType("ASK")
+                    .limit(new BigDecimal("22525000"))
+                    .amount(new BigDecimal("10"))
+                    .orderType("BID")
                     .code("KRW-BTC")
                     .userId(1L)
                     .build();
