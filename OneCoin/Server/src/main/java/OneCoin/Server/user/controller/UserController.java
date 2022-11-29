@@ -1,5 +1,6 @@
 package OneCoin.Server.user.controller;
 
+import OneCoin.Server.config.auth.jwt.JwtTokenizer;
 import OneCoin.Server.dto.PageResponseDto;
 import OneCoin.Server.dto.SingleResponseDto;
 import OneCoin.Server.user.dto.UserDto;
@@ -30,10 +31,12 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
     private final String baseURL = "localhost:3000";
+    private final JwtTokenizer jwtTokenizer;
 
-    public UserController(UserService userService, UserMapper userMapper) {
+    public UserController(UserService userService, UserMapper userMapper, JwtTokenizer jwtTokenizer) {
         this.userService = userService;
         this.userMapper = userMapper;
+        this.jwtTokenizer = jwtTokenizer;
     }
 
     // 이메일 인증
@@ -131,12 +134,22 @@ public class UserController {
     // 비밀번호 변경 이메일 인증 확인
     @GetMapping("/authentication-email/password/{user-id}/{password}")
     public ResponseEntity authenticationEmailByPassword(@PathVariable("user-id") @Positive long userId,
-                                              @PathVariable("password") String password) {
+                                              @PathVariable("password") String password) throws URISyntaxException {
         userService.confirmEmailByPassword(userId, password);
 
-        return new ResponseEntity<>(
-                new SingleResponseDto<>("Authorization Email!"), HttpStatus.OK
-        );
+        URI redirect = new URI("http://" + baseURL + "/reset/password");
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(redirect);
+
+        User user = userService.findUser(userId);
+
+        String accessToken = userService.delegateAccessToken(user, jwtTokenizer);
+        String refreshToken = userService.delegateRefreshToken(user, jwtTokenizer);
+
+        httpHeaders.add("Authorization", "Bearer " + accessToken);
+        httpHeaders.add("Refresh", refreshToken);
+
+        return new ResponseEntity(httpHeaders, HttpStatus.SEE_OTHER);
     }
 
     // 비밀번호 찾기 이메일

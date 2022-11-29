@@ -1,5 +1,6 @@
 package OneCoin.Server.user.service;
 
+import OneCoin.Server.config.auth.jwt.JwtTokenizer;
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
 import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
@@ -18,6 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.internet.MimeMessage;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Transactional
@@ -298,6 +302,38 @@ public class UserService {
     @Transactional
     public Boolean hasAccount(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    /**
+     * AccessToken 생성 위임
+     */
+    public String delegateAccessToken(User user, JwtTokenizer jwtTokenizer) {
+        // userInfo
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", user.getUserId());
+        claims.put("username", user.getEmail());
+        claims.put("roles", user.getUserRole());
+        claims.put("displayName", user.getDisplayName());
+
+        String subject = user.getEmail();
+        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
+
+        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+
+        return jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
+    }
+
+    /**
+     * RefreshToken 생성 위임
+     */
+    public String delegateRefreshToken(User user, JwtTokenizer jwtTokenizer) {
+        // userInfo
+        String subject = user.getEmail();
+        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
+
+        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+
+        return jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
     }
 
 }
