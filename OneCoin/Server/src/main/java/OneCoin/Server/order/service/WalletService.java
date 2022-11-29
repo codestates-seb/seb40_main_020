@@ -43,7 +43,7 @@ public class WalletService {
 
     public void updateWalletByAsk(Wallet wallet, Order order, BigDecimal tradeVolume) {
         BigDecimal completedAmount = getCompletedAmount(order, tradeVolume);
-        Wallet updatedWallet = mapper.askOrderToUpdatedWallet(wallet, order.getLimit(), completedAmount);
+        Wallet updatedWallet = mapper.askOrderToUpdatedWallet(wallet, completedAmount);
         if (verifyWalletAmountZero(updatedWallet)) {
             walletRepository.delete(updatedWallet);
         } else {
