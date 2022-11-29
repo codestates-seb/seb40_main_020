@@ -26,7 +26,6 @@ public class UpbitHandlingService {
     private final TickerRepository tickerRepository;
     private final OrderBookRepository orderBookRepository;
     private final ApplicationEventPublisher publisher;
-    private String prevClosingPrice;
 
     public void parsing(JsonNode jsonNode) {
         String type = jsonNode.get("type").asText();
@@ -42,7 +41,6 @@ public class UpbitHandlingService {
     @SneakyThrows
     private void handleTicker(JsonNode jsonNode) {
         TickerDto tickerDto = objectMapper.readValue(jsonNode.toString(), TickerDto.class);
-        prevClosingPrice = tickerDto.getPrevClosingPrice();
         tickerRepository.saveTicker(tickerDto);
 
         Trade trade = objectMapper.readValue(jsonNode.toString(), Trade.class);
@@ -51,10 +49,13 @@ public class UpbitHandlingService {
 
     @SneakyThrows
     private void handleOrderBook(JsonNode jsonNode) {
+        String code = objectMapper.readValue(jsonNode.get("code").toString(), String.class);
+        String prevClosingPrice = tickerRepository.findPrevClosingPrice(code);
+
         List<UnitInfo> unitInfos = Arrays.asList(objectMapper.readValue(jsonNode.get("orderbook_units").toString(), UnitInfo[].class));
         OrderBookDto orderBookDto = mapper.unitInfoToOrderBookDto(unitInfos, prevClosingPrice);
 
-        orderBookDto.setCode(objectMapper.readValue(jsonNode.get("code").toString(), String.class));
+        orderBookDto.setCode(code);
         orderBookDto.setTotalAskSize(objectMapper.readValue(jsonNode.get("total_ask_size").toString(), String.class));
         orderBookDto.setTotalBidSize(objectMapper.readValue(jsonNode.get("total_bid_size").toString(), String.class));
         orderBookRepository.saveOrderBook(orderBookDto);
