@@ -1,14 +1,27 @@
 package OneCoin.Server.order.repository;
 
+import OneCoin.Server.coin.entity.Coin;
 import OneCoin.Server.order.entity.TransactionHistory;
 import OneCoin.Server.order.entity.enums.TransactionType;
+import OneCoin.Server.user.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.math.BigDecimal;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 public interface TransactionHistoryRepository extends JpaRepository<TransactionHistory, Long> {
+    Page<TransactionHistory> findByUserAndCreatedAtAfter(User user, LocalDateTime searchPeriod, Pageable pageable); // 기간 page
+    Page<TransactionHistory> findByUserAndTransactionTypeAndCreatedAtAfter(User user, TransactionType transactionType, LocalDateTime searchPeriod, Pageable pageable); // 기간, 타입 page
+    Page<TransactionHistory> findByUserAndCoinAndCreatedAtAfter(User user, Coin coin, LocalDateTime searchPeriod, Pageable pageable); // 기간, 코인 page
+    Page<TransactionHistory> findByUserAndTransactionTypeAndCoinAndCreatedAtAfter(User user, TransactionType transactionType, Coin coin, LocalDateTime searchPeriod, Pageable pageable); // 기간, 타입, 코인 page
+    List<TransactionHistory> findTop10ByUserAndCoinOrderByCreatedAtDesc(User user, Coin coin);
+
     @Query("SELECT " +
             "   SUM(t.settledAmount) " +
             "FROM " +
@@ -16,8 +29,8 @@ public interface TransactionHistoryRepository extends JpaRepository<TransactionH
             "WHERE " +
             "   t.transactionType = :type " +
             "GROUP BY " +
-            "   t.user.id " +
+            "   t.user.userId " +
             "HAVING " +
-            "   t.user.id = :userId")
+            "   t.user.userId = :userId")
     BigDecimal sumSettledAmountByTypeAndUserId(@Param("userId") Long userId, @Param("type") TransactionType type);
 }

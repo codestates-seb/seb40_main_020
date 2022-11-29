@@ -3,10 +3,9 @@ package OneCoin.Server.order.entity.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum TransactionType {
-    ALL("ALL"),
     ASK("ASK"),
     BID("BID"),
     DEPOSIT("DEPOSIT"),
