@@ -24,7 +24,9 @@ public enum ExceptionCode {
     AUTHENTICATION_NOT_FOUND(404, "No authentication found in SecurityContextHolder"),
     INVALID_CHAT_ROOM_ID(409, "ChatRoomId is not valid"),
     NOT_CORRECT_PERIOD(400, "It`s not correct period."),
-    NOT_CORRECT_TYPE(400, "It`s not correct type.");
+    NOT_CORRECT_TYPE(400, "It`s not correct type."),
+    OCCURRED_NEGATIVE_AMOUNT(500,"Negative amount has occurred.");
+
 
     private final int code;
     private final String description;
