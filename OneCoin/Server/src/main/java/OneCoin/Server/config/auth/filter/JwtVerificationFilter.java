@@ -44,7 +44,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
             setAuthenticationToContext(claims);
         } catch (SignatureException se) {
             request.setAttribute("exception", se);
-        } catch (ExpiredJwtException ee) {
+        } catch (ExpiredJwtException ee) {          // 유효기간 만료된 경우
             request.setAttribute("exception", ee);
         } catch (Exception e) {
             request.setAttribute("exception", e);
@@ -65,10 +65,21 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * JWT 검증
+     * Access Token 검증
      */
     private Map<String, Object> verifyJws(HttpServletRequest request) {
         String jws = request.getHeader("Authorization").replace("Bearer ", "");
+        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey()); // SecretKey 파싱
+        Map<String, Object> claims = jwtTokenizer.getClaims(jws, base64EncodedSecretKey).getBody();   // Claims 파싱
+
+        return claims;
+    }
+
+    /**
+     * Refresh Token 검증
+     */
+    private Map<String, Object> verifyRefreshJws(HttpServletRequest request) {
+        String jws = request.getHeader("Refresh");
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey()); // SecretKey 파싱
         Map<String, Object> claims = jwtTokenizer.getClaims(jws, base64EncodedSecretKey).getBody();   // Claims 파싱
 
