@@ -29,7 +29,7 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();     // 순환호출 제거를 위해 생성
     private final CustomAuthorityUtils customAuthorityUtils;
     private final JavaMailSender javaMailSender;
     private final AuthService authService;

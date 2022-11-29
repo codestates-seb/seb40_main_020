@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.*;
+import java.util.Map;
 
 public class UserDto {
     @Getter
@@ -29,6 +30,15 @@ public class UserDto {
         @NotBlank
         @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[$@!%*?&#~])[A-Za-z\\d$@!%*?&#~]{8,25}")
         private String password;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class KakaoPost {
+        String attributeKey;
+        Map<String, Object> attributes;
     }
 
     @Getter

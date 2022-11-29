@@ -10,6 +10,7 @@ import org.mapstruct.ReportingPolicy;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
@@ -24,6 +25,29 @@ public interface UserMapper {
         user.setPassword(requestBody.getPassword());
         user.setPlatform(Platform.ORIGIN);
         user.setUserRole(Role.ROLE_NOT_AUTH);   // default : ROLE_NOT_AUTH
+        user.setBalance(balance);
+
+        balance.setBalance(BigDecimal.ZERO);
+        balance.setUser(user);
+
+        return user;
+    }
+
+    default User kakaoUserPostToUser(UserDto.KakaoPost requestBody) {
+        Map<String, Object> kakaoAccount = (Map<String, Object>) requestBody.getAttributes().get("kakao_account");
+        Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
+
+        User user = new User();
+
+        // User 생성 시 Balance 도 같이 생성
+        Balance balance = new Balance();
+
+        user.setDisplayName((String) kakaoProfile.get("nickname"));
+        user.setEmail((String) kakaoAccount.get("email"));
+        user.setPassword("KakaoOauth2!");
+        user.setImagePath((String)kakaoProfile.get("profile_image_url"));
+        user.setPlatform(Platform.KAKAO);
+        user.setUserRole(Role.ROLE_USER);
         user.setBalance(balance);
 
         balance.setBalance(BigDecimal.ZERO);
