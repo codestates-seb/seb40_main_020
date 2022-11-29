@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { CoinDataType } from '../utills/types';
+import { CoinDataType, ChatData } from '../utills/types';
 
 const symbolState = atom({
 	key: 'symbolState',

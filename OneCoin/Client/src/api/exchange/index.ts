@@ -1,15 +1,22 @@
 import StompJs from 'stompjs';
 import SockJS from 'sockjs-client';
 import { Ticker, OrderBook, CoinDataType } from '../../utills/types';
+import { SERVER_URL } from '../';
+import axios from 'axios';
 
 type T = (
 	coinData: CoinDataType[],
 	setCoinData: React.Dispatch<React.SetStateAction<CoinDataType[]>>
 ) => void;
 
-export const connection: T = (coinData, setCoinData) => {
-	const socket = new SockJS('http://13.209.194.104:8080/ws/upbit-info');
-	const client = StompJs.over(socket);
+let client: StompJs.Client;
+
+export const getTradeData: T = (coinData, setCoinData) => {
+	const socket = new SockJS(`${SERVER_URL}/ws/upbit-info`);
+	client = StompJs.over(socket);
+	client.debug = function () {
+		return;
+	};
 	client.connect({}, () => {
 		setTimeout(() => {
 			client.subscribe('/info/upbit', (msg) => {
@@ -29,3 +36,21 @@ export const connection: T = (coinData, setCoinData) => {
 		}, 500);
 	});
 };
+
+export const disconnection = () => {
+	client.disconnect(() => console.log('disconnect'));
+};
+
+export const stopTradeData = () => {
+	client.unsubscribe('/info/upbit');
+};
+export async function getChartData(time: number, code: string, date: string) {
+	try {
+		const res = await axios.get(
+			`https://api.upbit.com/v1/candles/minutes/${time}?market=${code}&count=200&to=${date}`
+		);
+		return res.data;
+	} catch (err) {
+		console.log(err);
+	}
+}

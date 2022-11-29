@@ -98,15 +98,20 @@ export interface ChartData {
 
 export interface ChatMsg {
 	type: string;
-	userDisplayName: string;
-	userId: number;
 	chatRoomId: number;
 	message: string;
 }
 
 export interface ChatData {
+	type: string;
 	chatAt: string;
 	chatRoomId: number;
 	message: string;
 	userDisplayName: string;
+	userId: number;
+}
+
+export interface RoomsInfo {
+	chatRoomId: number;
+	numberOfChatters: number;
 }

@@ -3,7 +3,7 @@ import { createChart } from 'lightweight-charts';
 import { SubChartComponent } from './style';
 import { useRecoilValue } from 'recoil';
 import { coinDataState } from '../../../../store';
-import { getChartData } from '../../../../api/exchange/chart';
+import { getChartData } from '../../../../api/exchange';
 import { ChartData } from '../../../../utills/types';
 
 interface Props {

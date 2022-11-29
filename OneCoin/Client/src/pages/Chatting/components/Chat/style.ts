@@ -28,5 +28,9 @@ export const ChatComponent = styled.div<Props>`
 				font-size: 0.85rem;
 			}
 		}
+		.system-message {
+			display: flex;
+			justify-content: center;
+		}
 	}
 `;

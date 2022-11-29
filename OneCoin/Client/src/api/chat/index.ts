@@ -2,39 +2,73 @@ import axios from 'axios';
 import StompJs from 'stompjs';
 import SockJS from 'sockjs-client';
 import { SERVER_URL } from '../';
-import { ChatMsg } from '../../utills/types';
+import { ChatMsg, ChatData, RoomsInfo } from '../../utills/types';
 
-const sock = new SockJS(`${SERVER_URL}/ws/chat`);
-const client = StompJs.over(sock);
-export const enterRoom = (Authorization: string, room: number) => {
-	client.connect({ Authorization }, (frame) => {
-		console.log(frame);
+type AddMsg = (chatData: ChatData[]) => void;
+type SetRoomsInfo = React.Dispatch<React.SetStateAction<RoomsInfo[]>>;
+type SetUserId = React.Dispatch<React.SetStateAction<number | null>>;
+
+let client: StompJs.Client;
+export const enterRoom = (
+	Authorization: string,
+	room: number,
+	addMsgData: AddMsg,
+	setRoomsInfo: SetRoomsInfo,
+	setUserId: SetUserId
+) => {
+	const sock = new SockJS(`${SERVER_URL}/ws/chat`);
+	client = StompJs.over(sock);
+	client.debug = function () {
+		return;
+	};
+	const headers = { Authorization };
+	client.connect(headers, (frame) => {
+		const headers = frame?.headers;
+		if (headers) {
+			const userName = Object.values(headers)[0] as string;
+			const userId = userName.split(', ')[1].replace('id=', '');
+			setUserId(Number(userId));
+		}
+
 		setTimeout(() => {
-			client.subscribe(`/topic/rooms/${room}`, (msg) => {
-				console.log('msg', msg);
-			});
-			client.subscribe('/topic/rooms-info', (msg) => {
-				console.log(msg, 'room');
-			});
+			subscribeRoom(room, addMsgData);
+			subscribeRoomsInfo(setRoomsInfo);
 		}, 500);
 	});
 };
 
-export const exitRoom = (room: number) => {
-	client.unsubscribe(`/topic/rooms/${room}`);
+const subscribeRoomsInfo = (setUsers: SetRoomsInfo) => {
+	client.subscribe('/topic/rooms-info', (msg) => {
+		const data = JSON.parse(msg.body);
+		setUsers(data);
+	});
 };
 
-// export const exitChat = () => {
-// 	client.disconnect();
-// };
+const subscribeRoom = (room: number, addMsgData: AddMsg) => {
+	client.subscribe(`/topic/rooms/${room}`, (msg) => {
+		const newMsg = JSON.parse(msg.body);
+		addMsgData([newMsg]);
+	});
+};
+
+export const changeRoom = (room: number, ch: number, addMsgData: AddMsg) => {
+	client.unsubscribe(`/topic/rooms/${room}`);
+	subscribeRoom(ch, addMsgData);
+};
+
+export const exitChat = () => {
+	client.disconnect(() => {
+		console.log('exit');
+	});
+};
 
 export const sendMsg = (data: ChatMsg) => {
 	client.send('/app/rooms', {}, JSON.stringify(data));
 };
 
-export const getChatHistory = async () => {
+export const getChatHistory = async (room: number) => {
 	try {
-		const res = await axios.get(`${SERVER_URL}/ws/chat/rooms/1/messages`);
+		const res = await axios.get(`${SERVER_URL}/ws/chat/rooms/${room}/messages`);
 		return res.data.data;
 	} catch (err) {
 		console.log(err);
