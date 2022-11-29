@@ -7,6 +7,7 @@ import OneCoin.Server.config.auth.handler.UserAuthenticationEntryPoint;
 import OneCoin.Server.config.auth.handler.UserAuthenticationFailureHandler;
 import OneCoin.Server.config.auth.handler.UserAuthenticationSuccessHandler;
 import OneCoin.Server.config.auth.jwt.JwtTokenizer;
+import OneCoin.Server.config.auth.userdetails.Oauth2UserDetailService;
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
 import OneCoin.Server.user.service.UserService;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -71,7 +73,9 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("USER")
                         .anyRequest().permitAll()                // 일단 허용
                 )
-                .oauth2Login();
+                .oauth2Login().
+                userInfoEndpoint().     // Oauth2 로그인 성공 후 userInfo 엔드포인트(userInfo 받아옴)
+                userService(new Oauth2UserDetailService(userService, jwtTokenizer, customAuthorityUtils));  // 리소스 서버에서 사용자 정보를 가져온 상태에서 추가로 진행
         return http.build();
     }
 
@@ -113,7 +117,8 @@ public class SecurityConfig {
 
             // 커스텀한 필터를 필터 체인에 추가
             builder.addFilter(jwtAuthenticationFilter)
-                    .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
+                    .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class)
+                    .addFilterAfter(jwtVerificationFilter, OAuth2LoginAuthenticationFilter.class);
         }
     }
 }
