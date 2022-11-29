@@ -48,6 +48,9 @@ jobs:
         jwt.secret-key=${{ secrets.JWT_SECRET_KEY }}
         spring.redis.port=${{ secrets.SPRING_REDIS_PORT }}
         spring.redis.host=${{ secrets.SPRING_REDIS_HOST }}
+        spring.mail.username=${{ secrets.SPRING_MAIL_USERNAME }}
+        spring.mail.password=${{ secrets.SPRING_MAIL_PASSWORD }}
+        spring.server.ip=${{ secrets.SPRING_SERVER_IP }}
         " >> ${{ env.PROPERTIES_PATH }}
         
     # 연결 권한 설정
