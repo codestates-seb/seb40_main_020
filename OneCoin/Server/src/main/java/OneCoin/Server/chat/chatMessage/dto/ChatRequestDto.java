@@ -13,18 +13,7 @@ import javax.validation.constraints.NotBlank;
 @ToString
 public class ChatRequestDto {
     @NotBlank
-    private MessageType type;
-    @NotBlank
-    private String userDisplayName;
-    @NotBlank
-    private Long userId;
-    @NotBlank
     private Integer chatRoomId;
     @NotBlank
     private String message;
-
-
-    public void setUserDisplayName(String userDisplayName) {
-        this.userDisplayName = userDisplayName;
-    }
 }

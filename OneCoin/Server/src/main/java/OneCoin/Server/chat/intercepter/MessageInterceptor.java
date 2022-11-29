@@ -1,11 +1,9 @@
 package OneCoin.Server.chat.intercepter;
 
-import OneCoin.Server.chat.chatRoom.entity.UserInChatRoom;
+import OneCoin.Server.chat.chatMessage.publisher.RedisPublisher;
 import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
 import OneCoin.Server.chat.chatRoom.vo.UserInfoInChatRoom;
 import OneCoin.Server.chat.constant.MessageType;
-import OneCoin.Server.chat.chatMessage.publisher.RedisPublisher;
-import OneCoin.Server.config.auth.utils.AuthorizationUtilsForWebSocket;
 import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtilsForWebSocket;
 import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
@@ -21,9 +19,6 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,13 +38,10 @@ public class MessageInterceptor implements ChannelInterceptor {
             log.info("[CONNECT] start {}", sessionId);
             authenticate(accessor);
             log.info("[CONNECT] complete {}", sessionId);
-        }
-        if (StompCommand.SUBSCRIBE.equals(command)) {
+        } else if (StompCommand.SUBSCRIBE.equals(command)) {
             log.info("[SUBSCRIBE] start {}", sessionId);
             registerUserAndSendEnterMessage(accessor);
             log.info("[SUBSCRIBE] complete {}", sessionId);
-        } else if (StompCommand.SEND.equals(command)) {
-            log.info("[SEND] start {}", sessionId);
         } else if (StompCommand.UNSUBSCRIBE.equals(command)) {
             log.info("[UNSUBSCRIBE] start {}", sessionId);
             unregisterUserAndSendLeaveMessage(sessionId);
@@ -72,7 +64,7 @@ public class MessageInterceptor implements ChannelInterceptor {
 
     private void authenticate(StompHeaderAccessor accessor) {
         String accessToken = accessor.getFirstNativeHeader(AUTHORIZATION);
-        if(accessToken == null) return;
+        if (accessToken == null || accessToken.equals("") || accessToken.equals("null")) return;
         Authentication authentication = authUtil.authenticate(accessToken);
         accessor.setUser(authentication);
     }
@@ -95,7 +87,7 @@ public class MessageInterceptor implements ChannelInterceptor {
 
     private void unregisterUserAndSendLeaveMessage(String sessionId) {
         UserInfoInChatRoom user = chatRoomService.deleteUserFromChatRoom(sessionId);
-        if(user.getUser() !=  null) {
+        if (user.getUser() != null) {
             redisPublisher.publishEnterOrLeaveMessage(MessageType.LEAVE, user.getChatRoomId(), user.getUser());
         }
         log.info("unregister user complete : unloggedInUser {}", sessionId);

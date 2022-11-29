@@ -54,6 +54,7 @@ public class TestUtils {
         claims.put("id", user.getUserId());
         claims.put("username", user.getEmail());
         claims.put("roles", user.getUserRole());
+        claims.put("displayName", user.getDisplayName());
 
         String subject = user.getEmail();
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
@@ -103,9 +104,6 @@ public class TestUtils {
     public ChatRequestDto makeSendingMessage(String message, Integer chatRoomId, User sendingUser) {
         return ChatRequestDto.builder()
                 .chatRoomId(chatRoomId)
-                .userId(sendingUser.getUserId())
-                .type(MessageType.TALK)
-                .userDisplayName(sendingUser.getDisplayName())
                 .message(message)
                 .build();
     }
