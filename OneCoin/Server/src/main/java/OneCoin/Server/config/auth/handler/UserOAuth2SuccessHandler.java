@@ -64,15 +64,15 @@ public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHand
      */
     public URI createURI(String accessToken, String refreshToken) {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-        queryParams.add("access_token", accessToken);
-        queryParams.add("refresh_token", refreshToken);
+        queryParams.add("authorization", accessToken);
+        queryParams.add("refresh", refreshToken);
 
         return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
                 .host("localhost")  // 프론트의 ip
                 .port(3000)
-                .path("/token")
+                .path("/token/oauth2")
 //                .path("/main")
                 .queryParams(queryParams)
                 .build()

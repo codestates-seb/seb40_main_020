@@ -17,7 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,6 @@ import java.util.Optional;
 
 @Transactional
 @Service
-@EnableAsync
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();     // 순환호출 제거를 위해 생성
@@ -108,7 +106,7 @@ public class UserService {
      *  </pre>
      */
     @Transactional
-    @Async
+    @Async("sendEmailExecutor")
     public void authenticationEmail(User user) {
         // 임시 비밀번호 + Auth 생성
         Auth auth = authService.createAuth(findVerifiedUserByEmail(user.getEmail()));
@@ -127,7 +125,7 @@ public class UserService {
      *  </pre>
      */
     @Transactional
-    @Async
+    @Async("sendEmailExecutor")
     public void authenticationEmailForPassword(User user) {
         // 임시 비밀번호 + Auth 생성
         Auth auth = authService.createAuth(findVerifiedUserByEmail(user.getEmail()));
@@ -196,8 +194,8 @@ public class UserService {
 
     /**
      * <pre>
-     *      회원가입 이메일 인증 후처리
-     *      이메일 인증 링크 타고 오면 임시 발급 인증번호 대조 후 계정 활성화
+     *      비밀번호 변경 이메일 인증 후처리
+     *      이메일 인증 링크 타고 오면 임시 발급 인증번호 토큰 생성하여 전달
      *  </pre>
      */
     @Transactional
