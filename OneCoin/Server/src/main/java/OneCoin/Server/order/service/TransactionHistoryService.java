@@ -34,7 +34,7 @@ public class TransactionHistoryService {
     private final LoggedInUserInfoUtils loggedInUserInfoUtils;
     private final String defaultType = "ALL";
 
-//    @Async
+    // @Async
     public void createTransactionHistory(Order order) {
         User user = userService.findVerifiedUser(order.getUserId());
         Coin coin = coinService.findCoin(order.getCode());

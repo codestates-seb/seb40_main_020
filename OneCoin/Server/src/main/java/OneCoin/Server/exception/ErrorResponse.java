@@ -21,6 +21,10 @@ public class ErrorResponse {
         this.message = message;
     }
 
+    private ErrorResponse(String message) {
+        this.message = message;
+    }
+
     private ErrorResponse(final List<FieldError> fieldErrors,
                           final List<ConstraintViolationError> violationErrors) {
         this.fieldErrors = fieldErrors;
@@ -35,8 +39,8 @@ public class ErrorResponse {
         return new ErrorResponse(null, ConstraintViolationError.of(violations));
     }
 
-    public static ErrorResponse of(ExceptionCode exceptionCode) {
-        return new ErrorResponse(exceptionCode.getCode(), exceptionCode.getDescription());
+    public static ErrorResponse of(BusinessLogicException businessLogicException) {
+        return new ErrorResponse(businessLogicException.getExceptionCode().getDescription());
     }
 
     public static ErrorResponse of(HttpStatus httpStatus) {

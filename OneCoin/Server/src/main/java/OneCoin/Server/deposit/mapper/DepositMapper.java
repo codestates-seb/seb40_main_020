@@ -10,6 +10,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface DepositMapper {
     Deposit depositPostToDeposit(DepositDto.Post requestBody);
+
     default DepositDto.Response depositToDepositResponse(Deposit deposit) {
         DepositDto.Response response = new DepositDto.Response();
 

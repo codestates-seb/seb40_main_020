@@ -73,6 +73,7 @@ public class UserService {
     }
 
     /**
+     * <pre>
      * 소셜로그인 유저 생성
      */
     @Transactional
@@ -114,14 +115,14 @@ public class UserService {
         String randomPassword = auth.getAuthPassword();
 
         // 인증 링크
-        String link = "http://" + ipAddress +"/api/users/authentication-email/signup/"
+        String link = "http://" + ipAddress + "/api/users/authentication-email/signup/"
                 + auth.getAuthId().toString() + "/" + randomPassword;
 
         sendEmail(user, link);
     }
 
     /**
-     *  <pre>
+     * <pre>
      *      비밀번호 재설정 이메일 인증 발송
      *  </pre>
      */
@@ -133,14 +134,14 @@ public class UserService {
         String randomPassword = auth.getAuthPassword();
 
         // 인증 링크
-        String link = "http://" + ipAddress +"/api/users/authentication-email/password/"
+        String link = "http://" + ipAddress + "/api/users/authentication-email/password/"
                 + auth.getAuthId().toString() + "/" + randomPassword;
 
         sendEmail(user, link);
     }
 
     /**
-     *  <pre>
+     * <pre>
      *      link 를 연결해주는 이메일 인증 발송
      *  </pre>
      */
@@ -171,7 +172,7 @@ public class UserService {
     }
 
     /**
-     *  <pre>
+     * <pre>
      *      회원가입 이메일 인증 후처리
      *      이메일 인증 링크 타고 오면 임시 발급 인증번호 대조 후 계정 활성화
      *  </pre>
@@ -194,7 +195,7 @@ public class UserService {
     }
 
     /**
-     *  <pre>
+     * <pre>
      *      회원가입 이메일 인증 후처리
      *      이메일 인증 링크 타고 오면 임시 발급 인증번호 대조 후 계정 활성화
      *  </pre>
@@ -325,7 +326,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public User findVerifiedUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() ->new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+        return userRepository.findByEmail(email).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
     }
 
     /**

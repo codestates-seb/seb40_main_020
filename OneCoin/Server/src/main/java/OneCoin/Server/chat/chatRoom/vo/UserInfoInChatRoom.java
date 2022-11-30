@@ -12,7 +12,7 @@ public class UserInfoInChatRoom {
     private User user;
 
     public void setUser(UserInChatRoom user) {
-        if(user == null) return;
+        if (user == null) return;
         this.user = User.builder()
                 .displayName(user.getDisplayName())
                 .email(user.getEmail())

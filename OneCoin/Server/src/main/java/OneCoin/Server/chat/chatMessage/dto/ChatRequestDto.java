@@ -1,6 +1,5 @@
 package OneCoin.Server.chat.chatMessage.dto;
 
-import OneCoin.Server.chat.constant.MessageType;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;

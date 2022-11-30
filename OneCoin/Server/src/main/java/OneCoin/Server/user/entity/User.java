@@ -1,8 +1,8 @@
 package OneCoin.Server.user.entity;
 
 import OneCoin.Server.audit.Auditable;
-import lombok.*;
 import OneCoin.Server.balance.entity.Balance;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;

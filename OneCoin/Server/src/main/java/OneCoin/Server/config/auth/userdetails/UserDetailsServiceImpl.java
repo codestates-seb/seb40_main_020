@@ -37,7 +37,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (findUser.getUserRole() == Role.ROLE_NOT_AUTH) {
             throw new BusinessLogicException(ExceptionCode.NO_AUTHENTICATION_EMAIL);
         }
-        
+
         return new UserDetailsImpl(findUser);
     }
 

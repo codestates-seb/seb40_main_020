@@ -1,7 +1,7 @@
 package OneCoin.Server.deposit.service;
 
-import OneCoin.Server.balance.service.BalanceService;
 import OneCoin.Server.balance.entity.Balance;
+import OneCoin.Server.balance.service.BalanceService;
 import OneCoin.Server.deposit.entity.Deposit;
 import OneCoin.Server.deposit.repository.DepositRepository;
 import org.springframework.beans.support.PagedListHolder;
@@ -36,13 +36,13 @@ public class DepositService {
     }
 
     /**
-     *  balanceId 로 입금 목록 조회
+     * balanceId 로 입금 목록 조회
      */
     public Page<Deposit> findDepositsByBalanceId(Balance balance, int page, int size) {
         List<Deposit> depositList = depositRepository.findByBalance_BalanceId(balance.getBalanceId());
 
         Pageable pageable = PageRequest.of(page, size);
-        PagedListHolder pagedListHolder =  new PagedListHolder(depositList);
+        PagedListHolder pagedListHolder = new PagedListHolder(depositList);
         pagedListHolder.setPageSize(size);
         pagedListHolder.setPage(page);
 

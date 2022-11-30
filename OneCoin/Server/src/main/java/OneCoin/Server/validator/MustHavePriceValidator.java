@@ -21,8 +21,8 @@ public class MustHavePriceValidator implements ConstraintValidator<MustHavePrice
 
     @Override
     public boolean isValid(OrderDto.Post orderPost, ConstraintValidatorContext context) {
-        double limitPrice = getFieldValue(orderPost, limit);
-        double marketPrice = getFieldValue(orderPost, market);
+        double limitPrice = Double.parseDouble(getFieldValue(orderPost, limit)) ;
+        double marketPrice = Double.parseDouble(getFieldValue(orderPost, market));
 
         if (limitPrice == 0 && marketPrice == 0) { // 두 필드 모두 값이 없을 경우
             return false;
@@ -32,17 +32,17 @@ public class MustHavePriceValidator implements ConstraintValidator<MustHavePrice
         return true;
     }
 
-    private double getFieldValue(OrderDto.Post orderPost, String fieldName) { // reflection
+    private String getFieldValue(OrderDto.Post orderPost, String fieldName) { // reflection
         Class<?> clazz = orderPost.getClass();
         Field orderField;
         try {
             orderField = clazz.getDeclaredField(fieldName);
             orderField.setAccessible(true);
             Object target = orderField.get(orderPost);
-            if (!(target instanceof Double)) {
+            if (!(target instanceof String)) {
                 throw new ClassCastException();
             }
-            return (double) target;
+            return (String) target;
         } catch (NoSuchFieldException e) {
             log.error("NoSuchFieldException", e);
         } catch (IllegalAccessException e) {
