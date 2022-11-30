@@ -27,7 +27,7 @@ public class UserInChatRoomRepository {
     }
 
     public void addUser(Integer chatRoomId, String sessionId, UserInChatRoom user) {
-        hashOperations.put(chatRoomUtils.getKey(chatRoomId), sessionId, user);
+        hashOperations.put(chatRoomUtils.makeKey(chatRoomId), sessionId, user);
     }
 
     // return 0 when nothing is removed;
@@ -36,15 +36,15 @@ public class UserInChatRoomRepository {
     }
 
     public long getNumberOfUserInChatRoom(Integer chatRoomId) {
-        return hashOperations.size(chatRoomUtils.getKey(chatRoomId));
+        return hashOperations.size(chatRoomUtils.makeKey(chatRoomId));
     }
 
     public void removeAllInChatRoom(Integer chatRoomId) {
-        redisTemplate.delete(chatRoomUtils.getKey(chatRoomId));
+        redisTemplate.delete(chatRoomUtils.makeKey(chatRoomId));
     }
 
     public List<UserInChatRoom> findAllByChatRoomId(Integer chatRoomId) {
-        return Arrays.asList(objectMapper.convertValue(hashOperations.values(chatRoomUtils.getKey(chatRoomId)), UserInChatRoom[].class));
+        return Arrays.asList(objectMapper.convertValue(hashOperations.values(chatRoomUtils.makeKey(chatRoomId)), UserInChatRoom[].class));
     }
 
     public boolean contain(String chatRoomIdKey, String sessionId) {

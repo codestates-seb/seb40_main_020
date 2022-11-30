@@ -23,7 +23,7 @@ public class ChatRoomRepository {
     }
 
     public void create(Integer chatRoomId) {
-        setOperations.add(chatRoomUtils.KEY_FOR_CHAT_ROOMS, chatRoomUtils.getKey(chatRoomId));
+        setOperations.add(chatRoomUtils.KEY_FOR_CHAT_ROOMS, chatRoomUtils.makeKey(chatRoomId));
     }
 
     public Set<String> findAll() {
@@ -31,9 +31,9 @@ public class ChatRoomRepository {
     }
 
     public boolean contains(Integer chatRoomId) {
-        return setOperations.isMember(chatRoomUtils.KEY_FOR_CHAT_ROOMS, chatRoomUtils.getKey(chatRoomId));
+        return setOperations.isMember(chatRoomUtils.KEY_FOR_CHAT_ROOMS, chatRoomUtils.makeKey(chatRoomId));
     }
     public void delete(Integer chatRoomId) {
-        setOperations.remove(chatRoomUtils.KEY_FOR_CHAT_ROOMS, chatRoomUtils.getKey(chatRoomId));
+        setOperations.remove(chatRoomUtils.KEY_FOR_CHAT_ROOMS, chatRoomUtils.makeKey(chatRoomId));
     }
 }

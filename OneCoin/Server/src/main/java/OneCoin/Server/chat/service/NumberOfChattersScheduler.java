@@ -16,7 +16,7 @@ public class NumberOfChattersScheduler {
 
     @Scheduled(fixedDelay = 1000)
     public void sendNumberOfChatters() {
-        List<ChatRoom> rooms = chatRoomService.getChatRooms();
+        List<ChatRoom> rooms = chatRoomService.findAllChatRooms();
         messagingTemplate.convertAndSend("/topic/rooms-info", rooms);
     }
 }

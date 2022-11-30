@@ -12,7 +12,7 @@ public class ChatRoomUtils {
         chatRoomIdAsString = chatRoomIdAsString.replace(SUFFIX_OF_KEY, "");
         return Integer.parseInt(chatRoomIdAsString);
     }
-    public String getKey(Integer chatRoomId) {
+    public String makeKey(Integer chatRoomId) {
         return PREFIX_OF_KEY + String.valueOf(chatRoomId) + SUFFIX_OF_KEY;
     }
 }
