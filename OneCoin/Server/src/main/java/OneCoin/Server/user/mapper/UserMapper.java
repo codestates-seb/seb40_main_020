@@ -7,9 +7,11 @@ import OneCoin.Server.user.entity.Role;
 import OneCoin.Server.user.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
@@ -24,6 +26,28 @@ public interface UserMapper {
         user.setPassword(requestBody.getPassword());
         user.setPlatform(Platform.ORIGIN);
         user.setUserRole(Role.ROLE_NOT_AUTH);   // default : ROLE_NOT_AUTH
+        user.setBalance(balance);
+
+        balance.setBalance(BigDecimal.ZERO);
+        balance.setUser(user);
+
+        return user;
+    }
+
+    default User oAuth2UserToUser(OAuth2User requestBody) {
+        Map<String, Object> attributes = requestBody.getAttributes();
+
+        User user = new User();
+
+        // User 생성 시 Balance 도 같이 생성
+        Balance balance = new Balance();
+
+        user.setDisplayName((String)attributes.get("id") + "@");
+        user.setEmail((String) attributes.get("email"));
+        user.setPassword((String) attributes.get("id") + "a!");    // kakao id 저장
+        user.setImagePath((String) attributes.get("picture"));
+        user.setPlatform(Platform.KAKAO);
+        user.setUserRole(Role.ROLE_USER);
         user.setBalance(balance);
 
         balance.setBalance(BigDecimal.ZERO);
