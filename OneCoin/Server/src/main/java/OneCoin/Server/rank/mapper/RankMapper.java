@@ -13,7 +13,7 @@ import java.util.List;
 public class RankMapper {
     public RankDto userRoisToRankDtos(List<RankEntity> userRois) {
         RankDto rankDto = RankDto.builder()
-                .referenceDate(LocalDateTime.now())
+                .referenceDate(LocalDateTime.now().toString())
                 .users(userRois)
                 .build();
         return rankDto;

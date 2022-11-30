@@ -163,4 +163,9 @@ public class UserController {
         return new ResponseEntity<>("Send Email", HttpStatus.OK);
     }
 
+    @DeleteMapping
+    public ResponseEntity deleteUser(@AuthenticationPrincipal Map<String, Object> userInfo) {
+        userService.deleteUser(Long.parseLong(userInfo.get("id").toString()));
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 }

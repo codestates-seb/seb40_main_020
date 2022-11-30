@@ -12,6 +12,6 @@ import java.util.List;
 @Setter
 @Builder
 public class RankDto {
-    private LocalDateTime referenceDate;
+    private String referenceDate;
     private List<RankEntity> users;
 }

@@ -47,6 +47,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             setEmail(user.getEmail());
             setPassword(user.getPassword());
             setUserRole(user.getUserRole());
+            setDisplayName(user.getDisplayName());
         }
 
         @Override
