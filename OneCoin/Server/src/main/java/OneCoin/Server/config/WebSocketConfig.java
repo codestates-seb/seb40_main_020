@@ -1,8 +1,8 @@
 package OneCoin.Server.config;
 
-import OneCoin.Server.chat.chatMessage.publisher.RedisPublisher;
-import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
-import OneCoin.Server.chat.intercepter.AuthUtilForWebsocket;
+import OneCoin.Server.chat.publisher.RedisPublisher;
+import OneCoin.Server.chat.service.ChatRoomService;
+import OneCoin.Server.chat.utils.AuthUtilForWebsocket;
 import OneCoin.Server.chat.intercepter.MessageInterceptor;
 import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtilsForWebSocket;
 import lombok.RequiredArgsConstructor;
