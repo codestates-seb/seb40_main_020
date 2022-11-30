@@ -65,7 +65,9 @@ public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHand
                 .newInstance()
                 .scheme("http")
                 .host("localhost")  // 프론트의 ip
+//                .port(3000)
                 .path("/receive-token.html")
+//                .path("/main")
                 .build()
                 .toUri();
     }
