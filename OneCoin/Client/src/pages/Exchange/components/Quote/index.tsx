@@ -14,17 +14,24 @@ function Quote({
 	tradePrice,
 	changeRate,
 }: Props) {
+	const rate = +changeRate.replace('%', '').replace('+', '');
 	return (
 		<QuoteComponent
 			tradePrice={tradePrice}
 			price={+price}
 			onClick={() => prcieClickHandler(+price)}
 		>
-			<div className="price">
+			<div
+				className={rate > 0 ? 'price rise' : +rate < 0 ? 'price fall' : 'price'}
+			>
 				<div>{Number(price).toLocaleString()}</div>
 				<div className="rate today-range">{changeRate}</div>
 			</div>
-			<div className="size">{Number(size).toFixed(2)}</div>
+			<div
+				className={rate > 0 ? 'size rise' : +rate < 0 ? 'size fall' : 'size'}
+			>
+				{Number(size).toFixed(2)}
+			</div>
 		</QuoteComponent>
 	);
 }

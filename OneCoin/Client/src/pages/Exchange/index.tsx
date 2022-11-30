@@ -46,6 +46,7 @@ function Exchange() {
 	const changeRate = coin?.ticker?.change_rate as string;
 	const changePrice = coin?.ticker?.change_price as string;
 	const change = coin?.ticker?.change as string;
+	console.log(coinData);
 	return (
 		<Layout isLeftSidebar={false} isLeftMargin={false}>
 			<ExchangeComponent

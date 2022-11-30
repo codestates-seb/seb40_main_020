@@ -21,4 +21,10 @@ export const QuoteComponent = styled.div<Props>`
 			margin-left: 1rem;
 		}
 	}
+	.rise {
+		color: var(--red);
+	}
+	.fall {
+		color: var(--blue);
+	}
 `;

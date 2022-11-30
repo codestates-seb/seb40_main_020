@@ -5,7 +5,6 @@ export const FOOTER_LIST = {
 		{ name: '서재홍', repository: 'https://github.com/jaehongg' },
 		{ name: '김민상', repository: 'https://github.com/minsang98' },
 		{ name: '민다영', repository: 'https://github.com/MINDA01' },
-		{ name: '유현규', repository: 'https://github.com/korean-davinci' },
 	],
 	be: [
 		{ name: '김기홍', repository: 'https://github.com/broaden-horizon' },

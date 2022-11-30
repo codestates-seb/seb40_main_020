@@ -24,13 +24,11 @@ export const QuoteListComponent = styled.div`
 		> div {
 			background: #eef2fb;
 		}
-		color: var(--blue);
 	}
 	.bid {
 		> div {
 			background: #fcf0ef;
 		}
-		color: var(--red);
 	}
 	background: #fff;
 `;
