@@ -13,6 +13,7 @@ import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,24 +22,30 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final UserInChatRoomRepository userInChatRoomRepository;
     private final ChatRoomUtils chatRoomUtils;
     private final ChatRoomMapper mapper;
 
-    public List<ChatRoom> getChatRooms() {
+
+
+    public List<ChatRoom> findAllChatRooms() {
         Set<String> chatRoomKeys = chatRoomRepository.findAll();
         return chatRoomKeys.stream()
-                .map(chatRoomIdKey -> {
-                    Integer chatRoomId = chatRoomUtils.parseChatRoomId((String) chatRoomIdKey);
-                    long numberOfSessions = userInChatRoomRepository.getNumberOfUserInChatRoom(chatRoomId);
-                    return ChatRoom.builder()
-                            .chatRoomId(chatRoomId)
-                            .numberOfChatters(numberOfSessions)
-                            .build();
-                })
+                .map(chatRoomIdKey -> makeChatRoomByKey(chatRoomIdKey))
                 .collect(Collectors.toList());
+    }
+
+
+    private ChatRoom makeChatRoomByKey(String key) {
+        Integer chatRoomId = chatRoomUtils.parseChatRoomId((String) key);
+        long numberOfSessions = userInChatRoomRepository.getNumberOfUserInChatRoom(chatRoomId);
+        return ChatRoom.builder()
+                .chatRoomId(chatRoomId)
+                .numberOfChatters(numberOfSessions)
+                .build();
     }
     public long getNumberOfUserInChatRoom(Integer chatRoomId) {
         findVerifiedChatRoom(chatRoomId);
