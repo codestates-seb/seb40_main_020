@@ -28,15 +28,23 @@ public class TradingService {
         BigDecimal tradeVolume = new BigDecimal(trade.getTradeVolume());
         String orderType = trade.getOrderType();
 
-        List<Order> orders = orderRepository.findAllByLimitAndOrderTypeAndCode(tradePrice, orderType, trade.getCode());
+        List<Order> orders = orderRepository.findAllByOrderTypeAndCode(orderType, trade.getCode());
         if (orders.isEmpty()) {
             return;
         }
 
         if (orderType.equals(TransactionType.BID.getType())) {
+            orders.removeIf(order -> order.getLimit().compareTo(tradePrice) < 0); // 매수 시 실제 체결 가격보다 크거나 같은 가격만 체결
+            if (orders.isEmpty()) {
+                return;
+            }
             tradeBid(orders, tradeVolume);
         }
         if (orderType.equals(TransactionType.ASK.getType())) {
+            orders.removeIf(order -> order.getLimit().compareTo(tradePrice) > 0); // 매도 시 실제 체결 가격보다 작거나 같은 가격만 체결
+            if (orders.isEmpty()) {
+                return;
+            }
             tradeAsk(orders, tradeVolume);
         }
     }
