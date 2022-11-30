@@ -1,12 +1,13 @@
 package OneCoin.Server.chat.fullTest;
 
-import OneCoin.Server.chat.chatMessage.dto.ChatRequestDto;
-import OneCoin.Server.chat.chatMessage.dto.ChatResponseDto;
-import OneCoin.Server.chat.chatMessage.repository.ChatMessageRepository;
-import OneCoin.Server.chat.chatRoom.entity.UserInChatRoom;
-import OneCoin.Server.chat.chatRoom.repository.ChatRoomRepository;
-import OneCoin.Server.chat.chatRoom.repository.UserInChatRoomRepository;
-import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
+import OneCoin.Server.chat.dto.ChatRequestDto;
+import OneCoin.Server.chat.dto.ChatResponseDto;
+import OneCoin.Server.chat.repository.ChatMessageRepository;
+import OneCoin.Server.chat.entity.UserInChatRoom;
+import OneCoin.Server.chat.repository.ChatRoomRepository;
+import OneCoin.Server.chat.repository.UserInChatRoomRepository;
+import OneCoin.Server.chat.service.ChatRoomService;
+import OneCoin.Server.chat.testUtil.TestUtils;
 import OneCoin.Server.config.auth.jwt.JwtTokenizer;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.repository.UserRepository;

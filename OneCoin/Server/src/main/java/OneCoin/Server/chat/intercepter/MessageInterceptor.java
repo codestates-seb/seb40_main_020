@@ -1,10 +1,10 @@
 package OneCoin.Server.chat.intercepter;
 
-import OneCoin.Server.chat.chatMessage.publisher.RedisPublisher;
-import OneCoin.Server.chat.chatRoom.service.ChatRoomService;
-import OneCoin.Server.chat.chatRoom.vo.UserInfoInChatRoom;
+import OneCoin.Server.chat.publisher.RedisPublisher;
+import OneCoin.Server.chat.service.ChatRoomService;
+import OneCoin.Server.chat.vo.UserInfoInChatRoom;
 import OneCoin.Server.chat.constant.MessageType;
-import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtilsForWebSocket;
+import OneCoin.Server.config.auth.utils.UserUtilsForWebSocket;
 import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.user.entity.User;
@@ -23,10 +23,9 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 @Slf4j
 @RequiredArgsConstructor
 public class MessageInterceptor implements ChannelInterceptor {
-    private final LoggedInUserInfoUtilsForWebSocket loggedInUserInfoUtilsForWebSocket;
+    private final UserUtilsForWebSocket userUtilsForWebSocket;
     private final ChatRoomService chatRoomService;
     private final RedisPublisher redisPublisher;
-    private final AuthUtilForWebsocket authUtil;
     private final String AUTHORIZATION = "Authorization";
 
     @Override
@@ -65,7 +64,7 @@ public class MessageInterceptor implements ChannelInterceptor {
     private void authenticate(StompHeaderAccessor accessor) {
         String accessToken = accessor.getFirstNativeHeader(AUTHORIZATION);
         if (accessToken == null || accessToken.equals("") || accessToken.equals("null")) return;
-        Authentication authentication = authUtil.authenticate(accessToken);
+        Authentication authentication = userUtilsForWebSocket.authenticate(accessToken);
         accessor.setUser(authentication);
     }
 
@@ -73,7 +72,7 @@ public class MessageInterceptor implements ChannelInterceptor {
     private void registerUserAndSendEnterMessage(StompHeaderAccessor accessor) {
         Integer chatRoomId = parseRoomIdFromHeader(accessor); //채팅 구독이 아니면 null반환
         if (chatRoomId == null) return;
-        User user = loggedInUserInfoUtilsForWebSocket.extractUser(accessor.getUser()); //비회원은 null을 반환
+        User user = userUtilsForWebSocket.extractUser(accessor.getUser()); //비회원은 null을 반환
         String sessionId = accessor.getSessionId();
         if (user == null) { // 비회원이라면
             chatRoomService.saveUserToChatRoom(chatRoomId, sessionId);

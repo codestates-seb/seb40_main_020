@@ -1,7 +1,7 @@
 package OneCoin.Server.rank.controller;
 
 import OneCoin.Server.rank.dto.RankDto;
-import OneCoin.Server.rank.entity.RankEntity;
+import OneCoin.Server.rank.entity.Rank;
 import OneCoin.Server.rank.mapper.RankMapper;
 import OneCoin.Server.rank.service.RankService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class RankController {
 
     @GetMapping
     public ResponseEntity getRanks() {
-        List<RankEntity> top10Roi = rankService.getTop10();
+        List<Rank> top10Roi = rankService.getTop10();
         RankDto rankDto = rankMapper.userRoisToRankDtos(top10Roi);
         return new ResponseEntity(rankDto, HttpStatus.OK);
     }
