@@ -1,6 +1,6 @@
 package OneCoin.Server.config;
 
-import OneCoin.Server.chat.chatMessage.listener.RedisListener;
+import OneCoin.Server.chat.listener.RedisListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

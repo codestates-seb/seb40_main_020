@@ -1,11 +1,10 @@
 package OneCoin.Server.rank.dto;
 
-import OneCoin.Server.rank.entity.RankEntity;
+import OneCoin.Server.rank.entity.Rank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -13,5 +12,5 @@ import java.util.List;
 @Builder
 public class RankDto {
     private String referenceDate;
-    private List<RankEntity> users;
+    private List<Rank> users;
 }
