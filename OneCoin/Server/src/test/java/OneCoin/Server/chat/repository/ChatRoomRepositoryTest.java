@@ -1,6 +1,9 @@
 package OneCoin.Server.chat.repository;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -9,31 +12,41 @@ import java.util.Set;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ChatRoomRepositoryTest {
     @Autowired
     private ChatRoomRepository chatRoomRepository;
+    private Integer chatRoomId1;
+    private Integer chatRoomId2;
+    private Integer numberOfChatRoomCreated;
 
-    @Test
-    void createAndFindAllTest() {
-        //givn
-        Integer chatRoomId1 = 1;
-        Integer chatRoomId2 = 2;
-        //when
+    @BeforeAll
+    void createChatRoom() {
+        //채팅방 생성
+        chatRoomId1 = 10;
+        chatRoomId2 = 11;
+        numberOfChatRoomCreated = 2;
         chatRoomRepository.create(chatRoomId1);
         chatRoomRepository.create(chatRoomId2);
-        //then
+    }
+    @AfterAll
+    void deleteChatRoom() {
+        chatRoomRepository.delete(chatRoomId1);
+        chatRoomRepository.delete(chatRoomId2);
+    }
+    @Test
+    void findAllTest() {
+        //when
         Set<String> chatRooms = chatRoomRepository.findAll();
+        //then
         assertThat(chatRooms.size())
-                .isEqualTo(2);
-
+                .isGreaterThanOrEqualTo(numberOfChatRoomCreated);
     }
 
     @Test
     void containsTest_True() {
-        //given
-        int chatRoomId = 1;
         //when
-        boolean isExist = chatRoomRepository.contains(chatRoomId);
+        boolean isExist = chatRoomRepository.contains(chatRoomId1);
         //then
         assertThat(isExist)
                 .isTrue();
@@ -44,7 +57,7 @@ public class ChatRoomRepositoryTest {
         //given
         int chatRoomId = 10;
         //when
-        boolean isExist = chatRoomRepository.contains(chatRoomId);
+        boolean isExist = chatRoomRepository.contains(chatRoomId + 20);
         //then
         assertThat(isExist)
                 .isFalse();
@@ -53,12 +66,14 @@ public class ChatRoomRepositoryTest {
     @Test
     void deleteChatRoomTest() {
         //given
-        int chatRoomIdToDelete = 1;
+        int chatRoomId = 200;
+        chatRoomRepository.create(chatRoomId);
+        int numberOfChatRoomsBefore = chatRoomRepository.findAll().size();
         //when
-        chatRoomRepository.delete(chatRoomIdToDelete);
+        chatRoomRepository.delete(chatRoomId);
         //then
-        Set<String> chatRooms = chatRoomRepository.findAll();
-        assertThat(chatRooms.size())
+        int numberOfChatRoomAfter = chatRoomRepository.findAll().size();
+        assertThat(numberOfChatRoomsBefore - numberOfChatRoomAfter)
                 .isEqualTo(1);
     }
 }
