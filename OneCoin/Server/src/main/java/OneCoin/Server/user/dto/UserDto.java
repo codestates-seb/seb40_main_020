@@ -5,7 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.util.Map;
 
 public class UserDto {
     @Getter
@@ -29,6 +33,18 @@ public class UserDto {
         @NotBlank
         @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[$@!%*?&#~])[A-Za-z\\d$@!%*?&#~]{8,25}")
         private String password;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class OAuth2Attribute {
+        private Map<String, Object> attributes;
+        private String attributeKey;
+        private String email;
+        private String name;
+        private String imagePath;
     }
 
     @Getter

@@ -16,10 +16,10 @@ public interface OrderMapper {
         }
 
         return Order.builder()
-                .limit(new BigDecimal(String.valueOf(postDto.getLimit())))
-                .market(new BigDecimal(String.valueOf(postDto.getMarket())))
-                .stopLimit(new BigDecimal(String.valueOf(postDto.getStopLimit())))
-                .amount(new BigDecimal(String.valueOf(postDto.getAmount())))
+                .limit(new BigDecimal(postDto.getLimit()))
+                .market(new BigDecimal(postDto.getMarket()))
+                .stopLimit(new BigDecimal(postDto.getStopLimit()))
+                .amount(new BigDecimal(postDto.getAmount()))
                 .completedAmount(BigDecimal.ZERO)
                 .orderType(postDto.getOrderType())
                 .build();

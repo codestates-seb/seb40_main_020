@@ -2,11 +2,9 @@ package OneCoin.Server.config.auth.filter;
 
 import OneCoin.Server.config.auth.jwt.JwtTokenizer;
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
-import OneCoin.Server.exception.BusinessLogicException;
-import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.user.entity.Role;
 import OneCoin.Server.user.entity.User;
-import OneCoin.Server.user.repository.UserRepository;
+import OneCoin.Server.user.service.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,14 +30,12 @@ import java.util.Map;
 public class JwtVerificationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils customAuthorityUtils;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public JwtVerificationFilter(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils, JwtAuthenticationFilter jwtAuthenticationFilter, UserRepository userRepository) {
+    public JwtVerificationFilter(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils, UserService userService) {
         this.jwtTokenizer = jwtTokenizer;
         this.customAuthorityUtils = customAuthorityUtils;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -58,15 +54,15 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
                 Map<String, Object> claims = verifyRefreshJws(request);
 
                 // DB에 리프레시를 저장하여 판단하는 경우도 있지만, 일단 이렇게 구현
-                User user = userRepository.findByEmail(claims.get("sub").toString()).orElseThrow(() ->new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+                User user = userService.findVerifiedUserByEmail(claims.get("sub").toString());
 
-                String accessToken = jwtAuthenticationFilter.delegateAccessToken(user);
-                String refreshToken = jwtAuthenticationFilter.delegateRefreshToken(user);
+
+                String accessToken = userService.delegateAccessToken(user, jwtTokenizer);
+                String refreshToken = userService.delegateRefreshToken(user, jwtTokenizer);
 
                 response.setHeader("Authorization", "Bearer " + accessToken);
                 response.setHeader("Refresh", refreshToken);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 request.setAttribute("exception", e);
             }
         } catch (Exception e) {

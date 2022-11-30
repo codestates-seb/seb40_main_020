@@ -43,7 +43,7 @@ public class WalletService {
 
     public void updateWalletByAsk(Wallet wallet, Order order, BigDecimal tradeVolume) {
         BigDecimal completedAmount = getCompletedAmount(order, tradeVolume);
-        Wallet updatedWallet = mapper.askOrderToUpdatedWallet(wallet, order.getLimit(), completedAmount);
+        Wallet updatedWallet = mapper.askOrderToUpdatedWallet(wallet, completedAmount);
         if (verifyWalletAmountZero(updatedWallet)) {
             walletRepository.delete(updatedWallet);
         } else {
@@ -79,6 +79,9 @@ public class WalletService {
     private boolean verifyWalletAmountZero(Wallet wallet) {
         BigDecimal amount = wallet.getAmount();
         int comparison = amount.compareTo(BigDecimal.ZERO);
+        if (comparison < 0) {
+            throw new BusinessLogicException(ExceptionCode.OCCURRED_NEGATIVE_AMOUNT);
+        }
         return comparison == 0;
     }
 

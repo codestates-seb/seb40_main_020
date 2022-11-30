@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -21,12 +22,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UpbitHandlingService {
     private final ObjectMapper objectMapper;
-    private final TradingService tradingService;
     private final OrderBookDtoMapper mapper;
     private final TickerRepository tickerRepository;
     private final OrderBookRepository orderBookRepository;
-
-    private String prevClosingPrice;
+    private final ApplicationEventPublisher publisher;
 
     public void parsing(JsonNode jsonNode) {
         String type = jsonNode.get("type").asText();
@@ -42,18 +41,23 @@ public class UpbitHandlingService {
     @SneakyThrows
     private void handleTicker(JsonNode jsonNode) {
         TickerDto tickerDto = objectMapper.readValue(jsonNode.toString(), TickerDto.class);
-        prevClosingPrice = tickerDto.getPrevClosingPrice();
         tickerRepository.saveTicker(tickerDto);
 
         Trade trade = objectMapper.readValue(jsonNode.toString(), Trade.class);
-        tradingService.completeOrders(trade);
+        publisher.publishEvent(trade); // 체결 이벤트 발급
     }
 
     @SneakyThrows
     private void handleOrderBook(JsonNode jsonNode) {
-        OrderBookDto orderBookDto = objectMapper.readValue(jsonNode.toString(), OrderBookDto.class);
+        String code = objectMapper.readValue(jsonNode.get("code").toString(), String.class);
+        String prevClosingPrice = tickerRepository.findTickerByCode(code).getPrevClosingPrice();
+
         List<UnitInfo> unitInfos = Arrays.asList(objectMapper.readValue(jsonNode.get("orderbook_units").toString(), UnitInfo[].class));
-        orderBookDto = mapper.unitInfoToOrderBookDto(orderBookDto, unitInfos, prevClosingPrice);
+        OrderBookDto orderBookDto = mapper.unitInfoToOrderBookDto(unitInfos, prevClosingPrice);
+
+        orderBookDto.setCode(code);
+        orderBookDto.setTotalAskSize(objectMapper.readValue(jsonNode.get("total_ask_size").toString(), String.class));
+        orderBookDto.setTotalBidSize(objectMapper.readValue(jsonNode.get("total_bid_size").toString(), String.class));
         orderBookRepository.saveOrderBook(orderBookDto);
     }
 }

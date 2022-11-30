@@ -24,6 +24,7 @@ public class ChatMessageRepository {
     private void init() {
         operations = redisTemplate.opsForZSet();
     }
+
     public void save(ChatMessage chatMessage) {
         String key = makeKey(chatMessage.getChatRoomId());
         operations.add(key, chatMessage, System.currentTimeMillis());

@@ -12,7 +12,7 @@ public class BalanceDto {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Patch{
+    public static class Patch {
         @PositiveOrZero
         private long balance;
     }
@@ -21,7 +21,7 @@ public class BalanceDto {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Response{
+    public static class Response {
         private long balance;
     }
 }

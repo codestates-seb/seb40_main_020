@@ -17,6 +17,7 @@ import java.util.Map;
 public class AuthUtilForWebsocket {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils customAuthorityUtils;
+
     public Authentication authenticate(String accessToken) {
         Map<String, Object> claims = verifyJws(accessToken);
         return getAuthentication(claims);

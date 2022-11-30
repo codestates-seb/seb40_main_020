@@ -10,6 +10,8 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BalanceMapper {
     Balance balancePatchToBalance(BalanceDto.Patch requestBody);
+
     BalanceDto.Response balanceToBalanceResponse(Balance balance);
+
     List<BalanceDto.Response> balancesToBalanceResponses(List<Balance> balances);
 }

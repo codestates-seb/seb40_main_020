@@ -1,7 +1,7 @@
 package OneCoin.Server.deposit.controller;
 
-import OneCoin.Server.balance.service.BalanceService;
 import OneCoin.Server.balance.entity.Balance;
+import OneCoin.Server.balance.service.BalanceService;
 import OneCoin.Server.deposit.dto.DepositDto;
 import OneCoin.Server.deposit.entity.Deposit;
 import OneCoin.Server.deposit.mapper.DepositMapper;
@@ -52,7 +52,7 @@ public class DepositController {
                                       @Positive @RequestParam int size,
                                       @AuthenticationPrincipal Map<String, Object> userInfo) {
         Balance balance = balanceService.findBalanceByUserId(Long.parseLong(userInfo.get("id").toString()));
-        Page<Deposit> depositPage = depositService.findDepositsByBalanceId(balance, page-1, size);
+        Page<Deposit> depositPage = depositService.findDepositsByBalanceId(balance, page - 1, size);
         List<Deposit> deposits = depositPage.getContent();
 
         return new ResponseEntity(
