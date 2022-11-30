@@ -24,7 +24,10 @@ public class RankScheduler {
         List<UserRoi> top10Roi = rankService.calculateTop10();
         List<RankEntity> top10Entities = mapper.userRoisToRankEntities(top10Roi);
         rankService.update(top10Entities);
-        String winnerName = top10Entities.get(0).getDisplayName();
+        String winnerName = "no one";
+        if (top10Entities.size() != 0) {
+            winnerName = top10Entities.get(0).getDisplayName();
+        }
         log.info("Updating Top10, winner: {}, time: {}", winnerName, LocalDateTime.now());
     }
 }
