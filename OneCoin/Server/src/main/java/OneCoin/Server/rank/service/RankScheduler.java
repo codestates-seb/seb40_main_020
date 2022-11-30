@@ -1,7 +1,7 @@
 package OneCoin.Server.rank.service;
 
 import OneCoin.Server.rank.dao.UserRoi;
-import OneCoin.Server.rank.entity.RankEntity;
+import OneCoin.Server.rank.entity.Rank;
 import OneCoin.Server.rank.mapper.RankMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class RankScheduler {
     public void updateTop10() {
         List<UserRoi> top10Roi = rankService.calculateTop10();
         if(top10Roi == null) log.info("There is no transaction yet");
-        List<RankEntity> top10Entities = mapper.userRoisToRankEntities(top10Roi);
+        List<Rank> top10Entities = mapper.userRoisToRankEntities(top10Roi);
         rankService.update(top10Entities);
         String winnerName = "no one";
         if (top10Entities.size() != 0) {

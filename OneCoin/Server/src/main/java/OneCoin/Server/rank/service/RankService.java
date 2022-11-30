@@ -4,7 +4,7 @@ import OneCoin.Server.order.entity.Wallet;
 import OneCoin.Server.order.repository.TransactionHistoryRepository;
 import OneCoin.Server.order.repository.WalletRepository;
 import OneCoin.Server.rank.dao.UserRoi;
-import OneCoin.Server.rank.entity.RankEntity;
+import OneCoin.Server.rank.entity.Rank;
 import OneCoin.Server.rank.repository.RankRepository;
 import OneCoin.Server.upbit.dto.ticker.TickerDto;
 import OneCoin.Server.upbit.repository.TickerRepository;
@@ -43,12 +43,12 @@ public class RankService {
         return allRoi.stream().sorted().limit(10).collect(Collectors.toList());
     }
 
-    public void update(List<RankEntity> top10) {
+    public void update(List<Rank> top10) {
         rankRepository.deleteAll();
         rankRepository.saveAll(top10);
     }
 
-    public List<RankEntity> getTop10() {
+    public List<Rank> getTop10() {
         return rankRepository.findAll();
     }
 

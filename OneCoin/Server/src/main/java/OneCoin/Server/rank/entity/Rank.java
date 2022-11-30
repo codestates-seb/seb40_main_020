@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RankEntity {
+public class Rank {
     @Id
     private Integer rank;
     private String displayName;
