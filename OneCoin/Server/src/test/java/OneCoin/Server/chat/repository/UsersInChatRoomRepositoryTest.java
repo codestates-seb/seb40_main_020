@@ -2,8 +2,7 @@ package OneCoin.Server.chat.repository;
 
 import OneCoin.Server.chat.entity.UserInChatRoom;
 import OneCoin.Server.chat.utils.ChatRoomUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -17,100 +16,84 @@ public class UsersInChatRoomRepositoryTest {
     private UserInChatRoomRepository repository;
     @Autowired
     private ChatRoomUtils chatRoomUtils;
+    private Integer chatRoomId;
+    private String 비회원SessionId;
+    private String 회원SessionId;
+    private UserInChatRoom 회원;
+    private int totalNumberOfChatters = 2;
+
 
 
     @BeforeEach
+    void saveMembers() {
+        // 비회원
+        chatRoomId = 1999;
+        비회원SessionId = "cccccc";
+
+        repository.addUser(chatRoomId, 비회원SessionId, null);
+
+        //회원
+        회원SessionId = "ddddd";
+        회원 = UserInChatRoom.builder().email("zoro@naver.com").displayName("zoro").build();
+
+        repository.addUser(chatRoomId, 회원SessionId, 회원);
+    }
+
+    @AfterEach
     void clearRepo() {
-        repository.removeAllInChatRoom(1);
+        repository.removeAllInChatRoom(chatRoomId);
     }
 
     @Test
     void addUserTest_비회원_중복() {
-        //given
-        Integer chatRoomId = 1;
-        String sessionId = "cccccc";
-        UserInChatRoom user = null;
-
         //when
-        repository.addUser(chatRoomId, sessionId, null);
-        repository.addUser(chatRoomId, sessionId, null);
+        repository.addUser(chatRoomId, 비회원SessionId, null);
 
         //then
         long numberOfSessions = repository.getNumberOfUserInChatRoom(chatRoomId);
         assertThat(numberOfSessions)
-                .isEqualTo(1);
-
-        repository.removeUserBySessionId(chatRoomUtils.getKey(chatRoomId), sessionId);
+                .isEqualTo(totalNumberOfChatters);
     }
 
     @Test
     void saveTest_회원_중복() {
-        //given
-        Integer chatRoomId = 1;
-        String sessionId1 = "aaaaaa";
-        String sessionId2 = "bbbbbb";
-        UserInChatRoom user = UserInChatRoom.builder().displayName("zoro").email("zoro@naver.com").build();
-
         //when
-        repository.addUser(chatRoomId, sessionId1, user);
-        repository.addUser(chatRoomId, sessionId1, user);
-        repository.addUser(chatRoomId, sessionId2, user);
+        repository.addUser(chatRoomId, 비회원SessionId, 회원);
+        repository.addUser(chatRoomId, 비회원SessionId, 회원);
+        repository.addUser(chatRoomId, 회원SessionId, 회원);
 
         //then
         long numberOfSessions = repository.getNumberOfUserInChatRoom(chatRoomId);
         assertThat(numberOfSessions)
-                .isEqualTo(2);
-
-        repository.removeUserBySessionId(chatRoomUtils.getKey(chatRoomId), sessionId1);
-        repository.removeUserBySessionId(chatRoomUtils.getKey(chatRoomId), sessionId2);
+                .isEqualTo(totalNumberOfChatters);
     }
 
     @Test
     void removeUserByIdTest() {
-        //given
-        String sessionId1 = "aaaaaa";
-        Integer chatRoomId = 1;
-        repository.addUser(chatRoomId, sessionId1, null);
-
         //when
-        repository.removeUserBySessionId(chatRoomUtils.getKey(chatRoomId), sessionId1);
+        repository.removeUserBySessionId(chatRoomUtils.makeKey(chatRoomId), 비회원SessionId);
 
         //then
         long numberOfSessions = repository.getNumberOfUserInChatRoom(chatRoomId);
         assertThat(numberOfSessions)
-                .isEqualTo(0);
+                .isEqualTo(totalNumberOfChatters - 1);
     }
 
     @Test
     void findAllByChatRoomIdTest() {
-        //given
-        String sessionId1 = "aaaaaa";
-        Integer chatRoomId = 1;
-        UserInChatRoom user = UserInChatRoom.builder()
-                .displayName("fkfkf")
-                .email("sdfsdf")
-                .build();
-        repository.addUser(chatRoomId, sessionId1, user);
-
         //when
         List<UserInChatRoom> users = repository.findAllByChatRoomId(chatRoomId);
 
         //then
         assertThat(users.size())
-                .isEqualTo(1);
+                .isEqualTo(totalNumberOfChatters);
     }
 
     @Test
     void findBySessionIdTest() {
-        String sessionId1 = "aaaaaa";
-        Integer chatRoomId = 1;
-        UserInChatRoom user = UserInChatRoom.builder()
-                .displayName("fkfkf")
-                .email("sdfsdf")
-                .build();
-        repository.addUser(chatRoomId, sessionId1, user);
-        UserInChatRoom userInChatRoom = repository.findBySessionId(chatRoomUtils.getKey(chatRoomId), sessionId1);
+        //when
+        UserInChatRoom userInChatRoom = repository.findBySessionId(chatRoomUtils.makeKey(chatRoomId), 회원SessionId);
         assertThat(userInChatRoom.getDisplayName())
-                .isEqualTo("fkfkf");
+                .isEqualTo(회원.getDisplayName());
     }
 }
