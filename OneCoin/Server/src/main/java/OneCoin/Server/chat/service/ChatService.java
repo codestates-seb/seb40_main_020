@@ -3,7 +3,7 @@ package OneCoin.Server.chat.service;
 import OneCoin.Server.chat.entity.ChatMessage;
 import OneCoin.Server.chat.repository.ChatMessageRepository;
 import OneCoin.Server.chat.constant.MessageType;
-import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtilsForWebSocket;
+import OneCoin.Server.config.auth.utils.UserUtilsForWebSocket;
 import OneCoin.Server.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,13 +16,8 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class ChatService {
-    //타입으로 분기하기
-    //시간추가하기
-    //데이터베이스에저장하기
-    //유효성 검사하기
-    //LoggedInUserInfoUtilsForWebSocket과 AuthUtil 합치기
     private final ChatMessageRepository chatMessageRepository;
-    private final LoggedInUserInfoUtilsForWebSocket userInfoUtils;
+    private final UserUtilsForWebSocket userInfoUtils;
     private final Long NUMBER_OF_CHATS_TO_SEND = 30L;
 
     public ChatMessage makeEnterOrLeaveChatMessage(MessageType messageType, Integer chatRoomId, User user) {

@@ -2,9 +2,8 @@ package OneCoin.Server.config;
 
 import OneCoin.Server.chat.publisher.RedisPublisher;
 import OneCoin.Server.chat.service.ChatRoomService;
-import OneCoin.Server.chat.utils.AuthUtilForWebsocket;
 import OneCoin.Server.chat.intercepter.MessageInterceptor;
-import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtilsForWebSocket;
+import OneCoin.Server.config.auth.utils.UserUtilsForWebSocket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -21,10 +20,9 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 @Order(Ordered.HIGHEST_PRECEDENCE + 99)
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-    private final LoggedInUserInfoUtilsForWebSocket loggedInUserInfoUtilsForWebSocket;
+    private final UserUtilsForWebSocket userUtilsForWebSocket;
     private final ChatRoomService chatRoomService;
     private final RedisPublisher redisPublisher;
-    private final AuthUtilForWebsocket authUtilForWebsocket;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -49,7 +47,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new MessageInterceptor(
-                loggedInUserInfoUtilsForWebSocket, chatRoomService, redisPublisher, authUtilForWebsocket));
+                userUtilsForWebSocket, chatRoomService, redisPublisher));
     }
 
 
