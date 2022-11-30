@@ -8,7 +8,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.time.LocalDateTime;
 
 public class OrderDto {
     @Getter
@@ -38,7 +37,7 @@ public class OrderDto {
     public static class GetResponse {
         private long orderId;
         private String code;
-        private LocalDateTime orderTime;
+        private String orderTime;
         private String orderType;
         private String limit;
         private String market;
