@@ -22,10 +22,8 @@ public class Order {
     @Indexed
     private BigDecimal limit;
 
-    @Indexed
     private BigDecimal market;
 
-    @Indexed
     private BigDecimal stopLimit;
 
     private BigDecimal amount; // 미체결량

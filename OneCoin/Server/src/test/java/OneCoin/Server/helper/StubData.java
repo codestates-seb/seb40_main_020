@@ -56,12 +56,14 @@ public class StubData {
 
     public static class MockOrderPostDto {
         public static OrderDto.Post getMockOrderPost() {
-            OrderDto.Post redisPostDto = new OrderDto.Post();
-            redisPostDto.setLimit(12345000);
-            redisPostDto.setAmount(66);
-            redisPostDto.setOrderType("BID");
+            OrderDto.Post postDto = new OrderDto.Post();
+            postDto.setLimit("12345000");
+            postDto.setMarket("0");
+            postDto.setStopLimit("0");
+            postDto.setAmount("66");
+            postDto.setOrderType("BID");
 
-            return redisPostDto;
+            return postDto;
         }
 
     }
