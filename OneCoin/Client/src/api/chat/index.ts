@@ -26,8 +26,11 @@ export const enterRoom = (
 		const headers = frame?.headers;
 		if (headers) {
 			const userName = Object.values(headers)[0] as string;
-			const userId = userName.split(', ')[1].replace('id=', '');
-			setUserId(Number(userId));
+			const user = userName.split(', ')[2];
+			if (user) {
+				const userId = user.replace('id=', '');
+				setUserId(Number(userId));
+			}
 		}
 
 		setTimeout(() => {
@@ -47,6 +50,7 @@ const subscribeRoomsInfo = (setUsers: SetRoomsInfo) => {
 const subscribeRoom = (room: number, addMsgData: AddMsg) => {
 	client.subscribe(`/topic/rooms/${room}`, (msg) => {
 		const newMsg = JSON.parse(msg.body);
+		console.log('얼마나');
 		addMsgData([newMsg]);
 	});
 };

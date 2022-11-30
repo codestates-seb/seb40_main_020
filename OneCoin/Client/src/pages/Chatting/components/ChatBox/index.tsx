@@ -28,7 +28,9 @@ function ChatBox({ chatClickHandler }: Props) {
 	const Authorization = sessionStorage.getItem('login-token') as string;
 	useEffect(() => {
 		getChat(room);
-		enterRoom(Authorization, room, addMsgData, setRoomsInfo, setUserId);
+		if (!userId) {
+			enterRoom(Authorization, room, addMsgData, setRoomsInfo, setUserId);
+		}
 	}, [Authorization]);
 	useEffect(() => {
 		scrollRef?.current?.scrollIntoView(false);
