@@ -17,11 +17,12 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = OrderController.class,
@@ -87,5 +88,36 @@ public class OrderControllerTest {
                                 .content(content)
                 )
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("slice test: 미체결 내역을 조회한다.")
+    void getNonTradingOrder() throws Exception {
+        // given
+        given(orderService.findOrders()).willReturn(null);
+        given(mapper.orderToGetResponse(any())).willReturn(List.of(new OrderDto.GetResponse()));
+
+        // when then
+        mockMvc.perform(
+                        get("/api/order/non-trading")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("slice test: 주문을 취소한다")
+    void deleteNonTradingOrder() throws Exception {
+        // given
+        doNothing().when(orderService).cancelOrder(anyLong());
+
+        // when then
+        mockMvc.perform(
+                        delete("/api/order/non-trading/{order-id}", 1)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isNoContent());
     }
 }

@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.data.redis.DataRedisTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,14 +48,13 @@ public class OrderRepositoryTest {
         orderRepository.saveAll(orders);
 
         // when
-        BigDecimal limit = new BigDecimal("333333");
         String orderType = "ASK";
         String code = "KRW-ETH";
-        List<Order> findOrders = orderRepository.findAllByLimitAndOrderTypeAndCode(limit, orderType, code);
+        List<Order> findOrders = orderRepository.findAllByOrderTypeAndCode(orderType, code);
 
         // then
-        assertThat(findOrders.size()).isEqualTo(2);
+        assertThat(findOrders.size()).isEqualTo(3);
         assertThat(findOrders.get(0).getOrderId()).isEqualTo(3L);
-        assertThat(findOrders.get(1).getOrderId()).isEqualTo(5L);
+        assertThat(findOrders.get(1).getOrderId()).isEqualTo(4L);
     }
 }

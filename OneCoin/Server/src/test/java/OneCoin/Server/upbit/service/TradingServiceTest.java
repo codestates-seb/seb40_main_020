@@ -18,8 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
-import java.math.BigDecimal;
-
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -62,6 +60,6 @@ public class TradingServiceTest {
         tradingService.completeOrders(trade);
 
         // then
-        verify(orderRepository, times(1)).findAllByLimitAndOrderTypeAndCode(new BigDecimal(trade.getTradePrice()), trade.getOrderType(), trade.getCode());
+        verify(orderRepository, times(1)).findAllByOrderTypeAndCode(trade.getOrderType(), trade.getCode());
     }
 }

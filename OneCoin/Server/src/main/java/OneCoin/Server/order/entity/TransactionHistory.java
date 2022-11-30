@@ -25,19 +25,19 @@ public class TransactionHistory extends CreatedOnlyAuditable {
     @Column(nullable = false, length = 10, updatable = false)
     private TransactionType transactionType;
 
-    @Column(nullable = false, updatable = false, scale = 20)
+    @Column(nullable = false, updatable = false, scale = 15, precision = 30)
     private BigDecimal amount; // 수량
 
-    @Column(nullable = false, updatable = false, scale = 20)
+    @Column(nullable = false, updatable = false, scale = 15, precision = 30)
     private BigDecimal price; // 가격
 
-    @Column(nullable = false, updatable = false, scale = 20)
+    @Column(nullable = false, updatable = false, scale = 15, precision = 30)
     private BigDecimal totalAmount; // 총 거래 금액
 
     @Column(nullable = false, updatable = false)
     private double commission; // 수수료, 소수점 둘째 자리에서 반올림
 
-    @Column(nullable = false, updatable = false, scale = 20)
+    @Column(nullable = false, updatable = false, scale = 15, precision = 30)
     private BigDecimal settledAmount; // 정산 금액
 
     @Column(nullable = false, updatable = false)
