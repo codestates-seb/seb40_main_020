@@ -4,7 +4,7 @@ import OneCoin.Server.order.entity.Wallet;
 import OneCoin.Server.order.repository.TransactionHistoryRepository;
 import OneCoin.Server.order.repository.WalletRepository;
 import OneCoin.Server.rank.dao.UserRoi;
-import OneCoin.Server.rank.entity.RankEntity;
+import OneCoin.Server.rank.entity.Rank;
 import OneCoin.Server.rank.repository.RankRepository;
 import OneCoin.Server.upbit.dto.ticker.TickerDto;
 import OneCoin.Server.upbit.repository.TickerRepository;
@@ -39,20 +39,22 @@ public class RankService {
 
     public List<UserRoi> calculateTop10() {
         List<UserRoi> allRoi = calculateAllRois();
+        if(allRoi == null) return null;
         return allRoi.stream().sorted().limit(10).collect(Collectors.toList());
     }
 
-    public void update(List<RankEntity> top10) {
+    public void update(List<Rank> top10) {
         rankRepository.deleteAll();
         rankRepository.saveAll(top10);
     }
 
-    public List<RankEntity> getTop10() {
+    public List<Rank> getTop10() {
         return rankRepository.findAll();
     }
 
     private void setUserBids(Map<Long, UserRoi> allRoi) {
         List<UserRoi> bids = transactionHistoryRepository.findAllSumOfBidSettledAmount();
+        if(bids.size() == 0) return;
         for (UserRoi roi : bids) {
             allRoi.put(roi.getUserId(), roi);
         }
@@ -60,6 +62,7 @@ public class RankService {
 
     private void setUserAsks(Map<Long, UserRoi> allRoi) {
         List<UserRoi> asks = transactionHistoryRepository.findAllSumOfAskSettledAmount();
+        if(asks.size() == 0) return;
         for (UserRoi roi : asks) {
             Long userId = roi.getUserId();
             allRoi.get(userId).setSumOfAsks(roi.getSumOfAsks());
@@ -68,6 +71,7 @@ public class RankService {
 
     private void setCurrentCoinValues(Map<Long, UserRoi> allRoi) {
         List<Wallet> wallets = (List<Wallet>) walletRepository.findAll();
+        if(wallets.size() == 0) return;
         for (Wallet wallet : wallets) {
             Long userId = wallet.getUserId();
             UserRoi userROI = allRoi.get(userId);
@@ -79,6 +83,7 @@ public class RankService {
     }
 
     private List<UserRoi> calculateAll(Map<Long, UserRoi> allRoi) {
+        if(allRoi.size() == 0) return null;
         List<UserRoi> rois = new ArrayList<>(allRoi.values());
         for (UserRoi userROI : rois) {
             userROI.calculate();
