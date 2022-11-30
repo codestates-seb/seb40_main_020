@@ -3,6 +3,8 @@ package OneCoin.Server.config.auth.filter;
 import OneCoin.Server.config.auth.jwt.JwtTokenizer;
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
 import OneCoin.Server.user.entity.Role;
+import OneCoin.Server.user.entity.User;
+import OneCoin.Server.user.service.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,10 +30,12 @@ import java.util.Map;
 public class JwtVerificationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils customAuthorityUtils;
+    private final UserService userService;
 
-    public JwtVerificationFilter(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils) {
+    public JwtVerificationFilter(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils, UserService userService) {
         this.jwtTokenizer = jwtTokenizer;
         this.customAuthorityUtils = customAuthorityUtils;
+        this.userService = userService;
     }
 
     @Override
@@ -44,8 +48,23 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
             setAuthenticationToContext(claims);
         } catch (SignatureException se) {
             request.setAttribute("exception", se);
-        } catch (ExpiredJwtException ee) {
-            request.setAttribute("exception", ee);
+        } catch (ExpiredJwtException ee) {          // 유효기간 만료된 경우
+            try {
+                // 리프레시 토큰 체크
+                Map<String, Object> claims = verifyRefreshJws(request);
+
+                // DB에 리프레시를 저장하여 판단하는 경우도 있지만, 일단 이렇게 구현
+                User user = userService.findVerifiedUserByEmail(claims.get("sub").toString());
+
+
+                String accessToken = userService.delegateAccessToken(user, jwtTokenizer);
+                String refreshToken = userService.delegateRefreshToken(user, jwtTokenizer);
+
+                response.setHeader("Authorization", "Bearer " + accessToken);
+                response.setHeader("Refresh", refreshToken);
+            } catch (Exception e) {
+                request.setAttribute("exception", e);
+            }
         } catch (Exception e) {
             request.setAttribute("exception", e);
         }
@@ -65,12 +84,23 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * JWT 검증
+     * Access Token 검증
      */
     private Map<String, Object> verifyJws(HttpServletRequest request) {
         String jws = request.getHeader("Authorization").replace("Bearer ", "");
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey()); // SecretKey 파싱
         Map<String, Object> claims = jwtTokenizer.getClaims(jws, base64EncodedSecretKey).getBody();   // Claims 파싱
+
+        return claims;
+    }
+
+    /**
+     * Refresh Token 검증
+     */
+    private Map<String, Object> verifyRefreshJws(HttpServletRequest request) {
+        String jws = request.getHeader("Refresh");
+        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey()); // SecretKey 파싱
+        Map<String, Object> claims = jwtTokenizer.getClaims(jws, base64EncodedSecretKey).getBody();
 
         return claims;
     }

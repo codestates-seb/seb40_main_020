@@ -33,6 +33,7 @@ public class ChatRoomRepository {
     public boolean contains(Integer chatRoomId) {
         return setOperations.isMember(chatRoomUtils.KEY_FOR_CHAT_ROOMS, chatRoomUtils.makeKey(chatRoomId));
     }
+
     public void delete(Integer chatRoomId) {
         setOperations.remove(chatRoomUtils.KEY_FOR_CHAT_ROOMS, chatRoomUtils.makeKey(chatRoomId));
     }

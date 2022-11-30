@@ -27,9 +27,9 @@ public class ChatService {
                 .userId(user.getUserId())
                 .userDisplayName(user.getDisplayName())
                 .build();
-        if(messageType.equals(MessageType.ENTER)) {
+        if (messageType.equals(MessageType.ENTER)) {
             setEnterMessage(chatMessage);
-        } else if(messageType.equals(MessageType.LEAVE)) {
+        } else if (messageType.equals(MessageType.LEAVE)) {
             setLeaveMessage(chatMessage);
         }
         setCurrentTime(chatMessage);
@@ -38,7 +38,7 @@ public class ChatService {
 
     public ChatMessage setInfoAndSaveMessage(ChatMessage chatMessage, Principal user) {
         chatMessage.setType(MessageType.TALK);
-        setUserInfo(chatMessage,user);
+        setUserInfo(chatMessage, user);
         setCurrentTime(chatMessage);
         chatMessageRepository.save(chatMessage);
         return chatMessage;

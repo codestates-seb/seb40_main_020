@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Repository
@@ -16,19 +17,22 @@ import java.util.List;
 public class TickerRepository {
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
+    private HashOperations<String, String, TickerDto> operations;
+
+    @PostConstruct
+    private void init() {
+        operations = redisTemplate.opsForHash();
+    }
 
     public void saveTicker(TickerDto tickerDto) {
-        HashOperations<String, String, TickerDto> operations = redisTemplate.opsForHash();
         operations.put(SiseType.TICKER.getType(), tickerDto.getCode(), tickerDto);
     }
 
     public List<TickerDto> findTickers() {
-        HashOperations<String, String, TickerDto> operations = redisTemplate.opsForHash();
         return operations.multiGet(SiseType.TICKER.getType(), CoinList.CODES);
     }
 
     public TickerDto findTickerByCode(String code) {
-        HashOperations<String, String, TickerDto> operations = redisTemplate.opsForHash();
         return objectMapper.convertValue(operations.get(SiseType.TICKER.getType(), code), TickerDto.class);
     }
 }

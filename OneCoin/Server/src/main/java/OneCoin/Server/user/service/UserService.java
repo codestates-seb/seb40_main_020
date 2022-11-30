@@ -4,7 +4,9 @@ import OneCoin.Server.config.auth.jwt.JwtTokenizer;
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
 import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
+import OneCoin.Server.user.dto.UserDto;
 import OneCoin.Server.user.entity.Auth;
+import OneCoin.Server.user.entity.Platform;
 import OneCoin.Server.user.entity.Role;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.repository.UserRepository;
@@ -14,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +32,7 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();     // 순환호출 제거를 위해 생성
     private final CustomAuthorityUtils customAuthorityUtils;
     private final JavaMailSender javaMailSender;
     private final AuthService authService;
@@ -38,9 +42,8 @@ public class UserService {
     @Value("${spring.mail.username}")
     private String authEmail;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils, JavaMailSender javaMailSender, AuthService authService) {
+    public UserService(UserRepository userRepository, CustomAuthorityUtils customAuthorityUtils, JavaMailSender javaMailSender, AuthService authService) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
         this.customAuthorityUtils = customAuthorityUtils;
         this.javaMailSender = javaMailSender;
         this.authService = authService;
@@ -68,43 +71,75 @@ public class UserService {
     }
 
     /**
+     * <pre>
+     * 소셜로그인 유저 생성
+     */
+    @Transactional
+    public User createOAuth2User(User user) {
+        // 계정 존재 여부 조회
+        if (!hasAccount(user.getEmail())) {
+            //패스워드 암호화
+            String encryptedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encryptedPassword);
+
+            // 계정 생성
+            return userRepository.save(user);
+        }
+
+        // 계정(이메일)이 존재할 경우
+        else {
+            User findUser = findVerifiedUserByEmail(user.getEmail());
+
+            // 플랫폼이 카카오면 해당 계정 반환
+            if (findUser.getPlatform().equals(Platform.KAKAO)) {
+                return findUser;
+            }
+            // 다른 플랫폼이면 에러
+            throw new BusinessLogicException(ExceptionCode.USER_EXISTS);
+        }
+
+    }
+
+    /**
      *  <pre>
      *      회원가입 이메일 인증 발송
      *  </pre>
      */
     @Transactional
+    @Async("sendEmailExecutor")
     public void authenticationEmail(User user) {
         // 임시 비밀번호 + Auth 생성
         Auth auth = authService.createAuth(findVerifiedUserByEmail(user.getEmail()));
         String randomPassword = auth.getAuthPassword();
 
         // 인증 링크
-        String link = "http://" + ipAddress +"/api/users/authentication-email/signup/"
+        String link = "http://" + ipAddress + "/api/users/authentication-email/signup/"
                 + auth.getAuthId().toString() + "/" + randomPassword;
 
         sendEmail(user, link);
     }
 
     /**
-     *  <pre>
+     * <pre>
      *      비밀번호 재설정 이메일 인증 발송
      *  </pre>
      */
     @Transactional
+    @Async("sendEmailExecutor")
     public void authenticationEmailForPassword(User user) {
         // 임시 비밀번호 + Auth 생성
         Auth auth = authService.createAuth(findVerifiedUserByEmail(user.getEmail()));
         String randomPassword = auth.getAuthPassword();
 
         // 인증 링크
-        String link = "http://" + ipAddress +"/api/users/authentication-email/password/"
+        String link = "http://" + ipAddress + "/api/users/authentication-email/password/"
                 + auth.getAuthId().toString() + "/" + randomPassword;
 
         sendEmail(user, link);
     }
 
     /**
-     *  <pre>
+     * <pre>
      *      link 를 연결해주는 이메일 인증 발송
      *  </pre>
      */
@@ -135,7 +170,7 @@ public class UserService {
     }
 
     /**
-     *  <pre>
+     * <pre>
      *      회원가입 이메일 인증 후처리
      *      이메일 인증 링크 타고 오면 임시 발급 인증번호 대조 후 계정 활성화
      *  </pre>
@@ -158,9 +193,9 @@ public class UserService {
     }
 
     /**
-     *  <pre>
-     *      회원가입 이메일 인증 후처리
-     *      이메일 인증 링크 타고 오면 임시 발급 인증번호 대조 후 계정 활성화
+     * <pre>
+     *      비밀번호 변경 이메일 인증 후처리
+     *      이메일 인증 링크 타고 오면 임시 발급 인증번호 토큰 생성하여 전달
      *  </pre>
      */
     @Transactional
@@ -284,13 +319,12 @@ public class UserService {
 
     /**
      * <pre>
-     *     userId로 단일 회원 정보 가져오기
+     *     이메일로 단일 회원 정보 가져오기
      * </pre>
      */
     @Transactional(readOnly = true)
     public User findVerifiedUserByEmail(String email) {
-        User findUser = userRepository.findByEmail(email).orElseThrow(() ->new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
-        return findUser;
+        return userRepository.findByEmail(email).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
     }
 
     /**
@@ -336,4 +370,50 @@ public class UserService {
         return jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
     }
 
+    /**
+     *  플랫폼 구별
+     */
+    public UserDto.OAuth2Attribute of(String provider, String attributeKey,
+                                      Map<String, Object> attributes) {
+        if (provider.equals("kakao")) {
+            return ofKakao("email", attributes);
+        }
+        else {
+            throw new BusinessLogicException(ExceptionCode.UNDEFINED_PLATFORM);
+        }
+    }
+
+    /**
+     *  카카오 필요 어트리뷰트 추출
+     */
+    public UserDto.OAuth2Attribute ofKakao(String attributeKey,
+                                            Map<String, Object> attributes) {
+        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+        Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
+
+        UserDto.OAuth2Attribute attribute = new UserDto.OAuth2Attribute();
+
+        attribute.setName((String) kakaoProfile.get("nickname"));
+        attribute.setEmail((String) kakaoAccount.get("email"));
+        attribute.setImagePath((String)kakaoProfile.get("profile_image_url"));
+        attribute.setAttributes(kakaoAccount);
+        attribute.setAttributeKey(attributeKey);
+
+        return  attribute;
+    }
+
+    /**
+     *  Attribute 를 Map 으로 매핑
+     */
+    public Map<String, Object> convertToMap(UserDto.OAuth2Attribute attribute) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", attribute.getAttributeKey());
+        map.put("key", attribute.getAttributeKey());
+        map.put("name", attribute.getName());
+        map.put("email", attribute.getEmail());
+        map.put("picture", attribute.getImagePath());
+
+        return map;
+    }
+    
 }

@@ -6,7 +6,6 @@ import OneCoin.Server.upbit.dto.orderbook.OrderBookDto;
 import OneCoin.Server.upbit.dto.ticker.TickerDto;
 import OneCoin.Server.upbit.repository.OrderBookRepository;
 import OneCoin.Server.upbit.repository.TickerRepository;
-import OneCoin.Server.upbit.service.UpbitHandlingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;

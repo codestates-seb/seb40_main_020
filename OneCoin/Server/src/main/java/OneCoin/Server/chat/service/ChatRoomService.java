@@ -81,7 +81,7 @@ public class ChatRoomService {
         UserInfoInChatRoom user = new UserInfoInChatRoom();
         chatRoomKeys.stream().forEach(chatRoomKey -> {
             boolean doesContain = userInChatRoomRepository.contain(chatRoomKey, sessionId);
-            if(doesContain) {
+            if (doesContain) {
                 user.setChatRoomId(chatRoomUtils.parseChatRoomId(chatRoomKey));
                 user.setUser(userInChatRoomRepository.findBySessionId(chatRoomKey, sessionId));
                 userInChatRoomRepository.removeUserBySessionId(chatRoomKey, sessionId);

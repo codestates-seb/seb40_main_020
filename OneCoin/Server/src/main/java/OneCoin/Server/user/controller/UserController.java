@@ -53,6 +53,8 @@ public class UserController {
     public ResponseEntity postUser(@Valid @RequestBody UserDto.Post requestBody) {
         User user = userService.createUser(userMapper.userPostToUser(requestBody));
 
+        userService.authenticationEmail(user);
+
         return new ResponseEntity<>(
                 new SingleResponseDto<>(userMapper.userToUserResponse(user)), HttpStatus.CREATED
         );
@@ -134,20 +136,19 @@ public class UserController {
     // 비밀번호 변경 이메일 인증 확인
     @GetMapping("/authentication-email/password/{user-id}/{password}")
     public ResponseEntity authenticationEmailByPassword(@PathVariable("user-id") @Positive long userId,
-                                              @PathVariable("password") String password) throws URISyntaxException {
+                                                        @PathVariable("password") String password) throws URISyntaxException {
         userService.confirmEmailByPassword(userId, password);
-
-        URI redirect = new URI("http://" + baseURL + "/reset/password");
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(redirect);
 
         User user = userService.findUser(userId);
 
         String accessToken = userService.delegateAccessToken(user, jwtTokenizer);
         String refreshToken = userService.delegateRefreshToken(user, jwtTokenizer);
 
-        httpHeaders.add("Authorization", "Bearer " + accessToken);
-        httpHeaders.add("Refresh", refreshToken);
+        URI redirect = new URI("http://" + baseURL + "/token/password?authorization="
+                + accessToken + "&refresh="
+                + refreshToken);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(redirect);
 
         return new ResponseEntity(httpHeaders, HttpStatus.SEE_OTHER);
     }
@@ -157,8 +158,13 @@ public class UserController {
     public ResponseEntity findPassword(@Valid @RequestParam String email) {
         User user = userService.findVerifiedUserByEmail(email);
         userService.authenticationEmailForPassword(user);
-        
+
         return new ResponseEntity<>("Send Email", HttpStatus.OK);
     }
 
+    @DeleteMapping
+    public ResponseEntity deleteUser(@AuthenticationPrincipal Map<String, Object> userInfo) {
+        userService.deleteUser(Long.parseLong(userInfo.get("id").toString()));
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 }

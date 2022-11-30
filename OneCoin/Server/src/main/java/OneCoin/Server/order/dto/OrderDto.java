@@ -1,14 +1,13 @@
 package OneCoin.Server.order.dto;
 
+import OneCoin.Server.validator.Amount;
 import OneCoin.Server.validator.MustHavePrice;
+import OneCoin.Server.validator.Price;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-import java.time.LocalDateTime;
 
 public class OrderDto {
     @Getter
@@ -16,17 +15,18 @@ public class OrderDto {
     @MustHavePrice(limit = "limit", market = "market")
     public static class Post {
 
-        @PositiveOrZero(message = "음수 값은 허용하지 않습니다.")
-        private double limit;
+        @Price
+        private String limit;
 
-        @PositiveOrZero(message = "음수 값은 허용하지 않습니다.")
-        private double market;
+        @Price
+        private String market;
 
-        @PositiveOrZero(message = "음수 값은 허용하지 않습니다.")
-        private double stopLimit;
+        @Price
+        private String stopLimit;
 
-        @Positive(message = "필드가 비어있거나 0 또는 음수 값은 허용하지 않습니다.")
-        private double amount;
+        @NotNull
+        @Amount
+        private String amount;
 
         @NotNull(message = "빈 필드는 허용하지 않습니다.")
         @Pattern(regexp = "^ASK$|^BID$", message = "매도는 ASK, 매수는 BID를 입력해야 합니다.")
@@ -38,7 +38,7 @@ public class OrderDto {
     public static class GetResponse {
         private long orderId;
         private String code;
-        private LocalDateTime orderTime;
+        private String orderTime;
         private String orderType;
         private String limit;
         private String market;

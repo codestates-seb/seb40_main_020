@@ -35,11 +35,9 @@ public class CustomAuthorityUtils {
     public List<GrantedAuthority> createAuthorities(Role role) {
         if (role.equals(Role.ROLE_ADMIN)) {
             return ADMIN_ROLES;
-        }
-        else if (role.equals(Role.ROLE_USER)) {
+        } else if (role.equals(Role.ROLE_USER)) {
             return USER_ROLES;
-        }
-        else return NOT_AUTH_ROLES;
+        } else return NOT_AUTH_ROLES;
     }
 
 //    public List<GrantedAuthority> createAuthorities(List<String> roles) {

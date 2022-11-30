@@ -12,6 +12,7 @@ public interface ChatMapper {
     ChatMessage requestDtoToChatMessage(ChatRequestDto chatRequestDto);
 
     ChatResponseDto chatMessageToResponseDto(ChatMessage chatMessage);
+
     List<ChatResponseDto> chatMessagesToResponseDtos(List<ChatMessage> chatMessage);
 
 }
