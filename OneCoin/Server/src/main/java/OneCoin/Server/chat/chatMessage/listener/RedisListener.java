@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 public class RedisListener {
     private final ObjectMapper objectMapper;
     private final SimpMessagingTemplate messagingTemplate;
+
     public void sendMessage(String publishedMessage) {
         try {
             //스트링 -> 객체로 매핑

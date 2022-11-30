@@ -27,7 +27,7 @@ public class UserRoi implements Comparable<UserRoi> {
         this.sumOfAsks = sumOfBids.doubleValue();
     }
 
-    public void addSumOfCurrentCoinValues(double coinValue){
+    public void addSumOfCurrentCoinValues(double coinValue) {
         this.sumOfCurrentCoinValues += coinValue;
     }
 
@@ -37,8 +37,8 @@ public class UserRoi implements Comparable<UserRoi> {
 
     @Override
     public int compareTo(@NotNull UserRoi o) {
-        if(this.totalRoi < o.totalRoi) return 1;
-        if(this.totalRoi > o.totalRoi) return -1;
+        if (this.totalRoi < o.totalRoi) return 1;
+        if (this.totalRoi > o.totalRoi) return -1;
         return 0;
     }
 }

@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,10 +40,12 @@ public class ChatRoomService {
                 })
                 .collect(Collectors.toList());
     }
+
     public long getNumberOfUserInChatRoom(Integer chatRoomId) {
         findVerifiedChatRoom(chatRoomId);
         return userInChatRoomRepository.getNumberOfUserInChatRoom(chatRoomId);
     }
+
     public void saveUserToChatRoom(Integer chatRoomId, String sessionId) {
         saveUserToChatRoom(chatRoomId, sessionId, null);
     }
@@ -75,7 +76,7 @@ public class ChatRoomService {
         UserInfoInChatRoom user = new UserInfoInChatRoom();
         chatRoomKeys.stream().forEach(chatRoomKey -> {
             boolean doesContain = userInChatRoomRepository.contain(chatRoomKey, sessionId);
-            if(doesContain) {
+            if (doesContain) {
                 user.setChatRoomId(chatRoomUtils.parseChatRoomId(chatRoomKey));
                 user.setUser(userInChatRoomRepository.findBySessionId(chatRoomKey, sessionId));
                 userInChatRoomRepository.removeUserBySessionId(chatRoomKey, sessionId);

@@ -14,7 +14,7 @@ public class WalletOrderMapper {
     public final CalculationUtil calculationUtil;
 
     public Wallet bidOrderToNewWallet(Order order, BigDecimal completedAmount) {
-        BigDecimal averagePrice = calculationUtil.calculateAvgPriceByBid(BigDecimal.ZERO, BigDecimal.ZERO, order.getLimit(), completedAmount);
+        BigDecimal averagePrice = calculationUtil.calculateAvgPrice(BigDecimal.ZERO, BigDecimal.ZERO, order.getLimit(), completedAmount);
 
         return Wallet.builder()
                 .amount(completedAmount)
@@ -25,7 +25,7 @@ public class WalletOrderMapper {
     }
 
     public Wallet bidOrderToUpdatedWallet(Wallet wallet, BigDecimal orderPrice, BigDecimal completedAmount) {
-        BigDecimal averagePrice = calculationUtil.calculateAvgPriceByBid(wallet.getAveragePrice(), wallet.getAmount(), orderPrice, completedAmount);
+        BigDecimal averagePrice = calculationUtil.calculateAvgPrice(wallet.getAveragePrice(), wallet.getAmount(), orderPrice, completedAmount);
         BigDecimal totalAmount = wallet.getAmount().add(completedAmount);
 
         wallet.setAveragePrice(averagePrice);
@@ -33,11 +33,8 @@ public class WalletOrderMapper {
         return wallet;
     }
 
-    public Wallet askOrderToUpdatedWallet(Wallet wallet, BigDecimal orderPrice, BigDecimal completedAmount) {
-        BigDecimal averagePrice = calculationUtil.calculateAvgPriceByAsk(wallet.getAveragePrice(), wallet.getAmount(), orderPrice, completedAmount);
+    public Wallet askOrderToUpdatedWallet(Wallet wallet, BigDecimal completedAmount) {
         BigDecimal totalAmount = wallet.getAmount().subtract(completedAmount);
-
-        wallet.setAveragePrice(averagePrice);
         wallet.setAmount(totalAmount);
         return wallet;
     }
