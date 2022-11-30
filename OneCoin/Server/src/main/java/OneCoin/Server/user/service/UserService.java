@@ -4,7 +4,9 @@ import OneCoin.Server.config.auth.jwt.JwtTokenizer;
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
 import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
+import OneCoin.Server.user.dto.UserDto;
 import OneCoin.Server.user.entity.Auth;
+import OneCoin.Server.user.entity.Platform;
 import OneCoin.Server.user.entity.Role;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.repository.UserRepository;
@@ -65,6 +67,35 @@ public class UserService {
         }
 
         return null;
+    }
+
+    /**
+     * 소셜로그인 유저 생성
+     */
+    @Transactional
+    public User createOAuth2User(User user) {
+        // 계정 존재 여부 조회
+        if (!hasAccount(user.getEmail())) {
+            //패스워드 암호화
+            String encryptedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encryptedPassword);
+
+            // 계정 생성
+            return userRepository.save(user);
+        }
+
+        // 계정(이메일)이 존재할 경우
+        else {
+            User findUser = findVerifiedUserByEmail(user.getEmail());
+
+            // 플랫폼이 카카오면 해당 계정 반환
+            if (findUser.getPlatform().equals(Platform.KAKAO)) {
+                return findUser;
+            }
+            // 다른 플랫폼이면 에러
+            throw new BusinessLogicException(ExceptionCode.USER_EXISTS);
+        }
+
     }
 
     /**
@@ -335,4 +366,50 @@ public class UserService {
         return jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
     }
 
+    /**
+     *  플랫폼 구별
+     */
+    public UserDto.OAuth2Attribute of(String provider, String attributeKey,
+                                      Map<String, Object> attributes) {
+        if (provider.equals("kakao")) {
+            return ofKakao("email", attributes);
+        }
+        else {
+            throw new BusinessLogicException(ExceptionCode.UNDEFINED_PLATFORM);
+        }
+    }
+
+    /**
+     *  카카오 필요 어트리뷰트 추출
+     */
+    public UserDto.OAuth2Attribute ofKakao(String attributeKey,
+                                            Map<String, Object> attributes) {
+        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+        Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
+
+        UserDto.OAuth2Attribute attribute = new UserDto.OAuth2Attribute();
+
+        attribute.setName((String) kakaoProfile.get("nickname"));
+        attribute.setEmail((String) kakaoAccount.get("email"));
+        attribute.setImagePath((String)kakaoProfile.get("profile_image_url"));
+        attribute.setAttributes(kakaoAccount);
+        attribute.setAttributeKey(attributeKey);
+
+        return  attribute;
+    }
+
+    /**
+     *  Attribute 를 Map 으로 매핑
+     */
+    public Map<String, Object> convertToMap(UserDto.OAuth2Attribute attribute) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", attribute.getAttributeKey());
+        map.put("key", attribute.getAttributeKey());
+        map.put("name", attribute.getName());
+        map.put("email", attribute.getEmail());
+        map.put("picture", attribute.getImagePath());
+
+        return map;
+    }
+    
 }

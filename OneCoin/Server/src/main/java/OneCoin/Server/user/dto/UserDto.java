@@ -5,7 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Map;
 
 public class UserDto {
@@ -36,9 +39,12 @@ public class UserDto {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class KakaoPost {
-        String attributeKey;
-        Map<String, Object> attributes;
+    public static class OAuth2Attribute {
+        private Map<String, Object> attributes;
+        private String attributeKey;
+        private String email;
+        private String name;
+        private String imagePath;
     }
 
     @Getter

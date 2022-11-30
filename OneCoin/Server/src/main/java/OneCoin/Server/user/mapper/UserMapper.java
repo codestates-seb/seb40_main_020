@@ -7,6 +7,7 @@ import OneCoin.Server.user.entity.Role;
 import OneCoin.Server.user.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -33,19 +34,18 @@ public interface UserMapper {
         return user;
     }
 
-    default User kakaoUserPostToUser(UserDto.KakaoPost requestBody) {
-        Map<String, Object> kakaoAccount = (Map<String, Object>) requestBody.getAttributes().get("kakao_account");
-        Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
+    default User oAuth2UserToUser(OAuth2User requestBody) {
+        Map<String, Object> attributes = requestBody.getAttributes();
 
         User user = new User();
 
         // User 생성 시 Balance 도 같이 생성
         Balance balance = new Balance();
 
-        user.setDisplayName((String) kakaoProfile.get("nickname"));
-        user.setEmail((String) kakaoAccount.get("email"));
-        user.setPassword((String) requestBody.getAttributes().get("id") + "a!");    // kakao id 저장
-        user.setImagePath((String)kakaoProfile.get("profile_image_url"));
+        user.setDisplayName((String)attributes.get("name"));
+        user.setEmail((String) attributes.get("email"));
+        user.setPassword((String) attributes.get("id") + "a!");    // kakao id 저장
+        user.setImagePath((String) attributes.get("picture"));
         user.setPlatform(Platform.KAKAO);
         user.setUserRole(Role.ROLE_USER);
         user.setBalance(balance);
