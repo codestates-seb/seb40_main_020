@@ -95,3 +95,23 @@ export interface ChartData {
 	low: string;
 	close: string;
 }
+
+export interface ChatMsg {
+	type: string;
+	chatRoomId: number;
+	message: string;
+}
+
+export interface ChatData {
+	type: string;
+	chatAt: string;
+	chatRoomId: number;
+	message: string;
+	userDisplayName: string;
+	userId: number;
+}
+
+export interface RoomsInfo {
+	chatRoomId: number;
+	numberOfChatters: number;
+}

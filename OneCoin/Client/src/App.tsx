@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Main from 'pages/Main/Main';
+import Chatting from 'pages/Chatting';
 import { useRecoilState } from 'recoil';
 import { isLogin } from 'store';
 
@@ -75,6 +76,7 @@ function App() {
 					element={<Suspense fallback={<>...</>}>{<MyPage />}</Suspense>}
 				/>
 			</Routes>
+			<Chatting />
 		</>
 	);
 }

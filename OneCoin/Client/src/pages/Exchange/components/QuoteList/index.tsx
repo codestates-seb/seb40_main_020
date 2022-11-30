@@ -19,8 +19,16 @@ function QuoteList({ orderBook, prcieClickHandler, tradePrice }: Props) {
 			setAsk([...askInfo].reverse());
 		}
 	}, [orderBook]);
+
+	useEffect(() => {
+		scrollRef?.current?.scrollIntoView({
+			behavior: 'smooth',
+			block: 'center',
+			inline: 'nearest',
+		});
+	}, [scrollRef]);
 	return (
-		<QuoteListComponent className="quote-wrapper" ref={scrollRef}>
+		<QuoteListComponent className="quote-wrapper">
 			<div className="normal">일반호가</div>
 			<div className="ask">
 				{ask.map((ask, i) => (
@@ -34,6 +42,7 @@ function QuoteList({ orderBook, prcieClickHandler, tradePrice }: Props) {
 					/>
 				))}
 			</div>
+			<div ref={scrollRef}></div>
 			<div className="bid">
 				{orderBook?.bidInfo.map((bid, i) => (
 					<Quote

@@ -5,7 +5,7 @@ import { coinDataState } from '../../../store';
 import { useRecoilState } from 'recoil';
 import { Props } from '../index';
 import { CoinDataType } from '../../../utills/types';
-import { connection } from '../../../api/exchange/socket';
+import { getTradeData } from '../../../api/exchange';
 
 function CoinList({ coinInfoHandler }: Props) {
 	const [coinData, setCoinData] = useRecoilState(coinDataState);
@@ -18,7 +18,7 @@ function CoinList({ coinInfoHandler }: Props) {
 		setSearchResult(newSearchResult);
 	};
 	useEffect(() => {
-		connection(coinData, setCoinData);
+		getTradeData(coinData, setCoinData);
 	}, []);
 
 	const isShow = (v: CoinDataType, i: number) => {
