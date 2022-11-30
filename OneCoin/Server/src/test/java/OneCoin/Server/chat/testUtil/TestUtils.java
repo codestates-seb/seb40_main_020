@@ -1,6 +1,8 @@
 package OneCoin.Server.chat.testUtil;
 
+import OneCoin.Server.chat.constant.MessageType;
 import OneCoin.Server.chat.dto.ChatRequestDto;
+import OneCoin.Server.chat.entity.ChatMessage;
 import OneCoin.Server.chat.repository.ChatMessageRepository;
 import OneCoin.Server.chat.repository.ChatRoomRepository;
 import OneCoin.Server.chat.repository.UserInChatRoomRepository;
@@ -9,11 +11,13 @@ import OneCoin.Server.user.entity.Platform;
 import OneCoin.Server.user.entity.Role;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.repository.UserRepository;
+import org.springframework.boot.test.context.TestComponent;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -22,6 +26,7 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +34,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
+@Component
 public class TestUtils {
     private final JwtTokenizer jwtTokenizer;
     private final ChatRoomRepository chatRoomRepository;
@@ -122,6 +127,16 @@ public class TestUtils {
         WebSocketHttpHeaders httpHeaders = new WebSocketHttpHeaders();
         httpHeaders.add("Authorization", jwt);
         return httpHeaders;
+    }
+
+    public ChatMessage chatMessageMaker(long userId, Integer chatRoomId) {
+        return new ChatMessage(
+                MessageType.TALK,
+                "hello" + userId,
+                LocalDateTime.now().toString(),
+                userId,
+                chatRoomId,
+                String.valueOf(userId * 100L));
     }
 
 }

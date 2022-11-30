@@ -1,9 +1,12 @@
 package OneCoin.Server.chat.repository;
 
-import OneCoin.Server.chat.entity.ChatMessage;
 import OneCoin.Server.chat.constant.MessageType;
-import org.junit.jupiter.api.BeforeEach;
+import OneCoin.Server.chat.entity.ChatMessage;
+import OneCoin.Server.chat.testUtil.TestUtils;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -13,33 +16,39 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ChatMessageRepositoryTest {
     @Autowired
     private ChatMessageRepository chatMessageRepository;
+    @Autowired
+    private TestUtils testUtils;
+    private Long startChatRoomId;
+    private Long endChatRoomId;
+    private Integer chatRoomIdSavedTo;
 
-    @BeforeEach
-    void init() {
-        for (long i = 60L; i <= 70L; i++) {
-            chatMessageRepository.save(chatMessageMaker(i, 20));
+    @BeforeAll
+    void saveMessages() {
+        startChatRoomId = 60L;
+        endChatRoomId = 69L;
+        chatRoomIdSavedTo = 1000;
+        for (long i = startChatRoomId; i <= endChatRoomId; i++) {
+            chatMessageRepository.save(testUtils.chatMessageMaker(i, chatRoomIdSavedTo));
         }
+    }
+
+    @AfterAll
+    void deleteMessages() {
+        chatMessageRepository.removeAllInChatRoom(chatRoomIdSavedTo);
     }
 
     @Test
     void getMessageFromRoomLimitNTest() {
-        List<ChatMessage> chatMessageList = chatMessageRepository.getMessageFromRoomLimitN(20, 10L);
+        //given
+        long limit = 5L;
+        //when
+        List<ChatMessage> chatMessageList = chatMessageRepository.getMessageFromRoomLimitN(chatRoomIdSavedTo, limit);
+        //then
         assertThat(chatMessageList.size())
-                .isEqualTo(10);
-        assertThat(chatMessageList.get(0).getUserId()
-                .equals(Long.valueOf(70L)));
-    }
-
-    private ChatMessage chatMessageMaker(long userId, Integer chatRoomId) {
-        return new ChatMessage(
-                MessageType.TALK,
-                "hello" + userId,
-                LocalDateTime.now().toString(),
-                userId,
-                chatRoomId,
-                String.valueOf(userId * 100L));
+                .isEqualTo(limit);
     }
 }
