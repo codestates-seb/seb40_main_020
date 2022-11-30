@@ -2,13 +2,11 @@ package OneCoin.Server.config;
 
 import OneCoin.Server.config.auth.filter.JwtAuthenticationFilter;
 import OneCoin.Server.config.auth.filter.JwtVerificationFilter;
-import OneCoin.Server.config.auth.handler.UserAccessDeniedHandler;
-import OneCoin.Server.config.auth.handler.UserAuthenticationEntryPoint;
-import OneCoin.Server.config.auth.handler.UserAuthenticationFailureHandler;
-import OneCoin.Server.config.auth.handler.UserAuthenticationSuccessHandler;
+import OneCoin.Server.config.auth.handler.*;
 import OneCoin.Server.config.auth.jwt.JwtTokenizer;
 import OneCoin.Server.config.auth.userdetails.Oauth2UserDetailService;
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
+import OneCoin.Server.user.mapper.UserMapper;
 import OneCoin.Server.user.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,11 +33,13 @@ public class SecurityConfig {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils customAuthorityUtils;
     private final UserService userService;
+    private final UserMapper userMapper;
 
-    public SecurityConfig(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils, UserService userService) {
+    public SecurityConfig(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils, UserService userService, UserMapper userMapper) {
         this.jwtTokenizer = jwtTokenizer;
         this.customAuthorityUtils = customAuthorityUtils;
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @Bean
@@ -73,9 +73,10 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("USER")
                         .anyRequest().permitAll()                // 일단 허용
                 )
-                .oauth2Login().
-                userInfoEndpoint().     // Oauth2 로그인 성공 후 userInfo 엔드포인트(userInfo 받아옴)
-                userService(new Oauth2UserDetailService(userService, jwtTokenizer, customAuthorityUtils));  // 리소스 서버에서 사용자 정보를 가져온 상태에서 추가로 진행
+                .oauth2Login()
+                .successHandler(new UserOAuth2SuccessHandler(jwtTokenizer, customAuthorityUtils, userService, userMapper))
+                .userInfoEndpoint()     // Oauth2 로그인 성공 후 userInfo 엔드포인트(userInfo 받아옴)
+                .userService(new Oauth2UserDetailService(userService, jwtTokenizer, customAuthorityUtils, userMapper));  // 리소스 서버에서 사용자 정보를 가져온 상태에서 추가로 진행
         return http.build();
     }
 
