@@ -22,6 +22,7 @@ public class RankScheduler {
     @Scheduled(fixedDelay = 10, initialDelay = 1, timeUnit = TimeUnit.SECONDS)
     public void updateTop10() {
         List<UserRoi> top10Roi = rankService.calculateTop10();
+        if(top10Roi == null) log.info("There is no transaction yet");
         List<RankEntity> top10Entities = mapper.userRoisToRankEntities(top10Roi);
         rankService.update(top10Entities);
         String winnerName = "no one";

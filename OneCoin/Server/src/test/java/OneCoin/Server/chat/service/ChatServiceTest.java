@@ -75,10 +75,10 @@ public class ChatServiceTest {
                 .chatRoomId(chatRoomId)
                 .build();
         String displayName = "zoro";
-        Authentication authentication = new UsernamePasswordAuthenticationToken(null, null);
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", Integer.valueOf(1));
         claims.put("displayName", displayName);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(claims, null);
         given(userUtilsForWebSocket.extractClaims(any(Principal.class)))
                 .willReturn(claims);
 
