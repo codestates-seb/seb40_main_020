@@ -18,7 +18,7 @@ import java.util.Map;
 public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final UserUtilsForWebSocket userInfoUtils;
-    private final Long NUMBER_OF_CHATS_TO_SEND = 30L;
+    private final Long NUMBER_OF_CHATS_TO_SEND_WHEN_ENTER = 30L;
 
     public ChatMessage makeEnterOrLeaveChatMessage(MessageType messageType, Integer chatRoomId, User user) {
         ChatMessage chatMessage = ChatMessage.builder()
@@ -68,6 +68,6 @@ public class ChatService {
     }
 
     public List<ChatMessage> getChatMessages(Integer chatRoomId) {
-        return chatMessageRepository.getMessageFromRoomLimitN(chatRoomId, NUMBER_OF_CHATS_TO_SEND);
+        return chatMessageRepository.getMessageFromRoomLimitN(chatRoomId, NUMBER_OF_CHATS_TO_SEND_WHEN_ENTER);
     }
 }
