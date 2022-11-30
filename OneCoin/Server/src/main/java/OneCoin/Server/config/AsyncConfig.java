@@ -22,4 +22,15 @@ public class AsyncConfig {
         executor.initialize();
         return executor;
     }
+
+    @Bean
+    public Executor sendEmailExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(10);
+        executor.setQueueCapacity(30);
+        executor.setThreadNamePrefix("SendEmail-");
+        executor.initialize();
+        return executor;
+    }
 }

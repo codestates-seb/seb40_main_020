@@ -139,17 +139,16 @@ public class UserController {
                                                         @PathVariable("password") String password) throws URISyntaxException {
         userService.confirmEmailByPassword(userId, password);
 
-        URI redirect = new URI("http://" + baseURL + "/reset/password");
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(redirect);
-
         User user = userService.findUser(userId);
 
         String accessToken = userService.delegateAccessToken(user, jwtTokenizer);
         String refreshToken = userService.delegateRefreshToken(user, jwtTokenizer);
 
-        httpHeaders.add("Authorization", "Bearer " + accessToken);
-        httpHeaders.add("Refresh", refreshToken);
+        URI redirect = new URI("http://" + baseURL + "/token/password?authorization="
+                + accessToken + "&refresh="
+                + refreshToken);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(redirect);
 
         return new ResponseEntity(httpHeaders, HttpStatus.SEE_OTHER);
     }
