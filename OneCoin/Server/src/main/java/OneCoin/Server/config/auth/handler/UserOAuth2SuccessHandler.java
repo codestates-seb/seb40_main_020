@@ -8,6 +8,8 @@ import OneCoin.Server.user.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletException;
@@ -50,24 +52,29 @@ public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHand
         String accessToken = userService.delegateAccessToken(user, jwtTokenizer);
         String refreshToken = userService.delegateRefreshToken(user, jwtTokenizer);
 
-        response.setHeader("Authorization", "Bearer " + accessToken);
-        response.setHeader("Refresh", refreshToken);
+//        response.setHeader("Authorization", "Bearer " + accessToken);
+//        response.setHeader("Refresh", refreshToken);
 
-        String uri = createURI().toString();
+        String uri = createURI(accessToken, refreshToken).toString();
         getRedirectStrategy().sendRedirect(request, response, uri);
     }
 
     /**
      *  소셜로그인 전용 redirect URI
      */
-    public URI createURI() {
+    public URI createURI(String accessToken, String refreshToken) {
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("access_token", accessToken);
+        queryParams.add("refresh_token", refreshToken);
+
         return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
                 .host("localhost")  // 프론트의 ip
-//                .port(3000)
-                .path("/receive-token.html")
+                .port(3000)
+                .path("/token")
 //                .path("/main")
+                .queryParams(queryParams)
                 .build()
                 .toUri();
     }

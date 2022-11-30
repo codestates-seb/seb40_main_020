@@ -42,7 +42,7 @@ public interface UserMapper {
         // User 생성 시 Balance 도 같이 생성
         Balance balance = new Balance();
 
-        user.setDisplayName((String)attributes.get("name"));
+        user.setDisplayName((String)attributes.get("id") + "@");
         user.setEmail((String) attributes.get("email"));
         user.setPassword((String) attributes.get("id") + "a!");    // kakao id 저장
         user.setImagePath((String) attributes.get("picture"));
