@@ -40,7 +40,8 @@ public class OrderService {
 
         if (order.getOrderType().equals(TransactionType.ASK.getType())) { // 매도
             Wallet wallet = walletService.findVerifiedWalletWithCoin(userId, code);
-            checkUserCoinAmount(wallet, amount);
+            BigDecimal prevOrderAmount = getPrevAskOrderAmount(userId, code);
+            checkUserCoinAmount(wallet, amount, prevOrderAmount);
         }
         if (order.getOrderType().equals(TransactionType.BID.getType())) { // 매수
             BigDecimal price = order.getLimit();
@@ -51,13 +52,26 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    private void checkUserCoinAmount(Wallet wallet, BigDecimal amount) {
-        BigDecimal myAmount = wallet.getAmount();
-        int comparison = myAmount.compareTo(amount);
+    private void checkUserCoinAmount(Wallet wallet, BigDecimal orderAmount, BigDecimal prevOrderAmount) {
+        BigDecimal myWalletAmount = wallet.getAmount();
+        BigDecimal sellableAmount = myWalletAmount.subtract(prevOrderAmount);
+        int comparison = sellableAmount.compareTo(orderAmount);
 
         if (comparison < 0) {
             throw new BusinessLogicException(ExceptionCode.NOT_ENOUGH_AMOUNT);
         }
+    }
+
+    public BigDecimal getPrevAskOrderAmount(long userId, String code) {
+        List<Order> prevAskOrders = orderRepository.findAllByUserIdAndOrderTypeAndCode(userId, TransactionType.ASK.getType(), code);
+        BigDecimal amount = BigDecimal.ZERO;
+        if (prevAskOrders.isEmpty()) {
+            return amount;
+        }
+        for (Order order : prevAskOrders) {
+            amount = amount.add(order.getAmount());
+        }
+        return amount;
     }
 
     private void subtractUserBalance(long userId, BigDecimal price, BigDecimal amount) {

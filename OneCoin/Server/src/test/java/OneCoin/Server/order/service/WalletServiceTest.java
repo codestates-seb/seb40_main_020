@@ -84,7 +84,7 @@ public class WalletServiceTest {
         assertThat(findOrder.getCompletedAmount()).isEqualTo(tradeVolume);
         assertThat(findOrder.getAmount()).isEqualTo(new BigDecimal("9"));
 
-        Wallet findWallet = walletRepository.findByUserIdAndCode(1L, "KRW-BTC");
+        Wallet findWallet = walletRepository.findByUserIdAndCode(1L, "KRW-BTC").orElse(null);
         assertThat(findWallet.getAmount()).isEqualTo(tradeVolume);
     }
 
@@ -102,7 +102,7 @@ public class WalletServiceTest {
         Order findOrder = orderRepository.findById(1L).orElse(null);
         assertThat(findOrder).isEqualTo(null);
 
-        Wallet findWallet = walletRepository.findByUserIdAndCode(1L, "KRW-BTC");
+        Wallet findWallet = walletRepository.findByUserIdAndCode(1L, "KRW-BTC").orElse(null);
         assertThat(findWallet.getAmount()).isEqualTo(tradeVolume);
     }
 
@@ -118,7 +118,7 @@ public class WalletServiceTest {
         walletService.updateWalletByBid(wallet, order, tradeVolume);
 
         // then
-        Wallet findWallet = walletRepository.findByUserIdAndCode(1L, "KRW-BTC");
+        Wallet findWallet = walletRepository.findByUserIdAndCode(1L, "KRW-BTC").orElse(null);
         assertThat(findWallet.getAmount()).isEqualTo(new BigDecimal("11"));
         assertThat(findWallet.getAveragePrice()).isEqualTo(new BigDecimal("22524818.18"));
     }
@@ -136,7 +136,7 @@ public class WalletServiceTest {
         walletService.updateWalletByAsk(wallet, order, tradeVolume);
 
         // then
-        Wallet findWallet = walletRepository.findByUserIdAndCode(1L, "KRW-BTC");
+        Wallet findWallet = walletRepository.findByUserIdAndCode(1L, "KRW-BTC").orElse(null);
         assertThat(findWallet.getAmount()).isEqualTo(new BigDecimal("1"));
     }
 
@@ -151,11 +151,11 @@ public class WalletServiceTest {
 
         // when
         doNothing().when(balanceService).updateBalanceByAskOrCancelBid(anyLong(), any());
-        wallet = walletRepository.findByUserIdAndCode(1L, "KRW-BTC");
+        wallet = walletRepository.findByUserIdAndCode(1L, "KRW-BTC").orElse(null);
         walletService.updateWalletByAsk(wallet, order, tradeVolume);
 
         // then
-        Wallet findWallet = walletRepository.findByUserIdAndCode(1L, "KRW-BTC");
+        Wallet findWallet = walletRepository.findByUserIdAndCode(1L, "KRW-BTC").orElse(null);
         assertThat(findWallet).isEqualTo(null);
     }
 
