@@ -393,6 +393,7 @@ public class UserService {
 
         UserDto.OAuth2Attribute attribute = new UserDto.OAuth2Attribute();
 
+        attribute.setId(attributes.get("id").toString());
         attribute.setName((String) kakaoProfile.get("nickname"));
         attribute.setEmail((String) kakaoAccount.get("email"));
         attribute.setImagePath((String)kakaoProfile.get("profile_image_url"));
@@ -407,7 +408,7 @@ public class UserService {
      */
     public Map<String, Object> convertToMap(UserDto.OAuth2Attribute attribute) {
         Map<String, Object> map = new HashMap<>();
-        map.put("id", attribute.getAttributeKey());
+        map.put("id", attribute.getId());
         map.put("key", attribute.getAttributeKey());
         map.put("name", attribute.getName());
         map.put("email", attribute.getEmail());

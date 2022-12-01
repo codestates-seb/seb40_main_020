@@ -41,8 +41,6 @@ public class Oauth2UserDetailService implements OAuth2UserService<OAuth2UserRequ
 
         UserDto.OAuth2Attribute attribute = userService.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
-        System.out.println("Attribute : " + attribute);
-
         return new DefaultOAuth2User(customAuthorityUtils.createAuthorities(Role.ROLE_USER),
                 userService.convertToMap(attribute), "email");
     }
