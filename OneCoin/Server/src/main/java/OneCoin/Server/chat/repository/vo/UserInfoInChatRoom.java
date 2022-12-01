@@ -1,4 +1,4 @@
-package OneCoin.Server.chat.vo;
+package OneCoin.Server.chat.repository.vo;
 
 import OneCoin.Server.chat.entity.UserInChatRoom;
 import OneCoin.Server.user.entity.User;

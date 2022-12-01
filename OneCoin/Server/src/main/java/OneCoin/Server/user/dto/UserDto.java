@@ -42,6 +42,7 @@ public class UserDto {
     public static class OAuth2Attribute {
         private Map<String, Object> attributes;
         private String attributeKey;
+        private String id;
         private String email;
         private String name;
         private String imagePath;

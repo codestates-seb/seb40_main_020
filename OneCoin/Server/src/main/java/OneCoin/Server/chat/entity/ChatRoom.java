@@ -1,12 +1,12 @@
 package OneCoin.Server.chat.entity;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChatRoom {
     private Integer chatRoomId;
     private Long numberOfChatters;
