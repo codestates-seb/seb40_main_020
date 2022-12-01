@@ -5,7 +5,7 @@ import OneCoin.Server.chat.entity.UserInChatRoom;
 import OneCoin.Server.chat.repository.ChatRoomRepository;
 import OneCoin.Server.chat.repository.UserInChatRoomRepository;
 import OneCoin.Server.chat.utils.ChatRoomUtils;
-import OneCoin.Server.chat.vo.UserInfoInChatRoom;
+import OneCoin.Server.chat.repository.vo.UserInfoInChatRoom;
 import OneCoin.Server.exception.BusinessLogicException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
