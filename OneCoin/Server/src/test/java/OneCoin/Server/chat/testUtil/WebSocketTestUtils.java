@@ -11,7 +11,6 @@ import OneCoin.Server.user.entity.Platform;
 import OneCoin.Server.user.entity.Role;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.repository.UserRepository;
-import org.springframework.boot.test.context.TestComponent;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -35,7 +34,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 @Component
-public class TestUtils {
+public class WebSocketTestUtils {
     private final JwtTokenizer jwtTokenizer;
     private final ChatRoomRepository chatRoomRepository;
     private final UserInChatRoomRepository userInChatRoomRepository;
@@ -43,7 +42,7 @@ public class TestUtils {
     private final UserRepository userRepository;
     private final RedisTemplate redisTemplate;
 
-    public TestUtils(JwtTokenizer jwtTokenizer, ChatRoomRepository chatRoomRepository, UserInChatRoomRepository userInChatRoomRepository, ChatMessageRepository chatMessageRepository, UserRepository userRepository, RedisTemplate redisTemplate) {
+    public WebSocketTestUtils(JwtTokenizer jwtTokenizer, ChatRoomRepository chatRoomRepository, UserInChatRoomRepository userInChatRoomRepository, ChatMessageRepository chatMessageRepository, UserRepository userRepository, RedisTemplate redisTemplate) {
         this.jwtTokenizer = jwtTokenizer;
         this.chatRoomRepository = chatRoomRepository;
         this.userInChatRoomRepository = userInChatRoomRepository;

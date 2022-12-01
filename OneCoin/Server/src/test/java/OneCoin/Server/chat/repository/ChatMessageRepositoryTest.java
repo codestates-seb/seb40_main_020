@@ -1,8 +1,7 @@
 package OneCoin.Server.chat.repository;
 
-import OneCoin.Server.chat.constant.MessageType;
 import OneCoin.Server.chat.entity.ChatMessage;
-import OneCoin.Server.chat.testUtil.TestUtils;
+import OneCoin.Server.chat.testUtil.WebSocketTestUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -21,7 +19,7 @@ public class ChatMessageRepositoryTest {
     @Autowired
     private ChatMessageRepository chatMessageRepository;
     @Autowired
-    private TestUtils testUtils;
+    private WebSocketTestUtils webSocketTestUtils;
     private Long startChatRoomId;
     private Long endChatRoomId;
     private Integer chatRoomIdSavedTo;
@@ -32,7 +30,7 @@ public class ChatMessageRepositoryTest {
         endChatRoomId = 69L;
         chatRoomIdSavedTo = 1000;
         for (long i = startChatRoomId; i <= endChatRoomId; i++) {
-            chatMessageRepository.save(testUtils.chatMessageMaker(i, chatRoomIdSavedTo));
+            chatMessageRepository.save(webSocketTestUtils.chatMessageMaker(i, chatRoomIdSavedTo));
         }
     }
 
