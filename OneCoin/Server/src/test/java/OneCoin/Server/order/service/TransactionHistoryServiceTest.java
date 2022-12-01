@@ -14,15 +14,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -30,8 +34,6 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest
 @MockBean(OkHttpClient.class)
 public class TransactionHistoryServiceTest {
-    private final int page = 0;
-    private final int size = 15;
     @Autowired
     private TransactionHistoryService transactionHistoryService;
     @Autowired
@@ -42,6 +44,8 @@ public class TransactionHistoryServiceTest {
     private CoinService coinService;
     @SpyBean
     private TransactionHistoryRepository transactionHistoryRepository;
+
+    PageRequest pageRequest = PageRequest.of(0, 15, Sort.by("createdAt").descending());
 
     @BeforeEach
     void saveTransactionHistory() {
@@ -62,7 +66,7 @@ public class TransactionHistoryServiceTest {
         given(coinService.findCoin(anyString())).willReturn(StubData.MockCoin.getMockEntity(1L, code, "비트코인"));
 
         // when
-        Page<TransactionHistory> transactionHistoryPage = transactionHistoryService.findTransactionHistory(period, type, code, page, size);
+        Page<TransactionHistory> transactionHistoryPage = transactionHistoryService.findTransactionHistory(period, type, code, pageRequest);
         List<TransactionHistory> transactionHistories = transactionHistoryPage.getContent();
 
         // then
@@ -76,7 +80,7 @@ public class TransactionHistoryServiceTest {
         String period = "a";
 
         // when then
-        assertThrows(BusinessLogicException.class, () -> transactionHistoryService.findTransactionHistory(period, "BID", "KRW-BTC", page, size));
+        assertThrows(BusinessLogicException.class, () -> transactionHistoryService.findTransactionHistory(period, "BID", "KRW-BTC", pageRequest));
     }
 
     @Test
@@ -86,6 +90,13 @@ public class TransactionHistoryServiceTest {
         String type = "ABC";
 
         // when then
-        assertThrows(BusinessLogicException.class, () -> transactionHistoryService.findTransactionHistory("w", type, "KRW-BTC", page, size));
+        assertThrows(BusinessLogicException.class, () -> transactionHistoryService.findTransactionHistory("w", type, "KRW-BTC", pageRequest));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"ALL", "BID", "ASK", "DEPOSIT", "SWAP"})
+    @DisplayName("지정한 타입만 메서드를 에러없이 실행한다")
+    void typeTest(String type) {
+        assertDoesNotThrow(() -> transactionHistoryService.findTransactionHistory("w", type, "KRW-BTC", pageRequest));
     }
 }
