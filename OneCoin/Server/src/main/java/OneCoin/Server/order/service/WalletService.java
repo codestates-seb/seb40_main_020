@@ -99,7 +99,7 @@ public class WalletService {
     }
 
     public Wallet findMyWallet(long userId, String code) {
-        return walletRepository.findByUserIdAndCode(userId, code);
+        return walletRepository.findByUserIdAndCode(userId, code).orElse(null);
     }
 
     public List<Wallet> findWallets() {

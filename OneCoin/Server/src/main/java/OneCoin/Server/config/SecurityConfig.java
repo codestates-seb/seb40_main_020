@@ -71,6 +71,8 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
                         .antMatchers(HttpMethod.GET, "/api/users/**").hasAnyRole("USER", "ADMIN")
                         .antMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("USER")
+                        .antMatchers(HttpMethod.POST, "/admin/**").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.DELETE, "/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll()                // 일단 허용
                 )
                 .oauth2Login()
