@@ -1,4 +1,4 @@
-package OneCoin.Server.chat.fullTest;
+package OneCoin.Server.chat.controller;
 
 import OneCoin.Server.chat.dto.ChatRequestDto;
 import OneCoin.Server.chat.dto.ChatResponseDto;
@@ -19,14 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.concurrent.*;
 

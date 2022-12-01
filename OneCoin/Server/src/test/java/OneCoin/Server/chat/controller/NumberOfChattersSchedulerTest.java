@@ -1,14 +1,13 @@
-package OneCoin.Server.chat.service;
+package OneCoin.Server.chat.controller;
 
+import OneCoin.Server.chat.controller.NumberOfChattersScheduler;
 import OneCoin.Server.chat.dto.ChatResponseDto;
 import OneCoin.Server.chat.entity.ChatRoom;
-import OneCoin.Server.chat.fullTest.ChattingFullTest;
 import OneCoin.Server.chat.testUtil.StompFrameHandlerImpl;
 import OneCoin.Server.chat.testUtil.WebSocketTestUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
