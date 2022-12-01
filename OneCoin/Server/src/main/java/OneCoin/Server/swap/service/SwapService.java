@@ -15,7 +15,7 @@ public class SwapService {
     private final SwapRepository swapRepository;
     private final TickerRepository tickerRepository;
     private final CoinService coinService;
-    private final BigDecimal swapCommission = new BigDecimal("0.00025");
+    private final BigDecimal swapCommission = new BigDecimal("0.99975");    // 1 - 0.00025
 
     public SwapService(SwapRepository swapRepository, TickerRepository tickerRepository, CoinService coinService) {
         this.swapRepository = swapRepository;
@@ -34,6 +34,6 @@ public class SwapService {
         BigDecimal givenCoinPrice = new BigDecimal(tickerRepository.findTickerByCode(givenCoinCode).getTradePrice());
         BigDecimal takenCoinPrice = new BigDecimal(tickerRepository.findTickerByCode(takenCoinCode).getTradePrice());
 
-        return givenCoinPrice.divide(takenCoinPrice, 15, RoundingMode.HALF_UP).multiply(amount);
+        return givenCoinPrice.divide(takenCoinPrice, 15, RoundingMode.HALF_UP).multiply(amount.multiply(swapCommission));
     }
 }
