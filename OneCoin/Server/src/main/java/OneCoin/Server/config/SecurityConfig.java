@@ -64,6 +64,7 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.POST, "/api/order/**").hasRole("USER")
                         .antMatchers(HttpMethod.GET, "/ws/chat/**").permitAll()
                         .antMatchers(HttpMethod.GET, "/api/users/duplicate-display-name").permitAll()
+                        .antMatchers(HttpMethod.GET, "/api/users/find-password").permitAll()
                         .antMatchers(HttpMethod.GET, "/api/users/duplicate-email").permitAll()
                         .antMatchers(HttpMethod.GET, "/api/users/authentication-email/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/api/users").permitAll()
