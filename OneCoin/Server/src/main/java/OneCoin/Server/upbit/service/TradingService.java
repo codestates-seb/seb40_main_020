@@ -8,7 +8,6 @@ import OneCoin.Server.order.service.WalletService;
 import OneCoin.Server.upbit.entity.Trade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -22,7 +21,6 @@ public class TradingService {
     private final WalletService walletService;
 
     @EventListener
-    @Async("upbitExecutor")
     public void completeOrders(Trade trade) {
         BigDecimal tradePrice = new BigDecimal(trade.getTradePrice());
         BigDecimal tradeVolume = new BigDecimal(trade.getTradeVolume());

@@ -32,6 +32,7 @@ public class UpbitWebSocketListener extends WebSocketListener {
         this.parameter = jsonUtil.toJson(
                 List.of(new Ticket("OneCoinProject"),
                         new Type(SiseType.TICKER.getType(), codes),
+                        new Type(SiseType.TRADE.getType(), codes),
                         new Type(SiseType.ORDER_BOOK.getType(), codes))
         );
     }
