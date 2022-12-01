@@ -25,6 +25,7 @@ public class StubData {
                     .amount(new BigDecimal("10"))
                     .completedAmount(BigDecimal.ZERO)
                     .orderType("BID")
+                    .orderTime(LocalDateTime.now())
                     .code("KRW-BTC")
                     .userId(1L)
                     .build();
@@ -39,6 +40,7 @@ public class StubData {
                     .amount(new BigDecimal(amount))
                     .completedAmount(BigDecimal.ZERO)
                     .orderType(orderType)
+                    .orderTime(LocalDateTime.now())
                     .code(code)
                     .userId(userId)
                     .build();
