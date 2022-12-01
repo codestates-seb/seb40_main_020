@@ -65,6 +65,7 @@ public class UserController {
             @PathVariable("user-id") @Positive long userId,
             @Valid @RequestBody UserDto.Patch requestBody,
             @AuthenticationPrincipal Map<String, Object> userInfo) {
+        userService.isValidId(userId, Long.parseLong(userInfo.get("id").toString()));
 
         User user = userMapper.userPatchToUser(requestBody);
         user.setUserId(userId);

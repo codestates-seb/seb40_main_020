@@ -187,6 +187,7 @@ public class UserService {
 
             user.setUserRole(Role.ROLE_USER);
 
+            authService.deleteAuth(authId);
             userRepository.save(user);
         }
 
@@ -205,11 +206,9 @@ public class UserService {
 
         // password 값 비교
         if (password.equals(dbPassword)) {
-            // 맟으면 계정 활성화
             User user = findUser(auth.getUser().getUserId());
 
-            user.setUserRole(Role.ROLE_USER);
-
+            authService.deleteAuth(authId);
             return userRepository.save(user);
         }
         return null;
@@ -416,5 +415,15 @@ public class UserService {
 
         return map;
     }
-    
+
+    /**
+     *  토큰에 있는 id랑 주소에 있는 id랑 동일한지(유효한 요청인지) 체크
+     */
+    public void isValidId(Long pathId, Long tokenId) {
+        // 토큰 값이랑 userId 동일하지 않으면 인증 에러 발생
+        if (pathId != tokenId) {
+            throw new BusinessLogicException(ExceptionCode.NOT_VALID_AUTHENTICATION);
+        }
+    }
+
 }
