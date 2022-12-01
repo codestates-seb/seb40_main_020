@@ -52,7 +52,7 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    private void checkUserCoinAmount(Wallet wallet, BigDecimal orderAmount, BigDecimal prevOrderAmount) {
+    public void checkUserCoinAmount(Wallet wallet, BigDecimal orderAmount, BigDecimal prevOrderAmount) {
         BigDecimal myWalletAmount = wallet.getAmount();
         BigDecimal sellableAmount = myWalletAmount.subtract(prevOrderAmount);
         int comparison = sellableAmount.compareTo(orderAmount);

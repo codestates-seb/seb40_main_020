@@ -31,6 +31,8 @@ public class SwapDto {
     public static class ExchangeRate {
         private String takenAmount;
         private String commission;
+        private String givenCoinPrice;
+        private String takenCoinPrice;
     }
 
     @Getter

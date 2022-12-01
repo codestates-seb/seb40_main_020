@@ -1,6 +1,7 @@
 package OneCoin.Server.swap.mapper;
 
 import OneCoin.Server.swap.dto.SwapDto;
+import OneCoin.Server.swap.entity.ExchangeRate;
 import OneCoin.Server.swap.entity.Swap;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,5 +18,6 @@ public interface SwapMapper {
     @Mapping(source = "givenCoin.code", target = "givenCoin")
     @Mapping(source = "takenCoin.code", target = "takenCoin")
     SwapDto.Response swapToSwapResponseDto(Swap swap);
+    SwapDto.ExchangeRate exchangeRateToSwapExchangeRate(ExchangeRate exchangeRate);
     List<SwapDto.Response> swapsToSwapResponses(List<Swap> swaps);
 }
