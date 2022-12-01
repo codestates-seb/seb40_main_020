@@ -63,7 +63,10 @@ public class UserController {
     @PatchMapping("/{user-id}")
     public ResponseEntity patchUser(
             @PathVariable("user-id") @Positive long userId,
-            @Valid @RequestBody UserDto.Patch requestBody) {
+            @Valid @RequestBody UserDto.Patch requestBody,
+            @AuthenticationPrincipal Map<String, Object> userInfo) {
+        userService.isValidId(userId, Long.parseLong(userInfo.get("id").toString()));
+
         User user = userMapper.userPatchToUser(requestBody);
         user.setUserId(userId);
 
@@ -134,12 +137,10 @@ public class UserController {
     }
 
     // 비밀번호 변경 이메일 인증 확인
-    @GetMapping("/authentication-email/password/{user-id}/{password}")
-    public ResponseEntity authenticationEmailByPassword(@PathVariable("user-id") @Positive long userId,
+    @GetMapping("/authentication-email/password/{auth-id}/{password}")
+    public ResponseEntity authenticationEmailByPassword(@PathVariable("auth-id") @Positive long authId,
                                                         @PathVariable("password") String password) throws URISyntaxException {
-        userService.confirmEmailByPassword(userId, password);
-
-        User user = userService.findUser(userId);
+        User user = userService.confirmEmailByPassword(authId, password);
 
         String accessToken = userService.delegateAccessToken(user, jwtTokenizer);
         String refreshToken = userService.delegateRefreshToken(user, jwtTokenizer);

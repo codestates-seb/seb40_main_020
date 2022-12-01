@@ -28,7 +28,8 @@ public enum ExceptionCode {
     NO_AUTHENTICATION_EMAIL(404, "Unauthenticated email"),
     AUTH_NOT_FOUND(404, "Auth data not found"),
     OCCURRED_NEGATIVE_AMOUNT(500, "Negative amount has occurred."),
-    UNDEFINED_PLATFORM(404, "Platform not found");
+    UNDEFINED_PLATFORM(404, "Platform not found"),
+    NOT_VALID_AUTHENTICATION(404, "Unvalid authentication");
 
     private final int code;
     private final String description;

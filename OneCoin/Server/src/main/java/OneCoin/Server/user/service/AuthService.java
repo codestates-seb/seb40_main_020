@@ -76,4 +76,14 @@ public class AuthService {
 
         return sb.toString();
     }
+
+    /**
+     * <pre>
+     *     Auth 삭제
+     * </pre>
+     */
+    public void deleteAuth(Long authId) {
+        Auth auth = findVerifiedAuth(authId);
+        authRepository.delete(auth);
+    }
 }
