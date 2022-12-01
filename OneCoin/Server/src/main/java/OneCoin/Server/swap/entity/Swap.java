@@ -38,4 +38,15 @@ public class Swap extends CreatedOnlyAuditable {
 
     @Column(nullable = false, updatable = false, scale = 15, precision = 30)
     private BigDecimal takenAmount;
+
+    // 수수료, 스왑 시 풀에 제공하는 토큰의 양(실제 거래량 = 스왑 요청량 - 수수료)
+    @Column(nullable = false, updatable = false, scale = 15, precision = 30)
+    private BigDecimal commission;
+
+    // 스왑 당시 가격
+    @Column(nullable = false, updatable = false, scale = 15, precision = 30)
+    private BigDecimal givenCoinPrice;
+
+    @Column(nullable = false, updatable = false, scale = 15, precision = 30)
+    private BigDecimal takenCoinPrice;
 }
