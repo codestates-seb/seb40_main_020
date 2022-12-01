@@ -10,8 +10,6 @@ import OneCoin.Server.user.entity.Platform;
 import OneCoin.Server.user.entity.Role;
 import OneCoin.Server.user.entity.User;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -72,11 +70,11 @@ public class StubData {
     }
 
     public static class MockCoin {
-        public static Coin getMockEntity(long coinId, String code, String coinName) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-            Constructor<Coin> constructor = Coin.class.getDeclaredConstructor(Long.class, String.class, String.class);
-            constructor.setAccessible(true);
-            Coin coin = constructor.newInstance(coinId, code, coinName);
-
+        public static Coin getMockEntity(long coinId, String code, String coinName) {
+            Coin coin = new Coin();
+            coin.setCoinId(coinId);
+            coin.setCode(code);
+            coin.setCoinName(coinName);
             return coin;
         }
     }
@@ -157,7 +155,7 @@ public class StubData {
     }
 
     public static class MockHistory {
-        public static TransactionHistory getMockEntity() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        public static TransactionHistory getMockEntity() {
             return TransactionHistory.builder()
                     .transactionType(TransactionType.BID)
                     .amount(new BigDecimal("0.01"))

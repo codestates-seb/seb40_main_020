@@ -20,7 +20,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.domain.Page;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,7 +44,7 @@ public class TransactionHistoryServiceTest {
     private TransactionHistoryRepository transactionHistoryRepository;
 
     @BeforeEach
-    void saveTransactionHistory() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    void saveTransactionHistory() {
         userRepository.save(StubData.MockUser.getMockEntity());
         transactionHistoryRepository.save(StubData.MockHistory.getMockEntity());
     }
@@ -57,7 +56,7 @@ public class TransactionHistoryServiceTest {
 
     @ParameterizedTest
     @CsvSource(value = {"w:BID:KRW-BTC:1", "m:ASK::0", "3m:ALL:KRW-BTC:1", "6m:ALL::1"}, delimiter = ':')
-    void searchTest(String period, String type, String code, int expectSize) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    void searchTest(String period, String type, String code, int expectSize) {
         // given
         given(loggedInUserInfoUtils.extractUser()).willReturn(StubData.MockUser.getMockEntity());
         given(coinService.findCoin(anyString())).willReturn(StubData.MockCoin.getMockEntity(1L, code, "비트코인"));
