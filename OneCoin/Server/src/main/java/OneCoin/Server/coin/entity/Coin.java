@@ -11,7 +11,6 @@ import javax.persistence.*;
 public class Coin {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long coinId;
 
     @Column(nullable = false, unique = true, length = 20)
