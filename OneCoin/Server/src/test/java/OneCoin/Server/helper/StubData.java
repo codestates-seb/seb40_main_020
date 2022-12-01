@@ -3,14 +3,15 @@ package OneCoin.Server.helper;
 import OneCoin.Server.coin.entity.Coin;
 import OneCoin.Server.order.dto.OrderDto;
 import OneCoin.Server.order.entity.Order;
+import OneCoin.Server.order.entity.TransactionHistory;
 import OneCoin.Server.order.entity.Wallet;
+import OneCoin.Server.order.entity.enums.TransactionType;
 import OneCoin.Server.user.entity.Platform;
 import OneCoin.Server.user.entity.Role;
 import OneCoin.Server.user.entity.User;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class StubData {
@@ -69,11 +70,11 @@ public class StubData {
     }
 
     public static class MockCoin {
-        public static Coin getMockEntity(long coinId, String code, String coinName) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-            Constructor<Coin> constructor = Coin.class.getDeclaredConstructor(Long.class, String.class, String.class);
-            constructor.setAccessible(true);
-            Coin coin = constructor.newInstance(coinId, code, coinName);
-
+        public static Coin getMockEntity(long coinId, String code, String coinName) {
+            Coin coin = new Coin();
+            coin.setCoinId(coinId);
+            coin.setCode(code);
+            coin.setCoinName(coinName);
             return coin;
         }
     }
@@ -149,6 +150,22 @@ public class StubData {
                     .email("cococo@google.com")
                     .password("1q2w3e4r!@")
                     .platform(Platform.KAKAO)
+                    .build();
+        }
+    }
+
+    public static class MockHistory {
+        public static TransactionHistory getMockEntity() {
+            return TransactionHistory.builder()
+                    .transactionType(TransactionType.BID)
+                    .amount(new BigDecimal("0.01"))
+                    .price(new BigDecimal("333333"))
+                    .totalAmount(new BigDecimal("12345"))
+                    .commission(32.2)
+                    .settledAmount(new BigDecimal("151525252"))
+                    .orderTime(LocalDateTime.now())
+                    .user(MockUser.getMockEntity())
+                    .coin(MockCoin.getMockEntity(1L, "KRW-BTC", "비트코인"))
                     .build();
         }
     }

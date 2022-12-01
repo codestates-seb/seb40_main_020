@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +35,7 @@ public class TransactionHistoryService {
     private final LoggedInUserInfoUtils loggedInUserInfoUtils;
     private final String defaultType = "ALL";
 
-    // @Async
+    @Async("upbitExecutor")
     public void createTransactionHistory(Order order) {
         User user = userService.findVerifiedUser(order.getUserId());
         Coin coin = coinService.findCoin(order.getCode());
@@ -49,15 +50,15 @@ public class TransactionHistoryService {
         LocalDateTime searchPeriod = getSearchPeriod(period);
         User user = loggedInUserInfoUtils.extractUser();
 
-        if (code.isEmpty() && !type.equals(defaultType)) { // 타입 지정
+        if (code==null && !type.equals(defaultType)) { // 타입 지정
             TransactionType transactionType = getTransactionType(type);
             return transactionHistoryRepository.findByUserAndTransactionTypeAndCreatedAtAfter(user, transactionType, searchPeriod, pageRequest);
         }
-        if (!code.isEmpty() && type.equals(defaultType)) { // 코인 지정
+        if (code!=null && type.equals(defaultType)) { // 코인 지정
             Coin coin = coinService.findCoin(code);
             return transactionHistoryRepository.findByUserAndCoinAndCreatedAtAfter(user, coin, searchPeriod, pageRequest);
         }
-        if (!code.isEmpty() && !type.equals(defaultType)) { // 타입, 코인 지정
+        if (code!=null) { // 타입, 코인 지정
             TransactionType transactionType = getTransactionType(type);
             Coin coin = coinService.findCoin(code);
             return transactionHistoryRepository.findByUserAndTransactionTypeAndCoinAndCreatedAtAfter(user, transactionType, coin, searchPeriod, pageRequest);
@@ -100,13 +101,4 @@ public class TransactionHistoryService {
         Coin coin = coinService.findCoin(code);
         return transactionHistoryRepository.findTop10ByUserAndCoinOrderByCreatedAtDesc(user, coin);
     }
-
-    public void sumAllBids(Long userId) {
-        transactionHistoryRepository.findAll();
-    }
-
-    public void sumAllAsks(Long userId) {
-
-    }
-
 }

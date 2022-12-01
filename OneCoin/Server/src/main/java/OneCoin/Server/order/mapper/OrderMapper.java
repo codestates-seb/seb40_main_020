@@ -5,6 +5,7 @@ import OneCoin.Server.order.entity.Order;
 import org.mapstruct.Mapper;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -21,6 +22,7 @@ public interface OrderMapper {
                 .stopLimit(new BigDecimal(postDto.getStopLimit()))
                 .amount(new BigDecimal(postDto.getAmount()))
                 .completedAmount(BigDecimal.ZERO)
+                .orderTime(LocalDateTime.now())
                 .orderType(postDto.getOrderType())
                 .build();
     }
