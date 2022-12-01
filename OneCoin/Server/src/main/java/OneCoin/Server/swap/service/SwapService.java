@@ -15,6 +15,7 @@ public class SwapService {
     private final SwapRepository swapRepository;
     private final TickerRepository tickerRepository;
     private final CoinService coinService;
+    private final BigDecimal swapCommission = new BigDecimal("0.00025");
 
     public SwapService(SwapRepository swapRepository, TickerRepository tickerRepository, CoinService coinService) {
         this.swapRepository = swapRepository;
