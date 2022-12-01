@@ -21,7 +21,16 @@ public class SwapDto {
         private String takenCoin;
 
         @PositiveOrZero
-        private Long givenAmount;
+        private String givenAmount;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ExchangeRate {
+        private String takenAmount;
+        private String commission;
     }
 
     @Getter
@@ -33,16 +42,16 @@ public class SwapDto {
 
         private String givenCoin;
 
-        private Long givenAmount;
+        private String givenAmount;
 
         private String takenCoin;
 
-        private Long takenAmount;
+        private String takenAmount;
 
-        private Long commission;
+        private String commission;
 
-        private Long givenCoinPrice;
+        private String givenCoinPrice;
 
-        private Long takenCoinPrice;
+        private String takenCoinPrice;
     }
 }
