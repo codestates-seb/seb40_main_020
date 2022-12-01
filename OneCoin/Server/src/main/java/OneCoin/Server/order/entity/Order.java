@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class Order {
 
     @Id
-    private Long orderId;
+    private Integer orderId;
 
     @Indexed
     private BigDecimal limit;
