@@ -199,7 +199,7 @@ public class UserService {
      *  </pre>
      */
     @Transactional
-    public void confirmEmailByPassword(long authId, String password) {
+    public User confirmEmailByPassword(long authId, String password) {
         Auth auth = authService.findVerifiedAuth(authId);
         String dbPassword = auth.getAuthPassword();
 
@@ -210,9 +210,9 @@ public class UserService {
 
             user.setUserRole(Role.ROLE_USER);
 
-            userRepository.save(user);
+            return userRepository.save(user);
         }
-
+        return null;
     }
 
     /**
