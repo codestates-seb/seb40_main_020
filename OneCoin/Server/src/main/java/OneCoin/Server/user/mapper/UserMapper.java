@@ -60,8 +60,8 @@ public interface UserMapper {
         User user = new User();
 
         user.setDisplayName(requestBody.getDisplayName());
-        user.setEmail(requestBody.getEmail());
-        user.setPassword(requestBody.getPassword());
+        user.setEmail("");
+        user.setPassword("");
         user.setPlatform(Platform.ORIGIN);
         user.setUserRole(Role.ROLE_USER);
 
