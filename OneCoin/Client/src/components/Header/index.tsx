@@ -19,7 +19,6 @@ function Header() {
 		} else {
 			setIsUseLogin(true);
 		}
-		console.log(token);
 	};
 
 	useEffect(() => {

@@ -15,6 +15,7 @@ import {
 	MentSpan,
 	KakaoButton,
 } from './style';
+import { userLogin } from 'api/user';
 
 type EnterForm = {
 	email: string;
@@ -26,36 +27,41 @@ function Login() {
 	const {
 		register,
 		handleSubmit,
-		watch,
 		formState: { errors },
 	} = useForm<EnterForm>({
 		mode: 'onChange',
 	});
-	console.log(watch());
-	const onLogin = async (data: EnterForm) => {
-		console.log();
 
-		try {
-			const res = await axios.post(
-				'http://13.209.194.104:8080/api/auth/login',
-				{
-					email: data.email,
-					password: data.password,
-				}
-			);
-			if (res.status === 200) {
-				if (res.headers.authorization && res.headers.refresh) {
-					sessionStorage.setItem('login-token', res.headers.authorization);
-					sessionStorage.setItem('login-refresh', res.headers.refresh);
+	const onLogin = async (data: EnterForm) => {
+		userLogin
+			.login(data)
+			.then((res) => {
+				if (res.authorization && res.refresh) {
+					sessionStorage.setItem('login-token', res.authorization);
+					sessionStorage.setItem('login-refresh', res.refresh);
 					navigate('/');
 				}
-			}
-		} catch (err) {
-			// setError(err.response.data.message);
-			setTimeout(() => {
-				// setError('');
-			}, 2000);
-		}
+			})
+			.catch(() => {
+				setTimeout(() => {
+					alert('아이디, 비밀번호를 확인해주세요.');
+				}, 1000);
+			});
+	};
+
+	const onKakaoLogin = async () => {
+		window.location.assign(
+			`${process.env.REACT_APP_SERVER_URL}/oauth2/authorization/kakao`
+		);
+		// try {
+		// 	const res = await axios.post(
+		// 		`${process.env.REACT_APP_SERVER_URL}/oauth2/authorization/kakao`
+		// 	);
+		// 	console.log(res);
+		// 	return res;
+		// } catch (err) {
+		// 	console.log(err);
+		// }
 	};
 
 	return (
@@ -117,7 +123,7 @@ function Login() {
 					</MentDiv>
 				</Form>
 				<InputContainer>
-					<KakaoButton>
+					<KakaoButton onClick={onKakaoLogin}>
 						<img
 							src="//k.kakaocdn.net/14/dn/btqCn0WEmI3/nijroPfbpCa4at5EIsjyf0/o.jpg"
 							width="242"

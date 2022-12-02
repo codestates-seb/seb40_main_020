@@ -1,15 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from 'components/Layout';
-
 import { Wrapper } from './style';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { isLogin } from '../../store';
 
 const MyPage = () => {
+	const navigate = useNavigate();
+	const [isUseLogin, setIsUseLogin] = useRecoilState(isLogin);
+	const [displayName, setDisplayName] = useState('');
+	const [password, setPassword] = useState('');
+	const onClickDelete = async () => {
+		try {
+			await axios
+				.delete(`${process.env.REACT_APP_SERVER_URL}/api/users`, {
+					headers: { Authorization: sessionStorage.getItem('login-token') },
+				})
+				.then((res) => console.log(res));
+			sessionStorage.removeItem('login-token');
+			sessionStorage.removeItem('login-refresh');
+			setIsUseLogin(false);
+			navigate('/');
+		} catch (err) {
+			console.log('안돼요');
+		}
+	};
+	const changingInformation = async () => {
+		try {
+			await axios.patch(`${process.env.REACT_APP_SERVER_URL}/api/users/1`);
+		} catch (err) {
+			console.log(err);
+		}
+	};
 	return (
 		<Layout isLeftSidebar={false}>
 			<Wrapper>
 				<ul className="side-menu">
-					<li>회원정보 수정</li>
-					<li>회원탈퇴</li>
+					<li>닉네임 변경</li>
+					<li>비밀번호 변경</li>
+					<li onClick={onClickDelete}>회원탈퇴</li>
 				</ul>
 				<div className="content-wrapper">
 					<div className="profile-box">
@@ -27,7 +57,7 @@ const MyPage = () => {
 						<span>비밀번호 변경</span>
 						<input type="password" placeholder="비밀번호" />
 					</div>
-					<button>수정하기</button>
+					<button onClick={changingInformation}>수정하기</button>
 				</div>
 			</Wrapper>
 		</Layout>
