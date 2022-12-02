@@ -30,7 +30,8 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
-    private final String baseURL = "localhost:3000";
+//    private final String baseURL = "localhost:3000";
+    private final String baseURL = "projectonecoin.s3-website.ap-northeast-2.amazonaws.com";
     private final JwtTokenizer jwtTokenizer;
 
     public UserController(UserService userService, UserMapper userMapper, JwtTokenizer jwtTokenizer) {
