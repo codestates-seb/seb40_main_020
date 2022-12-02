@@ -5,6 +5,7 @@ import OneCoin.Server.order.dto.TransactionHistoryDto;
 import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.entity.TransactionHistory;
 import OneCoin.Server.order.entity.enums.TransactionType;
+import OneCoin.Server.swap.entity.Swap;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.utils.CalculationUtil;
 import org.mapstruct.Mapper;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -47,6 +49,20 @@ public abstract class TransactionHistoryMapper {
                 .orderTime(order.getOrderTime())
                 .user(user)
                 .coin(coin)
+                .build();
+    }
+
+    public TransactionHistory swapToTransactionHistory(Swap swap) {
+        return TransactionHistory.builder()
+                .user(swap.getUser())
+                .coin(swap.getGivenCoin())
+                .transactionType(TransactionType.SWAP)
+                .amount(swap.getGivenAmount())
+                .price(swap.getGivenCoinPrice())
+                .totalAmount(swap.getGivenAmount().multiply(swap.getGivenCoinPrice()))
+                .commission(Double.parseDouble(swap.getCommission().toString()))
+                .settledAmount(swap.getGivenAmount().subtract(swap.getCommission()))
+                .orderTime(LocalDateTime.now())
                 .build();
     }
 

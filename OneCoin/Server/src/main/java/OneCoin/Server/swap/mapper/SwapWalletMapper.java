@@ -5,8 +5,6 @@ import OneCoin.Server.swap.entity.Swap;
 import OneCoin.Server.utils.CalculationUtil;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-
 @Component
 public class SwapWalletMapper {
     public final CalculationUtil calculationUtil;
@@ -16,7 +14,6 @@ public class SwapWalletMapper {
     }
 
     public Wallet swapToGivenWallet(Swap swap) {
-        BigDecimal averagePrice = calculationUtil.calculateAvgPrice(BigDecimal.ZERO, BigDecimal.ZERO, order.getLimit(), completedAmount);
 
         return Wallet.builder()
                 .userId(swap.getUser().getUserId())
