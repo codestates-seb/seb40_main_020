@@ -25,12 +25,12 @@ function Quote({
 				className={rate > 0 ? 'price rise' : +rate < 0 ? 'price fall' : 'price'}
 			>
 				<div>{Number(price).toLocaleString()}</div>
-				<div className="rate today-range">{changeRate}</div>
+				<div className="rate">{changeRate}</div>
 			</div>
 			<div
 				className={rate > 0 ? 'size rise' : +rate < 0 ? 'size fall' : 'size'}
 			>
-				{Number(size).toFixed(2)}
+				{Number(size).toFixed(4)}
 			</div>
 		</QuoteComponent>
 	);

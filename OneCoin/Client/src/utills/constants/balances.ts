@@ -18,7 +18,7 @@ export const BALANCES_TBODY = {
 	},
 };
 
-export const DEPOSIT_THEAD = ['금액', '기타'];
+export const DEPOSIT_THEAD = ['구분', '금액'];
 
 export const DEPOSIT_TBODY = {
 	data: [

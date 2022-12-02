@@ -20,6 +20,7 @@ export const BALANCE_THEAD = [
 	'매수평균가',
 	'매수금액',
 	'평가금액',
+	'평가손익(KRW)',
 	'평가손익(%)',
 ];
 
@@ -47,7 +48,6 @@ export const BALANCE_TBODY = {
 export const HISTORY_THEAD = [
 	'체결시간',
 	'코인',
-	'마켓',
 	'종류',
 	'거래수량',
 	'거래단가',
@@ -101,7 +101,6 @@ export const WAIT_ORDERS_THEAD = [
 	'시간',
 	'마켓명',
 	'거래종류',
-	'감시가격',
 	'주문가격',
 	'주문수량',
 	'미체결량',

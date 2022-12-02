@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Chart from './components/Chart';
-import { useRecoilValue } from 'recoil';
-import { coinDataState } from '../../store';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { coinDataState, coinInfoState } from '../../store';
 import QuoteList from './components/QuoteList';
 import { ExchangeComponent } from './style';
 import { GoTriangleUp, GoTriangleDown } from 'react-icons/go';
@@ -13,13 +12,8 @@ import ChartList from './components/ChartList';
 import { CoinInfo, CoinDataType } from '../../utills/types';
 
 function Exchange() {
-	const COIN_INFO_INITIAL_DATA = {
-		coin: '비트코인',
-		code: 'KRW-BTC',
-		symbol: 'BTCKRW',
-	};
 	const coinData = useRecoilValue(coinDataState);
-	const [coinInfo, setCoinInfo] = useState<CoinInfo>(COIN_INFO_INITIAL_DATA);
+	const [coinInfo, setCoinInfo] = useRecoilState(coinInfoState);
 	const [coin, setCoin] = useState<CoinDataType>();
 	const coinInfoHandler = (item: CoinInfo) => setCoinInfo(item);
 	const [inputPrice, setInputPrice] = useState<number>(0);
@@ -46,7 +40,6 @@ function Exchange() {
 	const changeRate = coin?.ticker?.change_rate as string;
 	const changePrice = coin?.ticker?.change_price as string;
 	const change = coin?.ticker?.change as string;
-	console.log(coinData);
 	return (
 		<Layout isLeftSidebar={false} isLeftMargin={false}>
 			<ExchangeComponent
@@ -61,7 +54,8 @@ function Exchange() {
 						<div className="today-price">
 							<span>전일대비</span>
 							<span className="today-range">
-								{(Number(changeRate) * 100).toFixed(2)}
+								{change === 'FALL' ? '-' : ''}
+								{(Number(changeRate) * 100).toFixed(2) + '%'}
 							</span>
 							<span>
 								{change === 'RISE' ? (
@@ -73,6 +67,7 @@ function Exchange() {
 								)}
 							</span>
 							<span className="today-range">
+								{change === 'FALL' ? '-' : ''}
 								{Number(changePrice).toLocaleString()}
 							</span>
 						</div>
@@ -86,11 +81,7 @@ function Exchange() {
 					tradePrice={coin?.ticker?.trade_price}
 				/>
 
-				<Order
-					inputPrice={inputPrice}
-					setInputPrice={setInputPrice}
-					coinInfo={coinInfo}
-				/>
+				<Order inputPrice={inputPrice} setInputPrice={setInputPrice} />
 				<HoldList />
 				<div className="aside-wrapper">
 					<Aside coinInfoHandler={coinInfoHandler} isLeftSidebar={true} />

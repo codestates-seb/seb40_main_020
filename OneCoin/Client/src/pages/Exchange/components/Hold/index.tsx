@@ -6,87 +6,107 @@ import {
 	completeOrdersTitleMenu,
 	nonTradingOdersTitleMenu,
 } from '../../../../utills/constants/exchange';
+import { MyCoins, CompleteOrders } from '../../../../utills/types';
+
 import {
-	MyCoins,
-	CompleteOrders,
-	NonTradingOders,
-} from '../../../../utills/types';
-const MY_COIN_DATA = [
-	{
-		code: 'KRW-BTC',
-		amount: '1.12345678',
-		priceEvaluation: '26962962',
-		averagePrice: '23000000',
-		change: 'FALL',
-		changeRate: '-0.57%',
-		changePrice: '129000',
-	},
-	{
-		code: 'KRW-ATOM',
-		amount: '1.12345678',
-		priceEvaluation: '26962962',
-		averagePrice: '23000000',
-		change: 'RISE',
-		changeRate: '+0.57%',
-		changePrice: '129000',
-	},
-];
-const NON_TRADING_ORDERS = [
-	{
-		code: 'KRW-BTC',
-		orderTime: '11.15 16:20',
-		orderType: '매수',
-		limit: '',
-		market: '',
-		stopLimit: '',
-		amount: '',
-	},
-	{
-		code: 'KRW-BTC',
-		orderTime: '11.15 16:20',
-		orderType: '매도',
-		limit: '',
-		market: '',
-		stopLimit: '',
-		amount: '',
-	},
-];
-const COMPLETE_ORDERS = [
-	{
-		code: 'KRW-BTC',
-		completedTime: '11.15 16:20',
-		orderType: '매수',
-		price: '',
-		amount: '',
-	},
-	{
-		code: 'KRW-BTC',
-		completedTime: '11.15 16:20',
-		orderType: '매도',
-		price: '',
-		amount: '',
-	},
-];
+	getNonTrading,
+	getWallet,
+	getCompleteTrade,
+	deleteOrder,
+} from '../../../../api/exchange';
+import {
+	proceedsCalculator,
+	rateCalculator,
+	dateCalc,
+} from '../../../../utills/calculate';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import {
+	coinDataState,
+	coinInfoState,
+	nonTradingOdersState,
+	myCoinsState,
+	isLogin,
+} from '../../../../store';
+
 interface Props {
 	title: string;
 }
 
 function Hold({ title }: Props) {
-	const [myCoins, setMyCoins] = useState<MyCoins[]>([]);
+	const login = useRecoilValue(isLogin);
+	const [myCoins, setMyCoins] = useRecoilState(myCoinsState);
 	const [completeOrders, setCompleteOrders] = useState<CompleteOrders[]>([]);
-	const [nonTradingOders, setNonTradingOrers] = useState<NonTradingOders[]>([]);
+	const [nonTradingOrders, setNonTradingOrders] =
+		useRecoilState(nonTradingOdersState);
 	const [complete, setComplete] = useState('non-trading');
+	const coinData = useRecoilValue(coinDataState);
+	const coinInfo = useRecoilValue(coinInfoState);
+	const getNonTradingData = async () => {
+		try {
+			const res = await getNonTrading();
+			setNonTradingOrders(res);
+		} catch (err) {
+			console.log(err);
+		}
+	};
+	const getCompleteOrderData = async (code: string) => {
+		try {
+			const res = await getCompleteTrade(code);
+			setCompleteOrders(res);
+		} catch (err) {
+			console.log(err);
+		}
+	};
+	const getWalletData = async () => {
+		try {
+			const res = await getWallet();
+			setMyCoins(res);
+		} catch (err) {
+			console.log(err);
+		}
+	};
+	const realTimeCalculator = (arr: MyCoins[]) => {
+		return [...arr].map((v) => {
+			const realTimePrice = coinData.filter((coin) => coin.code === v.code)[0]
+				?.ticker?.trade_price as string;
+			const avgPrice = Number(v.averagePrice as string);
+			const amount = Number(v.amount as string);
+			const proceeds = proceedsCalculator(+realTimePrice, avgPrice, amount);
+			const rate = rateCalculator(+realTimePrice, avgPrice);
+			const change = rate > 0 ? 'rise' : rate < 0 ? 'fall' : '';
+			const priceEvaluation = Math.round(+realTimePrice * amount);
+			const obj = {
+				...v,
+				change,
+				changePrice: proceeds ? proceeds.toLocaleString() : '0',
+				changeRate: rate + '%',
+				priceEvaluation: priceEvaluation
+					? priceEvaluation.toLocaleString()
+					: '0',
+			};
+			return obj;
+		});
+	};
 
 	useEffect(() => {
-		setTimeout(() => {
-			setMyCoins(MY_COIN_DATA);
-			setNonTradingOrers(NON_TRADING_ORDERS);
-			setCompleteOrders(COMPLETE_ORDERS);
-		}, 1);
+		if (login && myCoins) {
+			const newMyCoins = realTimeCalculator(myCoins);
+			setMyCoins(newMyCoins);
+		}
+	}, [coinData]);
+	useEffect(() => {
+		if (login) {
+			getNonTradingData();
+			getWalletData();
+			getCompleteOrderData(coinInfo.code);
+		}
 	}, []);
 
 	const drawTitle = (v: string, i: number) => <td key={i}>{v}</td>;
 	const radioClickHandler = (value: string) => setComplete(value);
+	const deleteOrderHandler = (orderId: number) => {
+		deleteOrder(orderId);
+	};
 	return (
 		<HoldComponent>
 			<table>
@@ -127,16 +147,28 @@ function Hold({ title }: Props) {
 
 				<tbody>
 					{title === '보유 코인'
-						? myCoins.map((v, i) => (
+						? myCoins &&
+						  myCoins.map((v, i) => (
 								<tr key={i} className="hold-item">
 									<td>{v.code as string}</td>
+
 									<td>
-										<div>{v.amount as string}</div>
-										<div>{`${v.priceEvaluation as string} KRW`}</div>
+										{Math.round(
+											Number(v.averagePrice as string)
+										).toLocaleString()}
 									</td>
-									<td>{v.averagePrice as string}</td>
+									<td>
+										<div>{Number(v.amount as string).toFixed(8)}</div>
+										<div
+											className={
+												(v.change as string) === 'fall' ? 'ask' : 'bid'
+											}
+										>
+											{v.priceEvaluation as string}
+										</div>
+									</td>
 									<td
-										className={(v.change as string) === 'FALL' ? 'ask' : 'bid'}
+										className={(v.change as string) === 'fall' ? 'ask' : 'bid'}
 									>
 										<div>{v.changeRate as string}</div>
 										<div>{v.changePrice as string}</div>
@@ -144,35 +176,45 @@ function Hold({ title }: Props) {
 								</tr>
 						  ))
 						: complete === 'non-trading'
-						? nonTradingOders.map((v, i) => (
+						? nonTradingOrders &&
+						  nonTradingOrders.map((v, i) => (
 								<tr key={i} className="hold-item">
 									<td>{v.code as string}</td>
+									<td>{dateCalc(v.orderTime as string)}</td>
 									<td
 										className={
-											(v.orderType as string) === '매수' ? 'bid' : 'ask'
+											(v.orderType as string) === 'BID' ? 'bid' : 'ask'
 										}
 									>
-										{v.orderType as string}
+										{(v.orderType as string) === 'BID' ? '매수' : '매도'}
 									</td>
-									<td>{v.limit as string}</td>
-									<td>{v.stopLimit as string}</td>
+									<td>{(+(v.limit as string)).toLocaleString()}</td>
 									<td>{v.amount as string}</td>
-									<td className={'cancel'}>취소</td>
+									<td
+										className={'cancel'}
+										onClick={() => {
+											console.log(v);
+											deleteOrderHandler(v.orderId);
+										}}
+									>
+										취소
+									</td>
 								</tr>
 						  ))
-						: completeOrders.map((v, i) => (
+						: completeOrders &&
+						  completeOrders.map((v, i) => (
 								<tr key={i}>
 									<td>{v.code as string}</td>
-									<td>{v.completedTime as string}</td>
+									<td>{dateCalc(v.completedTime)}</td>
 									<td
 										className={
-											(v.orderType as string) === '매수' ? 'bid' : 'ask'
+											(v.orderType as string) === 'BID' ? 'bid' : 'ask'
 										}
 									>
-										{v.orderType as string}
+										{(v.orderType as string) === 'BID' ? '매수' : '매도'}
 									</td>
-									<td>{v.price as string}</td>
-									<td>{v.amount as string}</td>
+									<td>{Number(v.price as string).toLocaleString()}</td>
+									<td>{Number(v.amount as string).toFixed(8)}</td>
 								</tr>
 						  ))}
 				</tbody>

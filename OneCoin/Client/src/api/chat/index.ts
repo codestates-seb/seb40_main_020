@@ -9,8 +9,8 @@ type SetRoomsInfo = React.Dispatch<React.SetStateAction<RoomsInfo[]>>;
 type SetUserId = React.Dispatch<React.SetStateAction<number | null>>;
 
 let client: StompJs.Client;
+let subscriptions: StompJs.Subscription;
 export const enterRoom = (
-	Authorization: string,
 	room: number,
 	addMsgData: AddMsg,
 	setRoomsInfo: SetRoomsInfo,
@@ -21,6 +21,7 @@ export const enterRoom = (
 	client.debug = function () {
 		return;
 	};
+	const Authorization = sessionStorage.getItem('login-token') as string;
 	const headers = { Authorization };
 	client.connect(headers, (frame) => {
 		const headers = frame?.headers;
@@ -46,17 +47,15 @@ const subscribeRoomsInfo = (setUsers: SetRoomsInfo) => {
 		setUsers(data);
 	});
 };
-
 const subscribeRoom = (room: number, addMsgData: AddMsg) => {
-	client.subscribe(`/topic/rooms/${room}`, (msg) => {
+	subscriptions = client.subscribe(`/topic/rooms/${room}`, (msg) => {
 		const newMsg = JSON.parse(msg.body);
-		console.log('얼마나');
 		addMsgData([newMsg]);
 	});
 };
 
 export const changeRoom = (room: number, ch: number, addMsgData: AddMsg) => {
-	client.unsubscribe(`/topic/rooms/${room}`);
+	subscriptions.unsubscribe();
 	subscribeRoom(ch, addMsgData);
 };
 

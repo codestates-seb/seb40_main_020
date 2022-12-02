@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+interface Props {
+	proceeds: number;
+}
+
 export const Wrapper = styled.div`
 	padding: 20px 30px;
 	display: grid;
@@ -7,12 +11,12 @@ export const Wrapper = styled.div`
 	border-bottom: 1px solid var(--borderColor);
 `;
 
-export const MenuList = styled.ul`
+export const MenuList = styled.ul<Props>`
 	display: flex;
 	:nth-child(4),
 	:last-child {
 		li:nth-child(2) {
-			color: var(--blue);
+			color: ${({ proceeds }) => (proceeds > 0 ? 'var(--red)' : 'var(--blue)')};
 		}
 	}
 `;

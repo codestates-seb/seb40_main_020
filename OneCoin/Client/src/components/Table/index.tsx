@@ -2,7 +2,7 @@ import React from 'react';
 import { Wrapper, Header, Body } from './style';
 
 interface bodyTypes {
-	id: number;
+	// id: number;
 	[key: string]: string | number;
 }
 interface TableProps {
@@ -26,12 +26,14 @@ const Table = ({ title, headerGroups, bodyDatas }: TableProps) => {
 				{bodyDatas.length > 0 ? (
 					bodyDatas.map((data, i) => {
 						const keys = Object.keys(data).filter((key) => key !== 'id');
-
 						return (
 							<tr key={i}>
-								{keys.map((key, i) => (
-									<td key={i}>{data[key]}</td>
-								))}
+								{keys.map((key, i) => {
+									if (key === 'change') {
+									} else {
+										return <td key={i}>{data[key]}</td>;
+									}
+								})}
 							</tr>
 						);
 					})
