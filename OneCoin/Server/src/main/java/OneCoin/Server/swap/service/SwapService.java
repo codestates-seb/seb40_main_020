@@ -13,6 +13,8 @@ import OneCoin.Server.swap.repository.SwapRepository;
 import OneCoin.Server.upbit.repository.TickerRepository;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -114,5 +116,14 @@ public class SwapService {
         transactionHistoryService.createTransactionHistoryBySwap(swap);
 
         return swapRepository.save(swap);
+    }
+
+    /**
+     * <pre>
+     *     스왑 정보 리스트 가져오기
+     * </pre>
+     */
+    public Page<Swap> findSwaps(int page, int size) {
+        return swapRepository.findAll(PageRequest.of(page, size));
     }
 }
