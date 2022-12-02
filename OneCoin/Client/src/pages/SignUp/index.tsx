@@ -30,6 +30,7 @@ function SignUp() {
 		register,
 		handleSubmit,
 		watch,
+
 		formState: { errors },
 	} = useForm<Inputs>({ mode: 'onChange' });
 
