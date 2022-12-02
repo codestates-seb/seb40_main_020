@@ -10,6 +10,7 @@ import OneCoin.Server.swap.repository.SwapRepository;
 import OneCoin.Server.upbit.repository.TickerRepository;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.service.UserService;
+import OneCoin.Server.utils.CalculationUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,16 +26,18 @@ public class SwapService {
     private final UserService userService;
     private final OrderService orderService;
     private final WalletService walletService;
+    private final CalculationUtil calculationUtil;
     private final BigDecimal swapCommission = new BigDecimal("0.0005");    // 수수료
     private final BigDecimal swapAmount = BigDecimal.ONE.subtract(swapCommission);        // 수수료 제외량
 
-    public SwapService(SwapRepository swapRepository, TickerRepository tickerRepository, CoinService coinService, UserService userService, OrderService orderService, WalletService walletService) {
+    public SwapService(SwapRepository swapRepository, TickerRepository tickerRepository, CoinService coinService, UserService userService, OrderService orderService, WalletService walletService, CalculationUtil calculationUtil) {
         this.swapRepository = swapRepository;
         this.tickerRepository = tickerRepository;
         this.coinService = coinService;
         this.userService = userService;
         this.orderService = orderService;
         this.walletService = walletService;
+        this.calculationUtil = calculationUtil;
     }
 
     /**
@@ -80,6 +83,11 @@ public class SwapService {
         swap.setCommission(exchangeRate.getCommission());
         swap.setGivenCoinPrice(exchangeRate.getGivenCoinPrice());
         swap.setTakenCoinPrice(exchangeRate.getTakenCoinPrice());
+
+        // 코인 스왑
+
+        
+        // Transaction History 저장
 
         return swapRepository.save(swap);
     }
