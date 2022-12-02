@@ -146,7 +146,7 @@ public class OrderServiceTest {
         given(loggedInUserInfoUtils.extractUser()).willReturn(user);
         given(calculationUtil.calculateByAddingCommission(any(), any())).willReturn(BigDecimal.ZERO);
         doNothing().when(balanceService).updateBalanceByAskOrCancelBid(anyLong(), any());
-        doNothing().when(transactionHistoryService).createTransactionHistory(any());
+        doNothing().when(transactionHistoryService).createTransactionHistoryByOrder(any());
 
         // when
         orderService.cancelOrder(1L);

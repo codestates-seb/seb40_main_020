@@ -78,7 +78,7 @@ public class TransactionHistoryServiceTest {
         given(coinService.findCoin(anyString())).willReturn(coin);
 
         // when
-        transactionHistoryService.createTransactionHistory(order);
+        transactionHistoryService.createTransactionHistoryByOrder(order);
 
         // then
         List<TransactionHistory> transactionHistories = transactionHistoryRepository.findTop10ByUserAndCoinAndTransactionTypeOrTransactionTypeOrderByCreatedAtDesc(user, coin, TransactionType.BID, TransactionType.ASK);

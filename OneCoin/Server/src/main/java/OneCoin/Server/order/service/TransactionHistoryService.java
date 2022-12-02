@@ -35,7 +35,7 @@ public class TransactionHistoryService {
     private final String defaultType = "ALL";
 
     @Async("upbitExecutor")
-    public void createTransactionHistory(Order order) {
+    public void createTransactionHistoryByOrder(Order order) {
         User user = userService.findVerifiedUser(order.getUserId());
         Coin coin = coinService.findCoin(order.getCode());
         TransactionHistory transactionHistory = mapper.orderToTransactionHistory(order, user, coin);
