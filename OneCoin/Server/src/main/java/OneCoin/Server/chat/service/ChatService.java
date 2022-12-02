@@ -88,6 +88,7 @@ public class ChatService {
                 Long index = chatMessageRepository.getIndex(chatRoomId, lastSaved);
                 messages = chatMessageRepository.findAllAfter(chatRoomId, index);
             }
+            if(messages.size() == 0) return;
             ChatMessage latestMessage = messages.get(messages.size() - 1);
             lastSavedRepository.save(chatRoomId, latestMessage);
             chatMessageRdbRepository.saveAll(messages);

@@ -104,6 +104,7 @@ public class ChatRoomService {
     public boolean isUserInChatRoom(Integer chatRoomId, String email) {
         List<UserInChatRoom> users = userInChatRoomRepository.findAllByChatRoomId(chatRoomId);
         for (UserInChatRoom user : users) {
+            if(user == null) continue;
             if (user.getEmail().equals(email)) return true;
         }
         return false;
