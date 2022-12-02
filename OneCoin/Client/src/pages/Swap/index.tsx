@@ -3,14 +3,14 @@ import Button from 'components/Button';
 import Layout from 'components/Layout';
 import { useNavigate } from 'react-router-dom';
 import { CgArrowsExchangeAltV } from 'react-icons/cg';
-import {
-	SwapBox,
-	Form,
-	StyledDiv,
-	InputContainer,
-	Input,
-	SubmitButton,
-} from './style';
+import { Form, StyledDiv, InputContainer, Input, SubmitButton } from './style';
+import axios from 'axios';
+
+type SwapType = {
+	coin: string;
+	coinAmount: number;
+	coinCount: string;
+};
 
 function Swap() {
 	const navigate = useNavigate();
