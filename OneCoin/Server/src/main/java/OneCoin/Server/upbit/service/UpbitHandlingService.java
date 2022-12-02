@@ -33,6 +33,9 @@ public class UpbitHandlingService {
         if (type.equals(SiseType.TICKER.getType())) { // 현재가 정보
             handleTicker(jsonNode);
         }
+        if (type.equals(SiseType.TRADE.getType())) { // 체결 정보
+            handleTrade(jsonNode);
+        }
         if (type.equals(SiseType.ORDER_BOOK.getType())) { // 호가 정보
             handleOrderBook(jsonNode);
         }
@@ -42,9 +45,12 @@ public class UpbitHandlingService {
     private void handleTicker(JsonNode jsonNode) {
         TickerDto tickerDto = objectMapper.readValue(jsonNode.toString(), TickerDto.class);
         tickerRepository.saveTicker(tickerDto);
+    }
 
+    @SneakyThrows
+    private void handleTrade(JsonNode jsonNode) {
         Trade trade = objectMapper.readValue(jsonNode.toString(), Trade.class);
-        publisher.publishEvent(trade); // 체결 이벤트 발급
+        publisher.publishEvent(trade); // 체결 이벤트 발행
     }
 
     @SneakyThrows

@@ -16,7 +16,6 @@ import OneCoin.Server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,20 +44,19 @@ public class TransactionHistoryService {
     }
 
     @Transactional(readOnly = true)
-    public Page<TransactionHistory> findTransactionHistory(String period, String type, String code, int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        LocalDateTime searchPeriod = getSearchPeriod(period);
+    public Page<TransactionHistory> findTransactionHistory(String period, String type, String code, PageRequest pageRequest) {
         User user = loggedInUserInfoUtils.extractUser();
+        LocalDateTime searchPeriod = getSearchPeriod(period);
 
-        if (code==null && !type.equals(defaultType)) { // 타입 지정
+        if (code == null && !type.equals(defaultType)) { // 타입 지정
             TransactionType transactionType = getTransactionType(type);
             return transactionHistoryRepository.findByUserAndTransactionTypeAndCreatedAtAfter(user, transactionType, searchPeriod, pageRequest);
         }
-        if (code!=null && type.equals(defaultType)) { // 코인 지정
+        if (code != null && type.equals(defaultType)) { // 코인 지정
             Coin coin = coinService.findCoin(code);
             return transactionHistoryRepository.findByUserAndCoinAndCreatedAtAfter(user, coin, searchPeriod, pageRequest);
         }
-        if (code!=null) { // 타입, 코인 지정
+        if (code != null) { // 타입, 코인 지정
             TransactionType transactionType = getTransactionType(type);
             Coin coin = coinService.findCoin(code);
             return transactionHistoryRepository.findByUserAndTransactionTypeAndCoinAndCreatedAtAfter(user, transactionType, coin, searchPeriod, pageRequest);

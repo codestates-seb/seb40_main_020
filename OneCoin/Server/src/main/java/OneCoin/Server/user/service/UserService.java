@@ -217,7 +217,7 @@ public class UserService {
     /**
      * <pre>
      *     회원 정보 변경
-     *     displayName, email, password 만 변경 가능
+     *     displayName 만 변경 가능
      * </pre>
      */
     @Transactional
@@ -225,8 +225,6 @@ public class UserService {
         User findUser = findVerifiedUser(user.getUserId());
 
         findUser.setDisplayName(user.getDisplayName());
-        findUser.setEmail(user.getEmail());
-        findUser.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userRepository.save(findUser);
     }

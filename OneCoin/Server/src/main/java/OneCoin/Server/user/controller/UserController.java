@@ -30,7 +30,8 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
-    private final String baseURL = "localhost:3000";
+//    private final String baseURL = "localhost:3000";
+    private final String baseURL = "projectonecoin.s3-website.ap-northeast-2.amazonaws.com";
     private final JwtTokenizer jwtTokenizer;
 
     public UserController(UserService userService, UserMapper userMapper, JwtTokenizer jwtTokenizer) {
@@ -60,15 +61,12 @@ public class UserController {
         );
     }
 
-    @PatchMapping("/{user-id}")
+    @PatchMapping("/display-name")
     public ResponseEntity patchUser(
-            @PathVariable("user-id") @Positive long userId,
             @Valid @RequestBody UserDto.Patch requestBody,
             @AuthenticationPrincipal Map<String, Object> userInfo) {
-        userService.isValidId(userId, Long.parseLong(userInfo.get("id").toString()));
-
         User user = userMapper.userPatchToUser(requestBody);
-        user.setUserId(userId);
+        user.setUserId(Long.parseLong(userInfo.get("id").toString()));
 
         User updatedUser = userService.updateUser(user);
 
@@ -114,6 +112,13 @@ public class UserController {
                 new PageResponseDto<>(userMapper.usersToUserResponses(users),
                         userPage),
                 HttpStatus.OK);
+    }
+
+    // 토큰으로 단일 회원 정보
+    @GetMapping("/my-information")
+    public ResponseEntity getUser( @AuthenticationPrincipal Map<String, Object> userInfo) {
+        User user = userService.findUser(Long.parseLong(userInfo.get("id").toString()));
+        return new ResponseEntity<>(new SingleResponseDto<>(userMapper.userToUserResponse(user)), HttpStatus.OK);
     }
 
     // 단일 회원 정보

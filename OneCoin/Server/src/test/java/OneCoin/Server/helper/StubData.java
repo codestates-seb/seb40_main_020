@@ -20,17 +20,18 @@ public class StubData {
         public static Order getMockEntity() {
             return Order
                     .builder()
-                    .orderId(1L)
+                    .orderId(1)
                     .limit(new BigDecimal("22525000"))
                     .amount(new BigDecimal("10"))
                     .completedAmount(BigDecimal.ZERO)
                     .orderType("BID")
+                    .orderTime(LocalDateTime.now())
                     .code("KRW-BTC")
                     .userId(1L)
                     .build();
         }
 
-        public static Order getMockEntity(long orderId, String limit,
+        public static Order getMockEntity(int orderId, String limit,
                                           String amount, String orderType, String code, long userId) {
             return Order
                     .builder()
@@ -39,17 +40,18 @@ public class StubData {
                     .amount(new BigDecimal(amount))
                     .completedAmount(BigDecimal.ZERO)
                     .orderType(orderType)
+                    .orderTime(LocalDateTime.now())
                     .code(code)
                     .userId(userId)
                     .build();
         }
 
         public static List<Order> getMockEntities() {
-            Order mockEntity1 = MockOrder.getMockEntity(2L, "333333", "100", "BID", "KRW-BTC", 2L);
-            Order mockEntity2 = MockOrder.getMockEntity(3L, "333333", "200", "ASK", "KRW-ETH", 3L);
-            Order mockEntity3 = MockOrder.getMockEntity(4L, "555555", "300", "ASK", "KRW-ETH", 4L);
-            Order mockEntity4 = MockOrder.getMockEntity(5L, "333333", "400", "ASK", "KRW-ETH", 5L);
-            Order mockEntity5 = MockOrder.getMockEntity(6L, "555555", "500", "BID", "KRW-XRP", 6L);
+            Order mockEntity1 = MockOrder.getMockEntity(2, "333333", "100", "BID", "KRW-BTC", 2L);
+            Order mockEntity2 = MockOrder.getMockEntity(3, "333333", "200", "ASK", "KRW-ETH", 3L);
+            Order mockEntity3 = MockOrder.getMockEntity(4, "555555", "300", "ASK", "KRW-ETH", 4L);
+            Order mockEntity4 = MockOrder.getMockEntity(5, "333333", "400", "ASK", "KRW-ETH", 5L);
+            Order mockEntity5 = MockOrder.getMockEntity(6, "555555", "500", "BID", "KRW-XRP", 6L);
 
             return List.of(mockEntity1, mockEntity2, mockEntity3, mockEntity4, mockEntity5);
         }

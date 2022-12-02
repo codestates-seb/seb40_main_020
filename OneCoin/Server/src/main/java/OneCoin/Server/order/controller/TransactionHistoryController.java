@@ -8,6 +8,8 @@ import OneCoin.Server.order.mapper.TransactionHistoryMapper;
 import OneCoin.Server.order.service.TransactionHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -32,7 +34,7 @@ public class TransactionHistoryController {
                                                           @RequestParam(name = "code", required = false) String code,
                                                           @Positive @RequestParam(name = "page", required = false, defaultValue = "1") int page) {
 
-        Page<TransactionHistory> transactionHistoryPage = transactionHistoryService.findTransactionHistory(period, type, code, page - 1, size);
+        Page<TransactionHistory> transactionHistoryPage = transactionHistoryService.findTransactionHistory(period, type, code, PageRequest.of(page - 1, size, Sort.by("createdAt").descending()));
         List<TransactionHistory> transactionHistories = transactionHistoryPage.getContent();
         List<TransactionHistoryDto.GetResponse> responseDto = mapper.transactionHistoryToGetResponse(transactionHistories);
         return new ResponseEntity(new PageResponseDto<>(responseDto, transactionHistoryPage), HttpStatus.OK);
