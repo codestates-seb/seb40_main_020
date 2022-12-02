@@ -1,17 +1,12 @@
 package OneCoin.Server.config;
 
 import OneCoin.Server.chat.controller.MessageInterceptor;
-import OneCoin.Server.chat.mapper.ChatMapper;
-import OneCoin.Server.chat.service.ChatRoomService;
-import OneCoin.Server.chat.service.ChatService;
-import OneCoin.Server.config.webSocketAuth.WebSocketAuthService;
+import OneCoin.Server.chat.controller.RegisterController;
 import OneCoin.Server.config.auth.utils.UserUtilsForWebSocket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -25,12 +20,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Order(Ordered.HIGHEST_PRECEDENCE + 99)
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final UserUtilsForWebSocket userUtilsForWebSocket;
-    private final ChatRoomService chatRoomService;
-    private final WebSocketAuthService webSocketAuthService;
-    private final ChatService chatService;
-    private final ChatMapper chatMapper;
-    private final RedisTemplate<Object, Object> redisTemplate;
-    private final ChannelTopic channelTopic;
+    private final RegisterController registerController;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -55,8 +45,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new MessageInterceptor(
-                userUtilsForWebSocket, chatRoomService, webSocketAuthService,
-                chatService, chatMapper, redisTemplate, channelTopic));
+                userUtilsForWebSocket, registerController));
     }
 
 
