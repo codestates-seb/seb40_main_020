@@ -1,18 +1,20 @@
 package OneCoin.Server.swap.controller;
 
+import OneCoin.Server.dto.SingleResponseDto;
+import OneCoin.Server.swap.dto.SwapDto;
+import OneCoin.Server.swap.entity.Swap;
 import OneCoin.Server.swap.mapper.SwapMapper;
 import OneCoin.Server.swap.service.SwapService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/swaps")
@@ -27,11 +29,23 @@ public class SwapController {
         this.swapMapper = swapMapper;
     }
 
+    @PostMapping
+    public ResponseEntity postSwap(@Valid @RequestBody SwapDto.Post requestBody,
+                                   @AuthenticationPrincipal Map<String, Object> userInfo) {
+        Swap swap = swapService.createSwap(swapMapper.swapPostToSwap(requestBody), Long.parseLong(userInfo.get("id").toString()));
+
+        return new ResponseEntity(
+                new SingleResponseDto<>(swapMapper.swapToSwapResponseDto(swap)), HttpStatus.CREATED
+        );
+    }
+
     @GetMapping("/calculates")
     public ResponseEntity getExchangeRate(@Valid @RequestParam String givenToken,
                                           @Valid @RequestParam String takenToken,
                                           @Valid @RequestParam String amount) {
         return new ResponseEntity(swapMapper.exchangeRateToSwapExchangeRate(swapService.calculateExchangeRate(givenToken, takenToken, new BigDecimal(amount))), HttpStatus.OK);
     }
+
+
 
 }

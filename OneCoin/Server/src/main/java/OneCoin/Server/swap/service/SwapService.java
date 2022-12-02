@@ -72,8 +72,12 @@ public class SwapService {
      *  코인 스왑
      */
 
-    public Swap createSwap(Swap swap, Long userId, String givenCoinCode, String takenCoinCode, BigDecimal amount) {
+    public Swap createSwap(Swap swap, Long userId) {
         User user = userService.findUser(userId);
+        String givenCoinCode = swap.getGivenCoin().getCode();
+        String takenCoinCode = swap.getTakenCoin().getCode();
+        BigDecimal amount = swap.getGivenAmount();
+
         ExchangeRate exchangeRate = calculateExchangeRate(givenCoinCode, takenCoinCode, amount);
 
         // 스왑 가능 코인 체크
@@ -91,7 +95,20 @@ public class SwapService {
         swap.setTakenCoinPrice(exchangeRate.getTakenCoinPrice());
 
         // 코인 스왑(Wallet)
+        // given
+        Wallet givenWallet = swapWalletMapper.swapToGivenWallet(swap);
+        walletService.updateWalletByGivenSwap(wallet, givenWallet);
 
+        // taken
+        Wallet takenWallet = swapWalletMapper.swapToTakenWallet(swap);
+        Wallet findWallet = walletService.findMyWallet(userId, takenCoinCode);
+
+        // wallet 이 없다면 새로 생성
+        if (findWallet != null) {
+            walletService.updateWalletByTakenSwap(findWallet, takenWallet);
+        } else {
+            walletService.createWalletByTakenSwap(takenWallet);
+        }
         
         // Transaction History 저장
         transactionHistoryService.createTransactionHistoryBySwap(swap);

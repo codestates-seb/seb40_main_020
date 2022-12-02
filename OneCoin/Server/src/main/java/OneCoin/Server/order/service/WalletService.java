@@ -110,4 +110,29 @@ public class WalletService {
         }
         return wallets;
     }
+
+    public void createWalletByTakenSwap(Wallet takenWallet) {
+        walletRepository.save(takenWallet);
+    }
+
+    public void updateWalletByGivenSwap(Wallet wallet, Wallet givenWallet) {
+        BigDecimal amount = wallet.getAmount().subtract(givenWallet.getAmount());
+        wallet.setAmount(amount);
+
+        if (verifyWalletAmountZero(wallet)) {
+            walletRepository.delete(wallet);
+        } else {
+            walletRepository.save(wallet);
+        }
+    }
+
+    public void updateWalletByTakenSwap(Wallet wallet, Wallet takenWallet) {
+        BigDecimal amount = wallet.getAmount().add(takenWallet.getAmount());
+        BigDecimal averagePrice = calculationUtil.calculateAvgPrice(wallet.getAveragePrice(), wallet.getAmount(), takenWallet.getAveragePrice(), takenWallet.getAmount());
+
+        wallet.setAmount(amount);
+        wallet.setAveragePrice(averagePrice);
+
+        walletRepository.save(wallet);
+    }
 }
