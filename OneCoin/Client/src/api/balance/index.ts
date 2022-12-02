@@ -1,11 +1,8 @@
-import axios from 'axios';
-import { SERVER_URL } from '../';
+import api from '../user';
+
 export const getBalance = async () => {
 	try {
-		const Authorization = sessionStorage.getItem('login-token') as string;
-		const headers = { Authorization };
-		const res = await axios.get(`${SERVER_URL}/api/balances`, { headers });
-		console.log(res);
+		const res = await api.get(`/api/balances`);
 		return res.data.data.balance;
 	} catch (err) {
 		console.log(err);
@@ -14,11 +11,7 @@ export const getBalance = async () => {
 
 export const postDeposit = async (data: { depositAmount: number }) => {
 	try {
-		const Authorization = sessionStorage.getItem('login-token') as string;
-		const headers = { Authorization };
-		const res = await axios.post(`${SERVER_URL}/api/deposits`, data, {
-			headers,
-		});
+		const res = await api.post(`/api/deposits`, data);
 		return res.data.data;
 	} catch (err) {
 		console.log(err);
@@ -27,14 +20,7 @@ export const postDeposit = async (data: { depositAmount: number }) => {
 
 export const getDeposits = async (page: number) => {
 	try {
-		const Authorization = sessionStorage.getItem('login-token') as string;
-		const headers = { Authorization };
-		const res = await axios.get(
-			`${SERVER_URL}/api/deposits?page=${page}&size=10`,
-			{
-				headers,
-			}
-		);
+		const res = await api.get(`/api/deposits?page=${page}&size=10`);
 		return res.data;
 	} catch (err) {
 		console.log(err);

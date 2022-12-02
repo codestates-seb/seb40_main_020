@@ -5,8 +5,8 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(function (config: any) {
-	const accessToken = sessionStorage.getItem('authorization');
-	const refreshToken = sessionStorage.getItem('refresh');
+	const accessToken = sessionStorage.getItem('login-token');
+	const refreshToken = sessionStorage.getItem('login-refresh');
 
 	if (!accessToken && !refreshToken) {
 		config.headers['accessToken'] = null;

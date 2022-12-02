@@ -1,8 +1,8 @@
 import StompJs from 'stompjs';
 import SockJS from 'sockjs-client';
 import { Ticker, OrderBook, CoinDataType, Trade } from '../../utills/types';
-import { SERVER_URL } from '../';
 import axios from 'axios';
+import api from '../user';
 
 type T = (
 	coinData: CoinDataType[],
@@ -12,7 +12,9 @@ type T = (
 let client: StompJs.Client;
 
 export const getTradeData: T = (coinData, setCoinData) => {
-	const socket = new SockJS(`${SERVER_URL}/ws/upbit-info`);
+	const socket = new SockJS(
+		`${process.env.REACT_APP_SERVER_URL}/ws/upbit-info`
+	);
 	client = StompJs.over(socket);
 	client.debug = function () {
 		return;
@@ -57,11 +59,7 @@ export async function getChartData(time: number, code: string, date: string) {
 
 export const getNonTrading = async () => {
 	try {
-		const Authorization = sessionStorage.getItem('login-token') as string;
-		const headers = { Authorization };
-		const res = await axios.get(`${SERVER_URL}/api/order/non-trading`, {
-			headers,
-		});
+		const res = await api.get(`/api/order/non-trading`);
 		return res.data.data;
 	} catch (err) {
 		console.log(err);
@@ -70,9 +68,7 @@ export const getNonTrading = async () => {
 
 export const getWallet = async () => {
 	try {
-		const Authorization = sessionStorage.getItem('login-token') as string;
-		const headers = { Authorization };
-		const res = await axios.get(`${SERVER_URL}/api/order/my-coin`, { headers });
+		const res = await api.get(`/api/order/my-coin`);
 		return res.data.data;
 	} catch (err) {
 		console.log(err);
@@ -81,11 +77,7 @@ export const getWallet = async () => {
 
 export const getCompleteTrade = async (code: string) => {
 	try {
-		const Authorization = sessionStorage.getItem('login-token') as string;
-		const headers = { Authorization };
-		const res = await axios.get(`${SERVER_URL}/api/order/completion/${code}`, {
-			headers,
-		});
+		const res = await api.get(`/api/order/completion/${code}`);
 		return res.data.data;
 	} catch (err) {
 		console.log(err);
@@ -99,16 +91,9 @@ export const getCompleteTradePage = async (
 	code?: string
 ) => {
 	try {
-		const Authorization = sessionStorage.getItem('login-token') as string;
-		const headers = { Authorization };
 		const c = (code as string) ? `&code=${code}` : '';
-		const res = await axios.get(
-			`${SERVER_URL}/api/order/completion?period=${period}&type=${type}&page=${page}${c}`,
-			{ headers }
-		);
-		console.log(
-			`${SERVER_URL}/api/order/completion?period=${period}&type=${type}&page=${page}`,
-			res.data
+		const res = await api.get(
+			`/api/order/completion?period=${period}&type=${type}&page=${page}${c}`
 		);
 		return res.data;
 	} catch (err) {
@@ -118,11 +103,7 @@ export const getCompleteTradePage = async (
 
 export const postOrder = async (code: string, data: Trade) => {
 	try {
-		const Authorization = sessionStorage.getItem('login-token') as string;
-		const headers = { Authorization };
-		const res = await axios.post(`${SERVER_URL}/api/order/${code}`, data, {
-			headers,
-		});
+		const res = await api.post(`/api/order/${code}`, data);
 		return res.data;
 	} catch (err) {
 		console.log(err);
@@ -130,14 +111,7 @@ export const postOrder = async (code: string, data: Trade) => {
 };
 export const deleteOrder = async (orderId: number) => {
 	try {
-		const Authorization = sessionStorage.getItem('login-token') as string;
-		const headers = { Authorization };
-		const res = await axios.delete(
-			`${SERVER_URL}/api/order/non-trading/${orderId}`,
-			{
-				headers,
-			}
-		);
+		const res = await api.delete(`/api/order/non-trading/${orderId}`);
 		return res;
 	} catch (err) {
 		console.log(err);

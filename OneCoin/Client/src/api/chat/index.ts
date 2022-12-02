@@ -1,8 +1,7 @@
-import axios from 'axios';
 import StompJs from 'stompjs';
 import SockJS from 'sockjs-client';
-import { SERVER_URL } from '../';
 import { ChatMsg, ChatData, RoomsInfo } from '../../utills/types';
+import api from '../user';
 
 type AddMsg = (chatData: ChatData[]) => void;
 type SetRoomsInfo = React.Dispatch<React.SetStateAction<RoomsInfo[]>>;
@@ -16,7 +15,7 @@ export const enterRoom = (
 	setRoomsInfo: SetRoomsInfo,
 	setUserId: SetUserId
 ) => {
-	const sock = new SockJS(`${SERVER_URL}/ws/chat`);
+	const sock = new SockJS(`${process.env.REACT_APP_SERVER_URL}/ws/chat`);
 	client = StompJs.over(sock);
 	client.debug = function () {
 		return;
@@ -71,7 +70,7 @@ export const sendMsg = (data: ChatMsg) => {
 
 export const getChatHistory = async (room: number) => {
 	try {
-		const res = await axios.get(`${SERVER_URL}/ws/chat/rooms/${room}/messages`);
+		const res = await api.get(`/ws/chat/rooms/${room}/messages`);
 		return res.data.data;
 	} catch (err) {
 		console.log(err);
