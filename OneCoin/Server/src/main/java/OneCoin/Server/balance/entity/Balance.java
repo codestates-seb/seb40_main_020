@@ -29,6 +29,6 @@ public class Balance extends Auditable {
     @OneToMany(mappedBy = "balance", cascade = CascadeType.REMOVE)
     private List<Deposit> deposit;
 
-    @Column(nullable = false, updatable = false, scale = 15, precision = 30)
+    @Column(nullable = false, scale = 2, precision = 30)
     private BigDecimal balance;
 }
