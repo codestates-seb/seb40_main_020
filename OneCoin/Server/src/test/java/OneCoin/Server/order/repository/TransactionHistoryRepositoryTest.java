@@ -2,6 +2,7 @@ package OneCoin.Server.order.repository;
 
 import OneCoin.Server.coin.entity.Coin;
 import OneCoin.Server.coin.repository.CoinRepository;
+import OneCoin.Server.helper.StubData;
 import OneCoin.Server.order.entity.TransactionHistory;
 import OneCoin.Server.order.entity.enums.TransactionType;
 import OneCoin.Server.user.entity.User;
@@ -106,18 +107,23 @@ public class TransactionHistoryRepositoryTest {
     }
 
     @Test
-    @DisplayName("비트코인의 모든 거래 내역을 시간 순으로 찾는다")
+    @DisplayName("비트코인의 매수, 매도 체결 내역을 시간 순으로 찾는다")
     void findAllTest() {
         // given
-        User user = userRepository.findById(1L).orElse(null);
-        Coin coin = coinRepository.findById(1L).orElse(null);
+        User user = StubData.MockUser.getMockEntity();
+        Coin coin = StubData.MockCoin.getMockEntity(1L, "KRW-BTC", "비트코인");
+        userRepository.save(user);
+        coinRepository.save(coin);
+        TransactionHistory transactionHistory = StubData.MockHistory.getMockEntity();
+        transactionHistoryRepository.save(transactionHistory);
 
         // when
-        List<TransactionHistory> transactionHistories = transactionHistoryRepository.findTop10ByUserAndCoinOrderByCreatedAtDesc(user, coin);
+        List<TransactionHistory> transactionHistories = transactionHistoryRepository.findTop10ByUserAndCoinAndTransactionTypeOrTransactionTypeOrderByCreatedAtDesc(user, coin, TransactionType.BID, TransactionType.ASK);
 
         // then
-        assertThat(transactionHistories.size()).isEqualTo(3);
+        assertThat(transactionHistories.size()).isEqualTo(1);
         assertThat(transactionHistories.get(0).getCoin().getCode()).isEqualTo(coin.getCode());
-        assertThat(transactionHistories.get(2).getTransactionHistoryId()).isEqualTo(3);
+        assertThat(transactionHistories.get(0).getTransactionHistoryId()).isEqualTo(1);
+        assertThat(transactionHistories.get(0).getTransactionType()).isEqualTo(TransactionType.BID);
     }
 }

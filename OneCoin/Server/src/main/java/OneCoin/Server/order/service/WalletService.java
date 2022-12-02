@@ -72,7 +72,7 @@ public class WalletService {
     }
 
     private void deleteCompletedOrder(Order order) {
-        transactionHistoryService.createTransactionHistory(order);
+        transactionHistoryService.createTransactionHistoryByOrder(order);
         orderRepository.delete(order);
     }
 
