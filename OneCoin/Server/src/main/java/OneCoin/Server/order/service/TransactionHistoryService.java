@@ -9,8 +9,9 @@ import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.entity.TransactionHistory;
 import OneCoin.Server.order.entity.enums.Period;
 import OneCoin.Server.order.entity.enums.TransactionType;
-import OneCoin.Server.order.mapper.TransactionHistoryOrderMapper;
+import OneCoin.Server.order.mapper.TransactionHistoryMapper;
 import OneCoin.Server.order.repository.TransactionHistoryRepository;
+import OneCoin.Server.swap.entity.Swap;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,17 +29,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TransactionHistoryService {
     private final TransactionHistoryRepository transactionHistoryRepository;
-    private final TransactionHistoryOrderMapper mapper;
+    private final TransactionHistoryMapper mapper;
     private final UserService userService;
     private final CoinService coinService;
     private final LoggedInUserInfoUtils loggedInUserInfoUtils;
     private final String defaultType = "ALL";
 
     @Async("upbitExecutor")
-    public void createTransactionHistory(Order order) {
+    public void createTransactionHistoryByOrder(Order order) {
         User user = userService.findVerifiedUser(order.getUserId());
         Coin coin = coinService.findCoin(order.getCode());
         TransactionHistory transactionHistory = mapper.orderToTransactionHistory(order, user, coin);
+
+        transactionHistoryRepository.save(transactionHistory);
+    }
+
+    public void createTransactionHistoryBySwap(Swap swap) {
+        User user = userService.findVerifiedUser(swap.getUser().getUserId());
+        Coin coin = coinService.findCoin(swap.getGivenCoin().getCode());
+        TransactionHistory transactionHistory = mapper.swapToTransactionHistory(swap);
 
         transactionHistoryRepository.save(transactionHistory);
     }
@@ -97,6 +106,6 @@ public class TransactionHistoryService {
     public List<TransactionHistory> findTransactionHistoryByCoin(String code) {
         User user = loggedInUserInfoUtils.extractUser();
         Coin coin = coinService.findCoin(code);
-        return transactionHistoryRepository.findTop10ByUserAndCoinOrderByCreatedAtDesc(user, coin);
+        return transactionHistoryRepository.findTop10ByUserAndCoinAndTransactionTypeOrTransactionTypeOrderByCreatedAtDesc(user, coin, TransactionType.BID, TransactionType.ASK);
     }
 }

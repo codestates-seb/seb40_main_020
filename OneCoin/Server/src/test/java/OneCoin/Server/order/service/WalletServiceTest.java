@@ -95,7 +95,7 @@ public class WalletServiceTest {
         BigDecimal tradeVolume = new BigDecimal("10");
 
         // when
-        doNothing().when(transactionHistoryService).createTransactionHistory(any());
+        doNothing().when(transactionHistoryService).createTransactionHistoryByOrder(any());
         walletService.createWallet(order, tradeVolume);
 
         // then
@@ -114,7 +114,7 @@ public class WalletServiceTest {
         BigDecimal tradeVolume = new BigDecimal("10");
 
         // when
-        doNothing().when(transactionHistoryService).createTransactionHistory(any());
+        doNothing().when(transactionHistoryService).createTransactionHistoryByOrder(any());
         walletService.updateWalletByBid(wallet, order, tradeVolume);
 
         // then
