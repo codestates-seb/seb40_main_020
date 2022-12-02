@@ -44,7 +44,7 @@ public class UserInChatRoomRepository {
     }
 
     public List<UserInChatRoom> findAllByChatRoomId(Integer chatRoomId) {
-        return Arrays.asList(objectMapper.convertValue(hashOperations.values(chatRoomUtils.makeKey(chatRoomId)), UserInChatRoom[].class));
+        return objectToList(hashOperations.values(chatRoomUtils.makeKey(chatRoomId)));
     }
 
     public boolean contain(String chatRoomIdKey, String sessionId) {
@@ -52,6 +52,16 @@ public class UserInChatRoomRepository {
     }
 
     public UserInChatRoom findBySessionId(String chatRoomIdKey, String sessionId) {
-        return objectMapper.convertValue(hashOperations.get(chatRoomIdKey, sessionId), UserInChatRoom.class);
+        return objectToEntity(hashOperations.get(chatRoomIdKey, sessionId));
+    }
+
+    private List<UserInChatRoom> objectToList(Object obj) {
+        if (obj == null) return null;
+        return Arrays.asList(objectMapper.convertValue(obj, UserInChatRoom[].class));
+    }
+
+    private UserInChatRoom objectToEntity(Object obj) {
+        if (obj == null) return null;
+        return objectMapper.convertValue(obj, UserInChatRoom.class);
     }
 }

@@ -37,7 +37,7 @@ public class ChatMessageRepository {
         String key = getKey(chatMessage.getChatRoomId());
         String id = UUID.randomUUID().toString();
         chatMessage.setChatMessageId(id);
-        operations.leftPush(key, chatMessage);
+        operations.rightPush(key, chatMessage);
     }
 
     public void removeAllInChatRoom(Integer chatRoomId) {
@@ -47,15 +47,17 @@ public class ChatMessageRepository {
     public List<ChatMessage> getMessageFromRoom(Integer chatRoomId) {
         String key = getKey(chatRoomId);
         Object results = operations.range(key, 0L, NUMBER_OF_CHATS_TO_SHOW - 1L);
-        return Arrays.asList(objectMapper.convertValue(results, ChatMessage[].class));
+        return objectToList(results);
     }
 
     public List<ChatMessage> findAll(Integer chatRoomId) {
-        return operations.range(getKey(chatRoomId), 0L, -1L);
+        Object results = operations.range(getKey(chatRoomId), 0L, -1L);
+        return objectToList(results);
     }
-
+    //인덱스 미포함
     public List<ChatMessage> findAllAfter(Integer chatRoomId, Long index) {
-        return operations.range(getKey(chatRoomId), 0, index);
+        Object results = operations.range(getKey(chatRoomId), index + 1L, Long.MAX_VALUE);
+        return objectToList(results);
     }
 
     public Long getIndex(Integer chatRoomId, ChatMessage chatMessage) {
@@ -64,6 +66,11 @@ public class ChatMessageRepository {
 
     private String getKey(Integer chatRoomId) {
         return "ChatRoom" + String.valueOf(chatRoomId) + "Message";
+    }
+
+    private List<ChatMessage> objectToList(Object obj) {
+        if(obj == null) return null;
+        return Arrays.asList(objectMapper.convertValue(obj, ChatMessage[].class));
     }
 
 }
