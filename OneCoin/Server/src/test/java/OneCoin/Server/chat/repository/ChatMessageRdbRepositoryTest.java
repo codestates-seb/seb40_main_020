@@ -40,4 +40,11 @@ public class ChatMessageRdbRepositoryTest {
         assertThat(messages.size())
                 .isEqualTo(numberOfChatsToCreate.intValue());
     }
+
+    @Test
+    void findAllByChatRoomIdTest() {
+        List<ChatMessage> chatMessageList = chatMessageRdbRepository.findAllByChatRoomId(chatRoomId);
+        assertThat(chatMessageList.size())
+                .isEqualTo(numberOfChatsToCreate.intValue());
+    }
 }
