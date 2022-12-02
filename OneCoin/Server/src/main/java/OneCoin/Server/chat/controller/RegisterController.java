@@ -56,8 +56,6 @@ public class RegisterController {
     @EventListener
     public void onDisconnectEvent(SessionDisconnectEvent event) {
         String sessionId = event.getSessionId();
-        log.info("[ABNORMAL DISCONNECT] unregister start : user {}", sessionId);
         unregisterUserAndSendLeaveMessage(sessionId);
-        log.info("[ABNORMAL DISCONNECT] unregister complete : user {}", sessionId);
     }
 }
