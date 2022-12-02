@@ -6,11 +6,12 @@ import OneCoin.Server.order.service.OrderService;
 import OneCoin.Server.order.service.WalletService;
 import OneCoin.Server.swap.entity.ExchangeRate;
 import OneCoin.Server.swap.entity.Swap;
+import OneCoin.Server.swap.mapper.SwapMapper;
+import OneCoin.Server.swap.mapper.SwapWalletMapper;
 import OneCoin.Server.swap.repository.SwapRepository;
 import OneCoin.Server.upbit.repository.TickerRepository;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.service.UserService;
-import OneCoin.Server.utils.CalculationUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,18 +27,20 @@ public class SwapService {
     private final UserService userService;
     private final OrderService orderService;
     private final WalletService walletService;
-    private final CalculationUtil calculationUtil;
+    private final SwapMapper swapMapper;
+    private final SwapWalletMapper swapWalletMapper;
     private final BigDecimal swapCommission = new BigDecimal("0.0005");    // 수수료
     private final BigDecimal swapAmount = BigDecimal.ONE.subtract(swapCommission);        // 수수료 제외량
 
-    public SwapService(SwapRepository swapRepository, TickerRepository tickerRepository, CoinService coinService, UserService userService, OrderService orderService, WalletService walletService, CalculationUtil calculationUtil) {
+    public SwapService(SwapRepository swapRepository, TickerRepository tickerRepository, CoinService coinService, UserService userService, OrderService orderService, WalletService walletService, SwapMapper swapMapper, SwapWalletMapper swapWalletMapper) {
         this.swapRepository = swapRepository;
         this.tickerRepository = tickerRepository;
         this.coinService = coinService;
         this.userService = userService;
         this.orderService = orderService;
         this.walletService = walletService;
-        this.calculationUtil = calculationUtil;
+        this.swapMapper = swapMapper;
+        this.swapWalletMapper = swapWalletMapper;
     }
 
     /**
