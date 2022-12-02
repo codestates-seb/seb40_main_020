@@ -78,10 +78,10 @@ public class TransactionHistoryServiceTest {
         given(coinService.findCoin(anyString())).willReturn(coin);
 
         // when
-        transactionHistoryService.createTransactionHistory(order);
+        transactionHistoryService.createTransactionHistoryByOrder(order);
 
         // then
-        List<TransactionHistory> transactionHistories = transactionHistoryRepository.findTop10ByUserAndCoinOrderByCreatedAtDesc(user, coin);
+        List<TransactionHistory> transactionHistories = transactionHistoryRepository.findTop10ByUserAndCoinAndTransactionTypeOrTransactionTypeOrderByCreatedAtDesc(user, coin, TransactionType.BID, TransactionType.ASK);
         TransactionHistory transactionHistory = transactionHistories.get(0);
         assertThat(transactionHistory.getTransactionType()).isEqualTo(TransactionType.BID);
         assertThat(transactionHistory.getAmount()).isEqualTo(new BigDecimal("10.000000000000000"));

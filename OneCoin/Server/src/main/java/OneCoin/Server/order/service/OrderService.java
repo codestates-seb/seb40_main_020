@@ -112,7 +112,7 @@ public class OrderService {
     private void savePartialTradedOrdersToTransactionHistory(Order order) {
         int comparison = order.getCompletedAmount().compareTo(BigDecimal.ZERO);
         if (comparison > 0) {
-            transactionHistoryService.createTransactionHistory(order);
+            transactionHistoryService.createTransactionHistoryByOrder(order);
         }
     }
 
