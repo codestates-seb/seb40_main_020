@@ -40,8 +40,9 @@ function Order({ inputPrice, setInputPrice }: Props) {
 		setTotal(Math.round(inputPrice * +quantity));
 	}, [inputPrice]);
 	useEffect(() => {
+		console.log('실행');
 		if (login) getMyBalance();
-	}, []);
+	}, [order]);
 	const getMyBalance = async () => {
 		try {
 			const res = await getBalance();
