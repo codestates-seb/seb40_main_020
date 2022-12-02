@@ -97,6 +97,6 @@ public class TransactionHistoryService {
     public List<TransactionHistory> findTransactionHistoryByCoin(String code) {
         User user = loggedInUserInfoUtils.extractUser();
         Coin coin = coinService.findCoin(code);
-        return transactionHistoryRepository.findTop10ByUserAndCoinOrderByCreatedAtDesc(user, coin);
+        return transactionHistoryRepository.findTop10ByUserAndCoinAndTransactionTypeOrTransactionTypeOrderByCreatedAtDesc(user, coin, TransactionType.BID, TransactionType.ASK);
     }
 }
