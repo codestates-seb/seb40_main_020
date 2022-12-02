@@ -5,13 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -38,7 +36,7 @@ public class ChatMessageRepository {
     public void save(ChatMessage chatMessage) {
         String key = getKey(chatMessage.getChatRoomId());
         String id = UUID.randomUUID().toString();
-        chatMessage.setId(id);
+        chatMessage.setChatMessageId(id);
         operations.leftPush(key, chatMessage);
     }
     public void removeAllInChatRoom(Integer chatRoomId) {

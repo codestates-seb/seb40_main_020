@@ -4,18 +4,20 @@ package OneCoin.Server.chat.entity;
 import OneCoin.Server.chat.constant.MessageType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import org.hibernate.id.GUIDGenerator;
 
-import java.util.UUID;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
 public class ChatMessage {
+    @Id
     @JsonProperty("id")
-    private String id;
+    private String chatMessageId;
     @JsonProperty("type")
     private MessageType type;
     @JsonProperty("message")
