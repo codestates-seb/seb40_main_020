@@ -1,7 +1,7 @@
 import StompJs from 'stompjs';
 import SockJS from 'sockjs-client';
 import { ChatMsg, ChatData, RoomsInfo } from '../../utills/types';
-import api from '../user';
+import api from '..';
 
 type AddMsg = (chatData: ChatData[]) => void;
 type SetRoomsInfo = React.Dispatch<React.SetStateAction<RoomsInfo[]>>;

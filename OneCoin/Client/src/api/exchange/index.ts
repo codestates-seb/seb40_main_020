@@ -2,7 +2,7 @@ import StompJs from 'stompjs';
 import SockJS from 'sockjs-client';
 import { Ticker, OrderBook, CoinDataType, Trade } from '../../utills/types';
 import axios from 'axios';
-import api from '../user';
+import api from '..';
 
 type T = (
 	coinData: CoinDataType[],
