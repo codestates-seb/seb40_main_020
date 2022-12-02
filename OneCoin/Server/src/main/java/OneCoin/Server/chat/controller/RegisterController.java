@@ -33,7 +33,7 @@ public class RegisterController {
     public void registerUserAndSendEnterMessage(String sessionId, Integer chatRoomId, User user) {
         if (chatRoomId == null) return; //채팅 서비스가 아닌 경우
         chatRoomService.saveUserInChatRoom(chatRoomId, sessionId, user);
-        if (user != null && chatRoomService.isUserInChatRoom(chatRoomId, user.getEmail())) { //로그인한 유저인 경우
+        if (user != null && chatRoomService.isUserInChatRoom(chatRoomId, user.getEmail()) ) { //로그인한 유저인 경우
             ChatMessage messageToUse = chatService.makeEnterOrLeaveChatMessage(MessageType.ENTER, chatRoomId, user);
             ChatResponseDto chatResponseDto = chatMapper.chatMessageToResponseDto(messageToUse);
             redisTemplate.convertAndSend(channelTopic.getTopic(), chatResponseDto);
