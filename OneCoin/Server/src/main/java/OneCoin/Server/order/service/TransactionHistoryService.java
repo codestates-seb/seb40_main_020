@@ -11,6 +11,7 @@ import OneCoin.Server.order.entity.enums.Period;
 import OneCoin.Server.order.entity.enums.TransactionType;
 import OneCoin.Server.order.mapper.TransactionHistoryMapper;
 import OneCoin.Server.order.repository.TransactionHistoryRepository;
+import OneCoin.Server.swap.entity.Swap;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,14 @@ public class TransactionHistoryService {
         User user = userService.findVerifiedUser(order.getUserId());
         Coin coin = coinService.findCoin(order.getCode());
         TransactionHistory transactionHistory = mapper.orderToTransactionHistory(order, user, coin);
+
+        transactionHistoryRepository.save(transactionHistory);
+    }
+
+    public void createTransactionHistoryBySwap(Swap swap) {
+        User user = userService.findVerifiedUser(swap.getUser().getUserId());
+        Coin coin = coinService.findCoin(swap.getGivenCoin().getCode());
+        TransactionHistory transactionHistory = mapper.swapToTransactionHistory(swap);
 
         transactionHistoryRepository.save(transactionHistory);
     }
