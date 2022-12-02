@@ -8,13 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.in;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -38,7 +35,7 @@ public class ChatMessageRepositoryTest {
         numberOfChatsToCreate = 120L;
         chatRoomId = 1000;
         for (long i = 1; i <= numberOfChatsToCreate; i++) {
-            chatMessageRepository.save(webSocketTestUtils.chatMessageMaker(i, chatRoomId));
+            chatMessageRepository.save(webSocketTestUtils.makeChatMessage(i, chatRoomId));
         }
     }
 
@@ -76,7 +73,7 @@ public class ChatMessageRepositoryTest {
         ChatMessage latest = chatMessageList.get(0);
         long numberOfChatsToCreate = 10;
         for (long i = 1; i <= numberOfChatsToCreate; i++) {
-            chatMessageRepository.save(webSocketTestUtils.chatMessageMaker(i, chatRoomId));
+            chatMessageRepository.save(webSocketTestUtils.makeChatMessage(i, chatRoomId));
         }
 
         //when

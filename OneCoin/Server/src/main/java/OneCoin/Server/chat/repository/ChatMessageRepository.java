@@ -39,6 +39,7 @@ public class ChatMessageRepository {
         chatMessage.setChatMessageId(id);
         operations.leftPush(key, chatMessage);
     }
+
     public void removeAllInChatRoom(Integer chatRoomId) {
         redisTemplate.delete(getKey(chatRoomId));
     }
@@ -60,6 +61,7 @@ public class ChatMessageRepository {
     public Long getIndex(Integer chatRoomId, ChatMessage chatMessage) {
         return operations.lastIndexOf(getKey(chatRoomId), chatMessage);
     }
+
     private String getKey(Integer chatRoomId) {
         return "ChatRoom" + String.valueOf(chatRoomId) + "Message";
     }

@@ -3,7 +3,6 @@ package OneCoin.Server.chat.repository;
 import OneCoin.Server.chat.entity.ChatMessage;
 import OneCoin.Server.chat.testUtil.WebSocketTestUtils;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ public class ChatMessageRdbRepositoryTest {
         numberOfChatsToCreate = 120L;
         chatRoomId = 1000;
         for (long i = 1; i <= numberOfChatsToCreate; i++) {
-            ChatMessage chatMessage = webSocketTestUtils.chatMessageMaker(i, chatRoomId);
+            ChatMessage chatMessage = webSocketTestUtils.makeChatMessage(i, chatRoomId);
             chatMessage.setChatMessageId(UUID.randomUUID().toString());
             chatMessageRdbRepository.save(chatMessage);
         }

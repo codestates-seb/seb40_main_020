@@ -128,7 +128,7 @@ public class WebSocketTestUtils {
         return httpHeaders;
     }
 
-    public ChatMessage chatMessageMaker(long userId, Integer chatRoomId) {
+    public ChatMessage makeChatMessage(long userId, Integer chatRoomId) {
         return new ChatMessage(
                 null,
                 MessageType.TALK,
