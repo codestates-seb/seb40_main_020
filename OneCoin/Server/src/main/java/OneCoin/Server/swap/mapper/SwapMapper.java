@@ -1,6 +1,8 @@
 package OneCoin.Server.swap.mapper;
 
+import OneCoin.Server.order.entity.TransactionHistory;
 import OneCoin.Server.order.entity.Wallet;
+import OneCoin.Server.order.entity.enums.TransactionType;
 import OneCoin.Server.swap.dto.SwapDto;
 import OneCoin.Server.swap.entity.ExchangeRate;
 import OneCoin.Server.swap.entity.Swap;
@@ -8,6 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -41,6 +44,22 @@ public interface SwapMapper {
                 .code(swap.getTakenCoin().getCode())
                 .amount(swap.getTakenAmount())
                 .averagePrice(swap.getTakenCoinPrice())
+                .build();
+    }
+
+    default TransactionHistory swapToTransactionHistory(Swap swap) {
+        TransactionHistory transactionHistory = new TransactionHistory();
+
+        return transactionHistory.builder()
+                .user(swap.getUser())
+                .coin(swap.getGivenCoin())
+                .transactionType(TransactionType.SWAP)
+                .amount(swap.getGivenAmount())
+                .price(swap.getGivenCoinPrice())
+                .totalAmount(swap.getGivenAmount().multiply(swap.getGivenCoinPrice()))
+                .commission(Double.parseDouble(swap.getCommission().toString()))
+                .settledAmount(swap.getGivenAmount().subtract(swap.getCommission()))
+                .orderTime(LocalDateTime.now())
                 .build();
     }
 }
