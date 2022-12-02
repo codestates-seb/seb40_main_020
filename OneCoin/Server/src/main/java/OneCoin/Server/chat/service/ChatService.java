@@ -1,8 +1,11 @@
 package OneCoin.Server.chat.service;
 
 import OneCoin.Server.chat.entity.ChatMessage;
+import OneCoin.Server.chat.entity.ChatRoom;
+import OneCoin.Server.chat.repository.ChatMessageRdbRepository;
 import OneCoin.Server.chat.repository.ChatMessageRepository;
 import OneCoin.Server.chat.constant.MessageType;
+import OneCoin.Server.chat.repository.LastSavedRepository;
 import OneCoin.Server.config.auth.utils.UserUtilsForWebSocket;
 import OneCoin.Server.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +21,9 @@ import java.util.Map;
 public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final UserUtilsForWebSocket userInfoUtils;
-    private final Long NUMBER_OF_CHATS_TO_SEND_WHEN_ENTER = 30L;
+    private final ChatMessageRdbRepository chatMessageRdbRepository;
+    private final LastSavedRepository lastSavedRepository;
+    private final ChatRoomService chatRoomService;
 
     public ChatMessage makeEnterOrLeaveChatMessage(MessageType messageType, Integer chatRoomId, User user) {
         ChatMessage chatMessage = ChatMessage.builder()
@@ -68,6 +73,25 @@ public class ChatService {
     }
 
     public List<ChatMessage> getChatMessages(Integer chatRoomId) {
-        return chatMessageRepository.getMessageFromRoomLimitN(chatRoomId, NUMBER_OF_CHATS_TO_SEND_WHEN_ENTER);
+        return chatMessageRepository.getMessageFromRoom(chatRoomId);
+    }
+
+    public void saveInMemoryChatMessagesToRdb() {
+        List<ChatRoom> chatRooms = chatRoomService.findAllChatRooms();
+        for(ChatRoom chatRoom : chatRooms) {
+            Integer chatRoomId = chatRoom.getChatRoomId();
+            ChatMessage lastSaved = lastSavedRepository.get(chatRoomId);
+            List<ChatMessage> messages;
+            if(lastSaved == null) {
+                messages = chatMessageRepository.findAll(chatRoomId);
+            } else {
+                Long index = chatMessageRepository.getIndex(chatRoomId, lastSaved);
+                messages = chatMessageRepository.findAllAfter(chatRoomId, index);
+            }
+            if(messages.size() == 0) return;
+            ChatMessage latestMessage = messages.get(messages.size() - 1);
+            lastSavedRepository.save(chatRoomId, latestMessage);
+            chatMessageRdbRepository.saveAll(messages);
+        }
     }
 }
