@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ChatRoomUtils {
-    public final String KEY_FOR_CHAT_ROOMS = "chatRooms";
+    public final String KEY_FOR_CHAT_ROOMS = "ChatRooms";
     private final String PREFIX_OF_KEY = "ChatRoom";
     private final String SUFFIX_OF_KEY = "Session";
 
