@@ -1,5 +1,6 @@
 package OneCoin.Server.swap.mapper;
 
+import OneCoin.Server.order.entity.Wallet;
 import OneCoin.Server.swap.dto.SwapDto;
 import OneCoin.Server.swap.entity.ExchangeRate;
 import OneCoin.Server.swap.entity.Swap;
@@ -20,4 +21,26 @@ public interface SwapMapper {
     SwapDto.Response swapToSwapResponseDto(Swap swap);
     SwapDto.ExchangeRate exchangeRateToSwapExchangeRate(ExchangeRate exchangeRate);
     List<SwapDto.Response> swapsToSwapResponses(List<Swap> swaps);
+
+    default Wallet swapToGivenWallet(Swap swap) {
+        Wallet wallet = new Wallet();
+
+        return wallet.builder()
+                .userId(swap.getUser().getUserId())
+                .code(swap.getGivenCoin().getCode())
+                .amount(swap.getGivenAmount())
+                .averagePrice(swap.getGivenCoinPrice())
+                .build();
+    }
+
+    default Wallet swapToTakenWallet(Swap swap) {
+        Wallet wallet = new Wallet();
+
+        return wallet.builder()
+                .userId(swap.getUser().getUserId())
+                .code(swap.getTakenCoin().getCode())
+                .amount(swap.getTakenAmount())
+                .averagePrice(swap.getTakenCoinPrice())
+                .build();
+    }
 }
