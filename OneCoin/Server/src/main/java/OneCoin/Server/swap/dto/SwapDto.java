@@ -1,12 +1,12 @@
 package OneCoin.Server.swap.dto;
 
+import OneCoin.Server.validator.Amount;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.PositiveOrZero;
 
 public class SwapDto {
     @Getter
@@ -20,7 +20,7 @@ public class SwapDto {
         @NotBlank
         private String takenCoin;
 
-        @PositiveOrZero
+        @Amount
         private String givenAmount;
     }
 
