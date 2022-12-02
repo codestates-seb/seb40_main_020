@@ -2,8 +2,10 @@ package OneCoin.Server.chat.repository;
 
 import OneCoin.Server.chat.entity.ChatMessage;
 import OneCoin.Server.chat.testUtil.WebSocketTestUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.ListOperations;
@@ -26,8 +28,6 @@ public class ChatMessageRepositoryTest {
     private RedisTemplate<String, ChatMessage> redisTemplate;
     // <chatRoomKey, ChatMessage>
     private ListOperations<String, ChatMessage> operations;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @BeforeEach
     void saveMessages() {
@@ -89,10 +89,20 @@ public class ChatMessageRepositoryTest {
         //given
         Long index = 10L;
         //when
+        List<ChatMessage> all = chatMessageRepository.findAll(chatRoomId);
         List<ChatMessage> chatMessageList = chatMessageRepository.findAllAfter(chatRoomId, index);
+
+        ChatMessage chatMessageAtIndexPlusOne = all.get(index.intValue() + 1);
+        ChatMessage lastMessageRetrieve = chatMessageList.get(0);
+        ChatMessage latestMessage = chatMessageList.get(chatMessageList.size() - 1);
         //then
         assertThat(chatMessageList.size())
-                .isEqualTo(11);
+                .isEqualTo(Long.valueOf(numberOfChatsToCreate - index - 1L).intValue());
+        //index 바로 다음부터
+        assertThat(chatMessageAtIndexPlusOne.getMessage())
+                .isEqualTo(lastMessageRetrieve.getMessage());
+        //가장 최근에 저장된 것까지 리턴
+        assertThat(latestMessage.getUserId())
+                .isEqualTo(numberOfChatsToCreate);
     }
-
 }
