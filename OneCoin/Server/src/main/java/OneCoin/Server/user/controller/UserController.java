@@ -60,15 +60,12 @@ public class UserController {
         );
     }
 
-    @PatchMapping("/{user-id}")
+    @PatchMapping("/display-name")
     public ResponseEntity patchUser(
-            @PathVariable("user-id") @Positive long userId,
             @Valid @RequestBody UserDto.Patch requestBody,
             @AuthenticationPrincipal Map<String, Object> userInfo) {
-        userService.isValidId(userId, Long.parseLong(userInfo.get("id").toString()));
-
         User user = userMapper.userPatchToUser(requestBody);
-        user.setUserId(userId);
+        user.setUserId(Long.parseLong(userInfo.get("id").toString()));
 
         User updatedUser = userService.updateUser(user);
 
@@ -114,6 +111,13 @@ public class UserController {
                 new PageResponseDto<>(userMapper.usersToUserResponses(users),
                         userPage),
                 HttpStatus.OK);
+    }
+
+    // 토큰으로 단일 회원 정보
+    @GetMapping("/my-information")
+    public ResponseEntity getUser( @AuthenticationPrincipal Map<String, Object> userInfo) {
+        User user = userService.findUser(Long.parseLong(userInfo.get("id").toString()));
+        return new ResponseEntity<>(new SingleResponseDto<>(userMapper.userToUserResponse(user)), HttpStatus.OK);
     }
 
     // 단일 회원 정보
