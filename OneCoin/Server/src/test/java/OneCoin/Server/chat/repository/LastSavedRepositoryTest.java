@@ -11,9 +11,9 @@ import java.util.UUID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
-public class LastChatMessageSavedRepositoryTest {
+public class LastSavedRepositoryTest {
     @Autowired
-    private LastChatMessageSavedRepository lastChatMessageSavedRepository;
+    private LastSavedRepository lastSavedRepository;
     @Autowired
     private WebSocketTestUtils webSocketTestUtils;
 
@@ -28,9 +28,9 @@ public class LastChatMessageSavedRepositoryTest {
         ChatMessage chatMessage2 = webSocketTestUtils.makeChatMessage(userId + 20L, chatRoomId);
         chatMessage.setChatMessageId(UUID.randomUUID().toString());
         //when
-        lastChatMessageSavedRepository.save(chatRoomId, chatMessage);
-        lastChatMessageSavedRepository.save(chatRoomId, chatMessage2);
-        ChatMessage chatMessageReceived = lastChatMessageSavedRepository.get(chatRoomId);
+        lastSavedRepository.save(chatRoomId, chatMessage);
+        lastSavedRepository.save(chatRoomId, chatMessage2);
+        ChatMessage chatMessageReceived = lastSavedRepository.get(chatRoomId);
         //then
         assertThat(chatMessageReceived.getUserId())
                 .isEqualTo(userId + 20L);

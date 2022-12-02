@@ -12,7 +12,7 @@ import javax.annotation.PostConstruct;
 
 @RequiredArgsConstructor
 @Repository
-public class LastChatMessageSavedRepository {
+public class LastSavedRepository {
     private final RedisTemplate<String, ChatMessage> redisTemplate;
     private final ChatRoomUtils chatRoomUtils;
     private final ObjectMapper objectMapper;
