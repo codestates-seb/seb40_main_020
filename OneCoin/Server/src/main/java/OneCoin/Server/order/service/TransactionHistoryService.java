@@ -9,7 +9,7 @@ import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.entity.TransactionHistory;
 import OneCoin.Server.order.entity.enums.Period;
 import OneCoin.Server.order.entity.enums.TransactionType;
-import OneCoin.Server.order.mapper.TransactionHistoryOrderMapper;
+import OneCoin.Server.order.mapper.TransactionHistoryMapper;
 import OneCoin.Server.order.repository.TransactionHistoryRepository;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.service.UserService;
@@ -28,7 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TransactionHistoryService {
     private final TransactionHistoryRepository transactionHistoryRepository;
-    private final TransactionHistoryOrderMapper mapper;
+    private final TransactionHistoryMapper mapper;
     private final UserService userService;
     private final CoinService coinService;
     private final LoggedInUserInfoUtils loggedInUserInfoUtils;
