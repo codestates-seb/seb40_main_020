@@ -1,7 +1,6 @@
 package OneCoin.Server.swap.mapper;
 
 import OneCoin.Server.order.entity.TransactionHistory;
-import OneCoin.Server.order.entity.Wallet;
 import OneCoin.Server.order.entity.enums.TransactionType;
 import OneCoin.Server.swap.dto.SwapDto;
 import OneCoin.Server.swap.entity.ExchangeRate;
@@ -25,32 +24,8 @@ public interface SwapMapper {
     SwapDto.ExchangeRate exchangeRateToSwapExchangeRate(ExchangeRate exchangeRate);
     List<SwapDto.Response> swapsToSwapResponses(List<Swap> swaps);
 
-    default Wallet swapToGivenWallet(Swap swap) {
-        Wallet wallet = new Wallet();
-
-        return wallet.builder()
-                .userId(swap.getUser().getUserId())
-                .code(swap.getGivenCoin().getCode())
-                .amount(swap.getGivenAmount())
-                .averagePrice(swap.getGivenCoinPrice())
-                .build();
-    }
-
-    default Wallet swapToTakenWallet(Swap swap) {
-        Wallet wallet = new Wallet();
-
-        return wallet.builder()
-                .userId(swap.getUser().getUserId())
-                .code(swap.getTakenCoin().getCode())
-                .amount(swap.getTakenAmount())
-                .averagePrice(swap.getTakenCoinPrice())
-                .build();
-    }
-
     default TransactionHistory swapToTransactionHistory(Swap swap) {
-        TransactionHistory transactionHistory = new TransactionHistory();
-
-        return transactionHistory.builder()
+        return TransactionHistory.builder()
                 .user(swap.getUser())
                 .coin(swap.getGivenCoin())
                 .transactionType(TransactionType.SWAP)
