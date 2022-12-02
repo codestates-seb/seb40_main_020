@@ -130,6 +130,7 @@ public class WebSocketTestUtils {
 
     public ChatMessage chatMessageMaker(long userId, Integer chatRoomId) {
         return new ChatMessage(
+                null,
                 MessageType.TALK,
                 "hello" + userId,
                 LocalDateTime.now().toString(),
