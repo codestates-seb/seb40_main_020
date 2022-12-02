@@ -28,9 +28,12 @@ public class LastSavedRepository {
     }
 
     public ChatMessage get(Integer chatRoomId) {
-        return objectMapper.convertValue(
-                operations.get(chatRoomUtils.makeLastChatMessageKey(chatRoomId)),
-                ChatMessage.class
-                );
+        Object chatMessage = operations.get(chatRoomUtils.makeLastChatMessageKey(chatRoomId));
+        if (chatMessage == null) return null;
+        return objectMapper.convertValue(chatMessage, ChatMessage.class);
+    }
+
+    public void delete(Integer chatRoomId) {
+        operations.getAndDelete(chatRoomUtils.makeLastChatMessageKey(chatRoomId));
     }
 }
