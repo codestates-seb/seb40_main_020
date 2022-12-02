@@ -29,15 +29,20 @@ function CoinList({ coinInfoHandler }: Props) {
 		const changeRate = ticker?.change_rate ? ticker.change_rate : 0;
 		const changePrice = ticker?.change_price ? ticker.change_price : 0;
 		const newCoinInfo = { coin: v.coin, code: v.code, symbol: v.symbol };
-
 		return (
 			<tr key={i} onClick={() => coinInfoHandler(newCoinInfo)}>
 				<td>{v.coin}</td>
 				<td className={todayRate}>{Number(tradePrice).toLocaleString()}</td>
 				<td className={todayRate}>
 					<div>
-						<span>{(Number(changeRate) * 100).toFixed(2) + '%'}</span>
-						<span>{Number(changePrice).toLocaleString()}</span>
+						<span>
+							{change === 'FALL' ? '-' : ''}
+							{(Number(changeRate) * 100).toFixed(2) + '%'}
+						</span>
+						<span>
+							{change === 'FALL' ? '-' : ''}
+							{Number(changePrice).toLocaleString()}
+						</span>
 					</div>
 				</td>
 			</tr>

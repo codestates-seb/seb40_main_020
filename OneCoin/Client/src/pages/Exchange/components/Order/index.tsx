@@ -2,16 +2,29 @@ import Button from 'components/Button';
 import React, { useState, useEffect } from 'react';
 import { OrderComponent } from './style';
 import { CoinInfo } from '../../../../utills/types';
+import { postOrder, getNonTrading } from '../../../../api/exchange';
+import { getBalance } from '../../../../api/balance';
+import {
+	nonTradingOdersState,
+	myCoinsState,
+	coinInfoState,
+	isLogin,
+} from '../../../../store';
+import { useRecoilValue, useRecoilState } from 'recoil';
 
 interface Props {
 	inputPrice: number;
 	setInputPrice: React.Dispatch<React.SetStateAction<number>>;
-	coinInfo: CoinInfo;
 }
 
-function Order({ inputPrice, setInputPrice, coinInfo }: Props) {
-	const money = 50000000;
-	const coin = 2.64345;
+function Order({ inputPrice, setInputPrice }: Props) {
+	const login = useRecoilValue(isLogin);
+	const [money, setMoney] = useState(0);
+	const [coin, setCoin] = useState(0);
+	const [nonTradingOrders, setNonTradingOrders] =
+		useRecoilState(nonTradingOdersState);
+	const myCoins = useRecoilValue(myCoinsState);
+	const coinInfo = useRecoilValue(coinInfoState);
 
 	const [order, setOrder] = useState('매수');
 	const menu = ['매수', '매도'];
@@ -26,6 +39,18 @@ function Order({ inputPrice, setInputPrice, coinInfo }: Props) {
 	useEffect(() => {
 		setTotal(Math.round(inputPrice * +quantity));
 	}, [inputPrice]);
+	useEffect(() => {
+		if (login) getMyBalance();
+	}, []);
+	const getMyBalance = async () => {
+		try {
+			const res = await getBalance();
+			setMoney(res);
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
 	const quantityChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (!Number.isNaN(+e.target.value)) {
 			setQuantity(e.target.value);
@@ -45,8 +70,9 @@ function Order({ inputPrice, setInputPrice, coinInfo }: Props) {
 	const sizeBtnClickHandler = (size: number) => {
 		if (order === '매수') {
 			const sizePrice = (money / 100) * size;
-			setTotal(sizePrice);
-			setQuantity((sizePrice / inputPrice).toFixed(8));
+			const commission = sizePrice * 0.0005;
+			setTotal(sizePrice - commission);
+			setQuantity(((sizePrice - commission) / inputPrice).toFixed(8));
 		} else {
 			const sizePrice = (coin / 100) * size;
 			setQuantity(sizePrice + '');
@@ -67,14 +93,71 @@ function Order({ inputPrice, setInputPrice, coinInfo }: Props) {
 				? inputPrice + additionalValue
 				: inputPrice - additionalValue;
 		setInputPrice(newInputPrice);
-		console.log(Math.round(newInputPrice * +quantity).toLocaleString());
 		setTotal(Math.round(newInputPrice * +quantity));
 	};
+	const getNonTradingData = async () => {
+		try {
+			const res = await getNonTrading();
+			setNonTradingOrders([...res]);
+		} catch (err) {
+			console.log(err);
+		}
+	};
 
+	useEffect(() => {
+		const m = myCoins !== undefined && myCoins.length;
+		const n = nonTradingOrders !== undefined && nonTradingOrders.length;
+		if (m && n && isLogin) {
+			const c = myCoins.filter((v) => v.code === coinInfo.code)[0].amount;
+			const non = nonTradingOrders
+				.filter((v) => v.code === coinInfo.code)
+				.reduce((a, b) => {
+					if (b.orderType === 'ASK') return a + Number(b.amount);
+					else return a;
+				}, 0);
+			setCoin(+c - non);
+		} else if (m && isLogin) {
+			const c = myCoins.filter((v) => v.code === coinInfo.code)[0].amount;
+			setCoin(+c);
+		}
+	}, [nonTradingOrders, myCoins, order]);
 	const tradeHandler = () => {
-		console.log(
-			`price = ${inputPrice}, quantity = ${quantity}, total=${total}`
-		);
+		if (inputPrice === 0) return alert('가격을 확인해 주세요');
+		else if (login) {
+			const t = async () => {
+				try {
+					await postOrder(coinInfo.code, data);
+					await getNonTradingData();
+					await getMyBalance();
+				} catch (err) {
+					console.log(err);
+				}
+			};
+			const data = {
+				limit: inputPrice + '',
+				market: '0',
+				stopLimit: '0',
+				amount: quantity,
+				orderType: 'BID',
+			};
+
+			if (order === '매수') {
+				if (total * 1.0005 > money) {
+					alert('주문수량을 확인해 주세요');
+				} else {
+					data.orderType = 'BID';
+					t();
+				}
+			} else if (order === '매도') {
+				if (coin < +quantity) alert('주문수량을 확인해 주세요');
+				else {
+					data.orderType = 'ASK';
+					t();
+				}
+			}
+		} else {
+			alert('로그인이 필요한 서비스입니다.');
+		}
 	};
 
 	return (
@@ -95,7 +178,7 @@ function Order({ inputPrice, setInputPrice, coinInfo }: Props) {
 					<div className="order-title">주문가능</div>
 					<div>
 						{order === '매수'
-							? `${money.toLocaleString()} KRW`
+							? `${money ? money.toLocaleString() : 0} KRW`
 							: `${coin} ${coinInfo.symbol.replace('KRW', '')}`}
 					</div>
 				</div>

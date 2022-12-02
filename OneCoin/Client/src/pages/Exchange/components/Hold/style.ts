@@ -48,7 +48,7 @@ export const HoldComponent = styled.div`
 			justify-content: start;
 			margin-left: 1rem;
 			> div {
-				margin: 0 1rem;
+				margin: 0.25rem 1rem;
 			}
 		}
 	}

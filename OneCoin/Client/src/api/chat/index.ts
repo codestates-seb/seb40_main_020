@@ -1,26 +1,26 @@
-import axios from 'axios';
 import StompJs from 'stompjs';
 import SockJS from 'sockjs-client';
-import { SERVER_URL } from '../';
 import { ChatMsg, ChatData, RoomsInfo } from '../../utills/types';
+import api from '../user';
 
 type AddMsg = (chatData: ChatData[]) => void;
 type SetRoomsInfo = React.Dispatch<React.SetStateAction<RoomsInfo[]>>;
 type SetUserId = React.Dispatch<React.SetStateAction<number | null>>;
 
 let client: StompJs.Client;
+let subscriptions: StompJs.Subscription;
 export const enterRoom = (
-	Authorization: string,
 	room: number,
 	addMsgData: AddMsg,
 	setRoomsInfo: SetRoomsInfo,
 	setUserId: SetUserId
 ) => {
-	const sock = new SockJS(`${SERVER_URL}/ws/chat`);
+	const sock = new SockJS(`${process.env.REACT_APP_SERVER_URL}/ws/chat`);
 	client = StompJs.over(sock);
 	client.debug = function () {
 		return;
 	};
+	const Authorization = sessionStorage.getItem('login-token') as string;
 	const headers = { Authorization };
 	client.connect(headers, (frame) => {
 		const headers = frame?.headers;
@@ -46,17 +46,15 @@ const subscribeRoomsInfo = (setUsers: SetRoomsInfo) => {
 		setUsers(data);
 	});
 };
-
 const subscribeRoom = (room: number, addMsgData: AddMsg) => {
-	client.subscribe(`/topic/rooms/${room}`, (msg) => {
+	subscriptions = client.subscribe(`/topic/rooms/${room}`, (msg) => {
 		const newMsg = JSON.parse(msg.body);
-		console.log('얼마나');
 		addMsgData([newMsg]);
 	});
 };
 
 export const changeRoom = (room: number, ch: number, addMsgData: AddMsg) => {
-	client.unsubscribe(`/topic/rooms/${room}`);
+	subscriptions.unsubscribe();
 	subscribeRoom(ch, addMsgData);
 };
 
@@ -72,7 +70,7 @@ export const sendMsg = (data: ChatMsg) => {
 
 export const getChatHistory = async (room: number) => {
 	try {
-		const res = await axios.get(`${SERVER_URL}/ws/chat/rooms/${room}/messages`);
+		const res = await api.get(`/ws/chat/rooms/${room}/messages`);
 		return res.data.data;
 	} catch (err) {
 		console.log(err);

@@ -1,8 +1,8 @@
 import StompJs from 'stompjs';
 import SockJS from 'sockjs-client';
-import { Ticker, OrderBook, CoinDataType } from '../../utills/types';
-import { SERVER_URL } from '../';
+import { Ticker, OrderBook, CoinDataType, Trade } from '../../utills/types';
 import axios from 'axios';
+import api from '../user';
 
 type T = (
 	coinData: CoinDataType[],
@@ -12,7 +12,9 @@ type T = (
 let client: StompJs.Client;
 
 export const getTradeData: T = (coinData, setCoinData) => {
-	const socket = new SockJS(`${SERVER_URL}/ws/upbit-info`);
+	const socket = new SockJS(
+		`${process.env.REACT_APP_SERVER_URL}/ws/upbit-info`
+	);
 	client = StompJs.over(socket);
 	client.debug = function () {
 		return;
@@ -54,3 +56,64 @@ export async function getChartData(time: number, code: string, date: string) {
 		console.log(err);
 	}
 }
+
+export const getNonTrading = async () => {
+	try {
+		const res = await api.get(`/api/order/non-trading`);
+		return res.data.data;
+	} catch (err) {
+		console.log(err);
+	}
+};
+
+export const getWallet = async () => {
+	try {
+		const res = await api.get(`/api/order/my-coin`);
+		return res.data.data;
+	} catch (err) {
+		console.log(err);
+	}
+};
+
+export const getCompleteTrade = async (code: string) => {
+	try {
+		const res = await api.get(`/api/order/completion/${code}`);
+		return res.data.data;
+	} catch (err) {
+		console.log(err);
+	}
+};
+
+export const getCompleteTradePage = async (
+	page: number,
+	period: string,
+	type: string,
+	code?: string
+) => {
+	try {
+		const c = (code as string) ? `&code=${code}` : '';
+		const res = await api.get(
+			`/api/order/completion?period=${period}&type=${type}&page=${page}${c}`
+		);
+		return res.data;
+	} catch (err) {
+		console.log(err);
+	}
+};
+
+export const postOrder = async (code: string, data: Trade) => {
+	try {
+		const res = await api.post(`/api/order/${code}`, data);
+		return res.data;
+	} catch (err) {
+		console.log(err);
+	}
+};
+export const deleteOrder = async (orderId: number) => {
+	try {
+		const res = await api.delete(`/api/order/non-trading/${orderId}`);
+		return res;
+	} catch (err) {
+		console.log(err);
+	}
+};

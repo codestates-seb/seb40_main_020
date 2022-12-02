@@ -1,12 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Tab from 'components/Tab';
 import { GrRefresh } from 'react-icons/gr';
 
 import { Wrapper, Info } from './style';
 import ChargingTab from '../ChargingTab';
 import DepositDetailTab from '../DepositDetailTab/index';
+import { getBalance } from '../../../../api/balance';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { myBalanceState, isLogin } from '../../../../store';
 
 const DepositTab = () => {
+	const login = useRecoilState(isLogin);
+	const [myBalance, setMyBalance] = useRecoilState(myBalanceState);
+	const getBalanceHandler = async () => {
+		try {
+			const res = await getBalance();
+			setMyBalance(res);
+		} catch (err) {
+			console.log(err);
+		}
+	};
+	useEffect(() => {
+		if (login) getBalanceHandler();
+	}, []);
 	return (
 		<Wrapper>
 			<Info>
@@ -18,7 +34,7 @@ const DepositTab = () => {
 			<Info>
 				보유금액
 				<span>
-					<strong>0</strong> KRW
+					<strong>{myBalance && myBalance.toLocaleString()}</strong> KRW
 				</span>
 			</Info>
 			<Tab

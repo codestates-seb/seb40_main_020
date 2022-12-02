@@ -20,13 +20,6 @@ function QuoteList({ orderBook, prcieClickHandler, tradePrice }: Props) {
 		}
 	}, [orderBook]);
 
-	useEffect(() => {
-		scrollRef?.current?.scrollIntoView({
-			behavior: 'smooth',
-			block: 'center',
-			inline: 'nearest',
-		});
-	}, [scrollRef]);
 	return (
 		<QuoteListComponent className="quote-wrapper">
 			<div className="normal">일반호가</div>

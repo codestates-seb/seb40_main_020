@@ -1,7 +1,7 @@
 export const myCoinsTitleMenu = [
 	'코인명',
-	'보유(평가금)',
 	'매수평균가',
+	'보유(평가금)',
 	'수익률',
 ];
 export const completeOrdersTitleMenu = [

@@ -1,12 +1,21 @@
 import { atom } from 'recoil';
-import { CoinDataType, ChatData } from '../utills/types';
+import {
+	CoinDataType,
+	CoinInfo,
+	MyCoins,
+	NonTradingOders,
+} from '../utills/types';
 
-const symbolState = atom({
-	key: 'symbolState',
-	default: { coin: '비트코인', symbol: 'KRW-BTC' },
+const coinInfoState = atom<CoinInfo>({
+	key: 'coinInfo',
+	default: {
+		coin: '비트코인',
+		code: 'KRW-BTC',
+		symbol: 'BTCKRW',
+	},
 });
 const coinDataState = atom<CoinDataType[]>({
-	key: 'coinOrderbookState',
+	key: 'coinDataState',
 	default: [
 		{
 			coin: '비트코인',
@@ -18,23 +27,23 @@ const coinDataState = atom<CoinDataType[]>({
 			code: 'KRW-ETH',
 			symbol: 'ETHKRW',
 		},
-		{
-			coin: '코스모스',
-			code: 'KRW-ATOM',
-			symbol: 'ATOMKRW',
-		},
-		{
-			coin: '리플',
-			code: 'KRW-XRP',
-			symbol: 'XRPKRW',
-		},
-		{
-			coin: '도지',
-			code: 'KRW-DOGE',
-			symbol: 'DOGEKRW',
-		},
 	],
 	dangerouslyAllowMutability: true,
+});
+
+const myCoinsState = atom<MyCoins[]>({
+	key: 'myCoinsState',
+	default: [],
+});
+
+const nonTradingOdersState = atom<NonTradingOders[]>({
+	key: 'nonTradingOdersState',
+	default: [],
+});
+
+const myBalanceState = atom({
+	key: 'myBalanceState',
+	default: 0,
 });
 
 const isLogin = atom({
@@ -42,4 +51,11 @@ const isLogin = atom({
 	default: false,
 });
 
-export { symbolState, coinDataState, isLogin };
+export {
+	coinInfoState,
+	coinDataState,
+	isLogin,
+	nonTradingOdersState,
+	myCoinsState,
+	myBalanceState,
+};

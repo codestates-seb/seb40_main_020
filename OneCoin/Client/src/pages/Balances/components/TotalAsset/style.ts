@@ -1,5 +1,13 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { flexRowBetween } from 'styles';
+
+const rowHeight = css`
+	height: 30px;
+	padding: 10px;
+	vertical-align: middle;
+	border-bottom: 1px solid var(--borderColor);
+	line-height: normal;
+`;
 
 export const Wrapper = styled.div`
 	flex: 1;
@@ -35,6 +43,27 @@ export const Wrapper = styled.div`
 			transform: translate(-50%, -50%);
 			cursor: pointer;
 			font-size: 1.5rem;
+		}
+	}
+	table {
+		width: 100%;
+		margin-top: 30px;
+		thead {
+			th {
+				${rowHeight}
+			}
+			border-top: 1px solid var(--borderColor);
+		}
+		tbody {
+			text-align: center;
+			td {
+				${rowHeight}
+			}
+			.none-data {
+				display: block;
+				width: 100%;
+				margin: 50px auto;
+			}
 		}
 	}
 `;

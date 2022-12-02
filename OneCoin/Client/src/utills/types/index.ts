@@ -1,6 +1,6 @@
 interface CoinBase {
-	code?: string;
-	amount?: string;
+	code: string;
+	amount: string;
 }
 
 export interface CoinInfo {
@@ -10,23 +10,26 @@ export interface CoinInfo {
 }
 
 export interface MyCoins extends CoinBase {
-	priceEvaluation?: string;
-	averagePrice?: string;
-	change?: string;
-	changePrice?: string;
-	changeRate?: string;
+	[key: string]: string | number;
+	priceEvaluation: string;
+	averagePrice: string;
+	change: string;
+	changePrice: string;
+	changeRate: string;
 }
 export interface CompleteOrders extends CoinBase {
-	completedTime?: string;
-	orderType?: string;
-	price?: string;
+	completedTime: string;
+	orderType: string;
+	price: string;
 }
 export interface NonTradingOders extends CoinBase {
-	orderTime?: string;
-	orderType?: string;
-	limit?: string;
-	market?: string;
-	stopLimit?: string;
+	orderTime: string;
+	orderType: string;
+	limit: string;
+	market: string;
+	stopLimit: string;
+	orderId: number;
+	completedAmount: string;
 }
 
 export interface CoinDataType {
@@ -73,14 +76,14 @@ export interface OrderBook {
 	askInfo: AskOrder[];
 	bidInfo: BidOrder[];
 }
-interface Trade {
-	limit: number;
+export interface Trade {
+	limit: string;
 	market: string;
-	stopLimit: number;
-	amount: number;
+	stopLimit: string;
+	amount: string;
 	orderType: string;
 }
-interface HoldingCoin extends CoinBase {
+export interface HoldingCoin extends CoinBase {
 	priceEvaluation: string;
 	averagePrice: string;
 	change: string;

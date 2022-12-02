@@ -11,12 +11,15 @@ import {
 	changeRoom,
 	exitChat,
 } from '../../../../api/chat';
+import { isLogin } from '../../../../store';
+import { useRecoilValue } from 'recoil';
 
 interface Props {
 	chatClickHandler: () => void;
 }
 
 function ChatBox({ chatClickHandler }: Props) {
+	const login = useRecoilValue(isLogin);
 	const scrollRef = useRef<null | HTMLDivElement>(null);
 	const [msgData, setMsgData] = useState<ChatData[]>([]);
 	const [roomsInfo, setRoomsInfo] = useState<RoomsInfo[]>([]);
@@ -25,13 +28,12 @@ function ChatBox({ chatClickHandler }: Props) {
 	const [msg, setMsg] = useState('');
 	const [room, setRoom] = useState(1);
 	const rooms = [1, 2];
-	const Authorization = sessionStorage.getItem('login-token') as string;
 	useEffect(() => {
 		getChat(room);
 		if (!userId) {
-			enterRoom(Authorization, room, addMsgData, setRoomsInfo, setUserId);
+			enterRoom(room, addMsgData, setRoomsInfo, setUserId);
 		}
-	}, [Authorization]);
+	}, []);
 	useEffect(() => {
 		scrollRef?.current?.scrollIntoView(false);
 	}, [msgData]);
@@ -47,8 +49,12 @@ function ChatBox({ chatClickHandler }: Props) {
 	};
 
 	const getChat = async (ch: number) => {
-		const res = await getChatHistory(ch);
-		setMsgData([...res].reverse());
+		try {
+			const res = await getChatHistory(ch);
+			setMsgData([...res].reverse());
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	const msgOnChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,9 +72,11 @@ function ChatBox({ chatClickHandler }: Props) {
 	};
 
 	const roomsChangeHandler = (ch: number) => {
-		setRoom(ch);
-		getChat(ch);
-		changeRoom(room, ch, addMsgData);
+		if (room !== ch) {
+			setRoom(ch);
+			getChat(ch);
+			changeRoom(room, ch, addMsgData);
+		}
 	};
 	const closeBtnHandler = () => {
 		exitChat();
@@ -104,7 +112,7 @@ function ChatBox({ chatClickHandler }: Props) {
 					))}
 				<div ref={scrollRef}></div>
 			</div>
-			{Authorization ? (
+			{login ? (
 				<form onSubmit={msgSubmitHandler}>
 					<input type="text" onChange={msgOnChangeHandler} value={msg} />
 				</form>
