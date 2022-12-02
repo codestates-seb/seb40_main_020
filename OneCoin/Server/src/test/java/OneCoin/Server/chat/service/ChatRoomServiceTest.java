@@ -4,8 +4,8 @@ import OneCoin.Server.chat.entity.ChatRoom;
 import OneCoin.Server.chat.entity.UserInChatRoom;
 import OneCoin.Server.chat.repository.ChatRoomRepository;
 import OneCoin.Server.chat.repository.UserInChatRoomRepository;
-import OneCoin.Server.chat.utils.ChatRoomUtils;
 import OneCoin.Server.chat.repository.vo.UserInfoInChatRoom;
+import OneCoin.Server.chat.utils.ChatRoomUtils;
 import OneCoin.Server.exception.BusinessLogicException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -57,6 +57,7 @@ public class ChatRoomServiceTest {
         roomId2Key = chatRoomUtils.makeKey(chatRoomId2);
         keySet = Sets.newSet(roomId1Key, roomId2Key);
     }
+
     @Test
     void findAllChatRoomsTest() {
         //given
@@ -152,5 +153,19 @@ public class ChatRoomServiceTest {
         //then
         assertThat(actual.size())
                 .isEqualTo(1);
+    }
+
+    @Test
+    void isUserInChatRoomTest() {
+        //given
+        List<UserInChatRoom> users = List.of(user);
+        given(userInChatRoomRepository.findAllByChatRoomId(any(Integer.class)))
+                .willReturn(users);
+        //when
+        boolean isIn = chatRoomService.inUserInChatRoom(chatRoomId1, user.getEmail());
+
+        //then
+        assertThat(isIn)
+                .isTrue();
     }
 }

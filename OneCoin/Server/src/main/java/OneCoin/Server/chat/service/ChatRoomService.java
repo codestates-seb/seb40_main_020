@@ -12,6 +12,7 @@ import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.description.field.FieldDescription;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +30,6 @@ public class ChatRoomService {
     private final ChatRoomUtils chatRoomUtils;
     private final ChatRoomMapper mapper;
 
-
-
     public List<ChatRoom> findAllChatRooms() {
         Set<String> chatRoomKeys = chatRoomRepository.findAll();
         return chatRoomKeys.stream()
@@ -47,15 +46,13 @@ public class ChatRoomService {
                 .numberOfChatters(numberOfSessions)
                 .build();
     }
+
     public long getNumberOfUserInChatRoom(Integer chatRoomId) {
         findVerifiedChatRoom(chatRoomId);
         return userInChatRoomRepository.getNumberOfUserInChatRoom(chatRoomId);
     }
-    public void saveUserToChatRoom(Integer chatRoomId, String sessionId) {
-        saveUserToChatRoom(chatRoomId, sessionId, null);
-    }
 
-    public void saveUserToChatRoom(Integer chatRoomId, String sessionId, User user) {
+    public void saveUserInChatRoom(Integer chatRoomId, String sessionId, User user) {
         boolean isValid = chatRoomRepository.contains(chatRoomId);
         if (!isValid) {
             makeChatRoom(chatRoomId);
@@ -103,5 +100,13 @@ public class ChatRoomService {
         if (!isValid) {
             throw new BusinessLogicException(ExceptionCode.INVALID_CHAT_ROOM_ID);
         }
+    }
+
+    public boolean inUserInChatRoom(Integer chatRoomId, String email) {
+        List<UserInChatRoom> users = userInChatRoomRepository.findAllByChatRoomId(chatRoomId);
+        for(UserInChatRoom user : users) {
+            if(user.getEmail().equals(email)) return true;
+        }
+        return false;
     }
 }
