@@ -162,7 +162,7 @@ public class ChatRoomServiceTest {
         given(userInChatRoomRepository.findAllByChatRoomId(any(Integer.class)))
                 .willReturn(users);
         //when
-        boolean isIn = chatRoomService.inUserInChatRoom(chatRoomId1, user.getEmail());
+        boolean isIn = chatRoomService.isUserInChatRoom(chatRoomId1, user.getEmail());
 
         //then
         assertThat(isIn)

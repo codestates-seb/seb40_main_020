@@ -12,7 +12,6 @@ import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.description.field.FieldDescription;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -102,7 +101,7 @@ public class ChatRoomService {
         }
     }
 
-    public boolean inUserInChatRoom(Integer chatRoomId, String email) {
+    public boolean isUserInChatRoom(Integer chatRoomId, String email) {
         List<UserInChatRoom> users = userInChatRoomRepository.findAllByChatRoomId(chatRoomId);
         for(UserInChatRoom user : users) {
             if(user.getEmail().equals(email)) return true;
