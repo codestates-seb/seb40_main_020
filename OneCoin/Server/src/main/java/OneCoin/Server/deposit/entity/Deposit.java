@@ -24,7 +24,7 @@ public class Deposit extends CreatedOnlyAuditable {
     @JoinColumn(name = "deposit_balance_id")
     private Balance balance;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false, scale = 15, precision = 30)
     private BigDecimal remainingBalance;
 
     @Column(nullable = false)
