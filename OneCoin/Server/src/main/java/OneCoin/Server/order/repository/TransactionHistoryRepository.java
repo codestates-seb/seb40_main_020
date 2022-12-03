@@ -22,7 +22,7 @@ public interface TransactionHistoryRepository extends JpaRepository<TransactionH
 
     Page<TransactionHistory> findByUserAndTransactionTypeAndCoinAndCreatedAtAfter(User user, TransactionType transactionType, Coin coin, LocalDateTime searchPeriod, Pageable pageable); // 기간, 타입, 코인 page
 
-    List<TransactionHistory> findTop10ByUserAndCoinAndTransactionTypeOrTransactionTypeOrderByCreatedAtDesc(User user, Coin coin, TransactionType bid, TransactionType ask);
+    List<TransactionHistory> findTop10ByUserAndCoinAndTransactionTypeOrderByCreatedAtDesc(User user, Coin coin, TransactionType transactionType);
 
     @Query("SELECT " +
             "   new OneCoin.Server.rank.dao.UserRoi(t.user.userId, t.user.displayName, SUM(t.settledAmount))" +

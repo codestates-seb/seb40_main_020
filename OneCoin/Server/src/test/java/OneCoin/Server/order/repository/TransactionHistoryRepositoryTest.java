@@ -114,11 +114,11 @@ public class TransactionHistoryRepositoryTest {
         Coin coin = StubData.MockCoin.getMockEntity(1L, "KRW-BTC", "비트코인");
         userRepository.save(user);
         coinRepository.save(coin);
-        TransactionHistory transactionHistory = StubData.MockHistory.getMockEntity();
+        TransactionHistory transactionHistory = StubData.MockHistory.getMockEntity(TransactionType.BID);
         transactionHistoryRepository.save(transactionHistory);
 
         // when
-        List<TransactionHistory> transactionHistories = transactionHistoryRepository.findTop10ByUserAndCoinAndTransactionTypeOrTransactionTypeOrderByCreatedAtDesc(user, coin, TransactionType.BID, TransactionType.ASK);
+        List<TransactionHistory> transactionHistories = transactionHistoryRepository.findTop10ByUserAndCoinAndTransactionTypeOrderByCreatedAtDesc(user, coin, TransactionType.BID);
 
         // then
         assertThat(transactionHistories.size()).isEqualTo(1);

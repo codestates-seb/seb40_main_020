@@ -1,6 +1,7 @@
 package OneCoin.Server.order.service;
 
 import OneCoin.Server.coin.entity.Coin;
+import OneCoin.Server.coin.repository.CoinRepository;
 import OneCoin.Server.coin.service.CoinService;
 import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtils;
 import OneCoin.Server.exception.BusinessLogicException;
@@ -40,11 +41,13 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest
 @MockBean(OkHttpClient.class)
 public class TransactionHistoryServiceTest {
-    PageRequest pageRequest = PageRequest.of(0, 15, Sort.by("createdAt").descending());
+    private final PageRequest pageRequest = PageRequest.of(0, 15, Sort.by("createdAt").descending());
     @Autowired
     private TransactionHistoryService transactionHistoryService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CoinRepository coinRepository;
     @MockBean
     private LoggedInUserInfoUtils loggedInUserInfoUtils;
     @MockBean
@@ -53,11 +56,13 @@ public class TransactionHistoryServiceTest {
     private UserService userService;
     @Autowired
     private TransactionHistoryRepository transactionHistoryRepository;
+    private User user = StubData.MockUser.getMockEntity();
+    private Coin coin = StubData.MockCoin.getMockEntity(1L, "KRW-BTC", "비트코인");
 
     @BeforeEach
     void saveTransactionHistory() {
-        userRepository.save(StubData.MockUser.getMockEntity());
-        transactionHistoryRepository.save(StubData.MockHistory.getMockEntity());
+        userRepository.save(user);
+        coinRepository.save(coin);
     }
 
     @AfterEach
@@ -72,8 +77,7 @@ public class TransactionHistoryServiceTest {
         Order order = StubData.MockOrder.getMockEntity();
         order.setAmount(BigDecimal.ZERO);
         order.setCompletedAmount(new BigDecimal("10"));
-        User user = StubData.MockUser.getMockEntity();
-        Coin coin = StubData.MockCoin.getMockEntity(1L, "KRW-BTC", "비트코인");
+
         given(userService.findVerifiedUser(anyLong())).willReturn(user);
         given(coinService.findCoin(anyString())).willReturn(coin);
 
@@ -81,7 +85,7 @@ public class TransactionHistoryServiceTest {
         transactionHistoryService.createTransactionHistoryByOrder(order);
 
         // then
-        List<TransactionHistory> transactionHistories = transactionHistoryRepository.findTop10ByUserAndCoinAndTransactionTypeOrTransactionTypeOrderByCreatedAtDesc(user, coin, TransactionType.BID, TransactionType.ASK);
+        List<TransactionHistory> transactionHistories = transactionHistoryRepository.findTop10ByUserAndCoinAndTransactionTypeOrderByCreatedAtDesc(user, coin, TransactionType.BID);
         TransactionHistory transactionHistory = transactionHistories.get(0);
         assertThat(transactionHistory.getTransactionType()).isEqualTo(TransactionType.BID);
         assertThat(transactionHistory.getAmount()).isEqualTo(new BigDecimal("10.000000000000000"));
@@ -91,8 +95,9 @@ public class TransactionHistoryServiceTest {
     @CsvSource(value = {"w:BID:KRW-BTC:1", "m:ASK::0", "3m:ALL:KRW-BTC:1", "6m:ALL::1"}, delimiter = ':')
     void searchTest(String period, String type, String code, int expectSize) {
         // given
-        given(loggedInUserInfoUtils.extractUser()).willReturn(StubData.MockUser.getMockEntity());
-        given(coinService.findCoin(anyString())).willReturn(StubData.MockCoin.getMockEntity(1L, code, "비트코인"));
+        given(loggedInUserInfoUtils.extractUser()).willReturn(user);
+        given(coinService.findCoin(anyString())).willReturn(coin);
+        transactionHistoryRepository.save(StubData.MockHistory.getMockEntity(TransactionType.BID));
 
         // when
         Page<TransactionHistory> transactionHistoryPage = transactionHistoryService.findTransactionHistory(period, type, code, pageRequest);
@@ -127,5 +132,50 @@ public class TransactionHistoryServiceTest {
     @DisplayName("지정한 타입만 메서드를 에러없이 실행한다")
     void typeTest(String type) {
         assertDoesNotThrow(() -> transactionHistoryService.findTransactionHistory("w", type, "KRW-BTC", pageRequest));
+    }
+
+    @Test
+    @DisplayName("최근 순서로 매수, 매도 내역을 조회한다.")
+    void orderTransactionHistoriesTest() throws InterruptedException {
+        // given
+        TransactionHistory transactionHistory1 = StubData.MockHistory.getMockEntity(TransactionType.BID);
+        TransactionHistory transactionHistory2 = StubData.MockHistory.getMockEntity(TransactionType.ASK);
+        TransactionHistory transactionHistory3 = StubData.MockHistory.getMockEntity(TransactionType.DEPOSIT);
+
+        transactionHistoryRepository.save(transactionHistory1);
+        Thread.sleep(1000);
+        transactionHistoryRepository.save(transactionHistory2);
+        Thread.sleep(1000);
+        transactionHistoryRepository.save(transactionHistory3);
+
+        given(loggedInUserInfoUtils.extractUser()).willReturn(user);
+        given(coinService.findCoin(anyString())).willReturn(coin);
+
+        // when
+        List<TransactionHistory> transactionHistories = transactionHistoryService.findTransactionHistoryByCoin("KRW-BTC");
+
+        // then
+        assertThat(transactionHistories.size()).isEqualTo(2);
+        assertThat(transactionHistories.get(0).getTransactionHistoryId()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("매수, 매도 내역에서 최근 순서로 10개까지 조회한다.")
+    void getTop10Test() throws InterruptedException {
+        // given
+        for (int i = 0; i < 20; i++) {
+            TransactionHistory transactionHistory = StubData.MockHistory.getMockEntity(TransactionType.BID);
+            transactionHistoryRepository.save(transactionHistory);
+            Thread.sleep(100);
+        }
+        given(loggedInUserInfoUtils.extractUser()).willReturn(user);
+        given(coinService.findCoin(anyString())).willReturn(coin);
+
+        // when
+        List<TransactionHistory> transactionHistories = transactionHistoryService.findTransactionHistoryByCoin("KRW-BTC");
+
+        // then
+        assertThat(transactionHistories.size()).isEqualTo(10);
+        assertThat(transactionHistories.get(0).getTransactionHistoryId()).isEqualTo(20);
     }
 }
