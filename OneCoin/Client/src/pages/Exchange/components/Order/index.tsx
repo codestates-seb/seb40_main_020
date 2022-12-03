@@ -11,6 +11,7 @@ import {
 	isLogin,
 } from '../../../../store';
 import { useRecoilValue, useRecoilState } from 'recoil';
+import Alert from 'components/Alert';
 
 interface Props {
 	inputPrice: number;
@@ -41,7 +42,7 @@ function Order({ inputPrice, setInputPrice }: Props) {
 	}, [inputPrice]);
 	useEffect(() => {
 		if (login) getMyBalance();
-	}, []);
+	}, [order]);
 	const getMyBalance = async () => {
 		try {
 			const res = await getBalance();
@@ -122,7 +123,7 @@ function Order({ inputPrice, setInputPrice }: Props) {
 		}
 	}, [nonTradingOrders, myCoins, order]);
 	const tradeHandler = () => {
-		if (inputPrice === 0) return alert('가격을 확인해 주세요');
+		if (inputPrice === 0) return Alert('가격을 확인해 주세요');
 		else if (login) {
 			const t = async () => {
 				try {
@@ -143,20 +144,20 @@ function Order({ inputPrice, setInputPrice }: Props) {
 
 			if (order === '매수') {
 				if (total * 1.0005 > money) {
-					alert('주문수량을 확인해 주세요');
+					Alert('주문수량을 확인해 주세요');
 				} else {
 					data.orderType = 'BID';
 					t();
 				}
 			} else if (order === '매도') {
-				if (coin < +quantity) alert('주문수량을 확인해 주세요');
+				if (coin < +quantity) Alert('주문수량을 확인해 주세요');
 				else {
 					data.orderType = 'ASK';
 					t();
 				}
 			}
 		} else {
-			alert('로그인이 필요한 서비스입니다.');
+			Alert('로그인이 필요한 서비스입니다.');
 		}
 	};
 

@@ -69,9 +69,9 @@ export const MentDiv = styled.div`
 
 export const MentSpan = styled.span`
 	margin-top: 15px;
-	width: 90px;
 	text-align: center;
 	font-size: 0.9rem;
+	margin-left: 20px;
 	cursor: pointer;
 `;
 

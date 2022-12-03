@@ -15,7 +15,7 @@ import {
 	SubDiv,
 } from './style';
 import Layout from 'components/Layout';
-
+import Alert from 'components/Alert';
 type Inputs = {
 	displayName: string;
 	email: string;
@@ -46,7 +46,7 @@ function SignUp() {
 			.post(`${process.env.REACT_APP_SERVER_URL}/api/users`, { ...userData })
 			.then(() => {
 				navigate('/login');
-				alert('이메일이 전송되었습니다. 이메일을 확인해주세요.');
+				Alert('이메일이 전송되었습니다. 이메일을 확인해주세요.');
 			})
 			.catch((err) => {
 				setError(err.response.data.message);
@@ -65,7 +65,7 @@ function SignUp() {
 			);
 			return res;
 		} catch (err) {
-			alert('닉네임이 중복되었습니다.');
+			Alert('닉네임이 중복되었습니다.');
 		}
 	};
 
@@ -78,7 +78,7 @@ function SignUp() {
 			);
 			return res;
 		} catch (err) {
-			alert('이메일이 중복되었습니다.');
+			Alert('이메일이 중복되었습니다.');
 		}
 	};
 

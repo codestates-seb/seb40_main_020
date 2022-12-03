@@ -16,6 +16,7 @@ import {
 } from './style';
 import { userLogin } from 'api/user';
 import { RiKakaoTalkFill } from 'react-icons/ri';
+import Alert from 'components/Alert';
 
 type EnterForm = {
 	email: string;
@@ -44,7 +45,7 @@ function Login() {
 			})
 			.catch(() => {
 				setTimeout(() => {
-					alert('아이디, 비밀번호를 확인해주세요.');
+					Alert('아이디, 비밀번호를 확인해주세요.');
 				}, 1000);
 			});
 	};

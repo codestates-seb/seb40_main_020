@@ -20,6 +20,7 @@ export const DoubleCheckBox = styled.button`
 	border-left: 0 none;
 	background: white;
 	cursor: pointer;
+	vertical-align: bottom;
 `;
 
 export const Errormsg = styled.p`
@@ -80,6 +81,7 @@ export const SubmitButton = styled.button`
 	border: 1px;
 	border-width: 1px;
 	background: var(--yellow);
+
 	cursor: pointer;
 `;
 

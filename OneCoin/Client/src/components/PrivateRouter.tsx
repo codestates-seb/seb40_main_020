@@ -2,10 +2,13 @@
 import { Navigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-function PrivateRoute({ children }: { children: React.ReactNode }) {
-	const auth = localStorage.getItem('login-token');
+import { useRecoilValue } from 'recoil';
+import { isLogin } from '../store';
 
-	if (!auth)
+function PrivateRoute({ children }: { children: React.ReactNode }) {
+	const login = useRecoilValue(isLogin);
+
+	if (!login)
 		Swal.fire({
 			title: '로그인 후 사용하실 수 있습니다.',
 			confirmButtonText: '확인',
@@ -18,7 +21,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 		});
 
 	// eslint-disable-next-line react/react-in-jsx-scope
-	return auth ? <>{children}</> : <Navigate to="/login"></Navigate>;
+	return login ? <>{children}</> : <Navigate to="/login"></Navigate>;
 }
 
 export default PrivateRoute;

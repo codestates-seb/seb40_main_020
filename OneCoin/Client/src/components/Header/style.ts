@@ -26,4 +26,7 @@ export const HeaderComponent = styled.header`
 			}
 		}
 	}
+	.select {
+		font-weight: 800;
+	}
 `;
