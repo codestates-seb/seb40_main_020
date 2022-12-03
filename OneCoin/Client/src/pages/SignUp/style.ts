@@ -49,7 +49,6 @@ export const InputContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-self: center;
-
 	p {
 		margin: 10px 0 0;
 		font-size: 0.8rem;
