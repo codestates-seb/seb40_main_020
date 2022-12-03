@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -106,6 +107,17 @@ public class TransactionHistoryService {
     public List<TransactionHistory> findTransactionHistoryByCoin(String code) {
         User user = loggedInUserInfoUtils.extractUser();
         Coin coin = coinService.findCoin(code);
-        return transactionHistoryRepository.findTop10ByUserAndCoinAndTransactionTypeOrTransactionTypeOrderByCreatedAtDesc(user, coin, TransactionType.BID, TransactionType.ASK);
+
+        return getTop10OrderTransactionHistories(user, coin);
+    }
+
+    private List<TransactionHistory> getTop10OrderTransactionHistories(User user, Coin coin) {
+        List<TransactionHistory> transactionHistories = transactionHistoryRepository.findTop10ByUserAndCoinAndTransactionTypeOrderByCreatedAtDesc(user, coin, TransactionType.BID);
+        transactionHistories.addAll(transactionHistoryRepository.findTop10ByUserAndCoinAndTransactionTypeOrderByCreatedAtDesc(user, coin, TransactionType.ASK));
+        transactionHistories.sort(Comparator.comparing(TransactionHistory::getCreatedAt).reversed());
+        if (transactionHistories.size() > 10) {
+            return transactionHistories.subList(0, 9);
+        }
+        return transactionHistories;
     }
 }
