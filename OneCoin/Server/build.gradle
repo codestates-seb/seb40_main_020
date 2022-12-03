@@ -61,6 +61,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
 	implementation 'org.springframework.boot:spring-boot-starter-quartz'
 	testImplementation 'org.springframework.batch:spring-batch-test'
+
+	// profile image
+	implementation 'commons-io:commons-io:2.11.0'
+
+	// profile image
+	implementation 'commons-io:commons-io:2.11.0'
 }
 
 tasks.named('test') {
