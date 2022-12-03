@@ -73,11 +73,11 @@ const WaitOrders = () => {
 							))}
 					</tbody>
 				</table>
-				<Pagination
+				{/* <Pagination
 					currentPage={jumpToPage}
 					pageCount={WAIT_ORDERS_TBODY.pageInfo.totalPages}
 					onPageChange={onPageChanged}
-				/>
+				/> */}
 			</Wrapper>
 		</Layout>
 	);

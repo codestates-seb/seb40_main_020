@@ -3,7 +3,7 @@ export const HEADER_LIST = {
 		{ name: '거래소', path: '/exchange' },
 		{ name: '입금', path: '/balances' },
 		{ name: '투자내역', path: '/investments/balance' },
-		{ name: '스왑', path: '/swap' },
+		// { name: '스왑', path: '/swap' },
 	],
 	logout: [
 		{ name: '로그인', path: '/login' },

@@ -3,6 +3,7 @@ import { Wrapper } from './style';
 import { postDeposit } from '../../../../api/balance';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { myBalanceState, isLogin } from '../../../../store';
+import Alert from '../../../../components/Alert';
 
 const ChargingTab = () => {
 	const login = useRecoilValue(isLogin);
@@ -18,7 +19,7 @@ const ChargingTab = () => {
 			const data = { depositAmount: p };
 			const res = await postDeposit(data);
 			setMyBalance(res.remainingBalance);
-			alert('입금 완료.');
+			Alert('입금 완료.');
 		} catch (err) {
 			console.log(err);
 		}
@@ -26,14 +27,14 @@ const ChargingTab = () => {
 	const max = 100000000;
 	const btnHandler = () => {
 		if (login) {
-			if (p < 5000) alert('5,000 KRW이상 입금 가능합니다.');
+			if (p < 5000) Alert('5,000 KRW이상 입금 가능합니다.');
 			else if (p > max)
-				alert(`${max.toLocaleString()} KRW이하 입금 가능합니다.`);
+				Alert(`${max.toLocaleString()} KRW이하 입금 가능합니다.`);
 			else {
 				postDepositHandler();
 			}
 		} else {
-			alert('로그인이 필요한 서비스입니다.');
+			Alert('로그인이 필요한 서비스입니다.');
 		}
 	};
 	return (

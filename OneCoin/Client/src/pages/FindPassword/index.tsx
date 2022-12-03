@@ -9,6 +9,7 @@ import {
 	StyledDiv,
 } from './style';
 import axios from 'axios';
+import Alert from 'components/Alert';
 
 function FindPassword() {
 	const [email, setEmail] = useState('');
@@ -21,10 +22,10 @@ function FindPassword() {
 			const res = await axios.get(
 				`${process.env.REACT_APP_SERVER_URL}/api/users/find-password?email=${email}`
 			);
-			alert('이메일을 확인해주세요.');
+			Alert('이메일을 확인해주세요.');
 			return res;
 		} catch (err) {
-			alert('이메일을 확인해주세요.');
+			Alert('이메일을 확인해주세요.');
 		}
 	};
 	return (

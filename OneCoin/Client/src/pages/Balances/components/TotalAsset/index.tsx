@@ -11,6 +11,7 @@ import {
 	isLogin,
 } from '../../../../store';
 import { getWallet } from '../../../../api/exchange';
+import { getBalance } from 'api/balance';
 
 interface T {
 	code: string;
@@ -26,10 +27,11 @@ const TotalAsset = () => {
 	const [myCoins, setMyCoins] = useRecoilState(myCoinsState);
 	const coinData = useRecoilValue(coinDataState);
 	const [data, setData] = useState<T[]>();
-	const getWalletHandler = async () => {
+
+	const getBalanceHandler = async () => {
 		try {
-			const res = await getWallet();
-			setMyCoins(res);
+			const res = await getBalance();
+			setTotal(res);
 		} catch (err) {
 			console.log(err);
 		}
@@ -51,8 +53,8 @@ const TotalAsset = () => {
 		return newData;
 	};
 	useEffect(() => {
-		if (login) getWalletHandler();
-	}, []);
+		if (login) getBalanceHandler();
+	}, [myBalance]);
 	useEffect(() => {
 		if (login && myCoins) {
 			const newData = realTimePrice();

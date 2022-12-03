@@ -1,4 +1,4 @@
-import api from '../user';
+import api from '..';
 
 export const getBalance = async () => {
 	try {

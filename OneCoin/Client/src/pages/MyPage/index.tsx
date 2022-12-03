@@ -5,6 +5,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { isLogin } from '../../store';
+import api from '../../api';
+import Alert from 'components/Alert';
 
 const MyPage = () => {
 	const navigate = useNavigate();
@@ -13,18 +15,14 @@ const MyPage = () => {
 	const [password, setPassword] = useState('');
 	const onClickDelete = async () => {
 		try {
-			await axios
-				.delete(`${process.env.REACT_APP_SERVER_URL}/api/users`, {
-					headers: { Authorization: sessionStorage.getItem('login-token') },
-				})
-				.then((res) => console.log(res));
+			await api
+				.delete('/api/users')
+				.then((res) => Alert('회원탈퇴가 완료되었습니다.'));
 			sessionStorage.removeItem('login-token');
 			sessionStorage.removeItem('login-refresh');
 			setIsUseLogin(false);
 			navigate('/');
-		} catch (err) {
-			console.log('안돼요');
-		}
+		} catch (err) {}
 	};
 	const changingInformation = async () => {
 		try {

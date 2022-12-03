@@ -30,7 +30,7 @@ export const OrderComponent = styled.div`
 			/* margin: 0 1rem; */
 		}
 		.order {
-			margin: 0 1rem;
+			margin: 0 1.5rem;
 			margin-bottom: 1.75rem;
 			display: flex;
 			justify-content: space-between;

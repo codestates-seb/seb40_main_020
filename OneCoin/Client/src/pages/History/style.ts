@@ -16,9 +16,11 @@ export const Wrapper = styled.div`
 			width: 150px;
 		}
 		:nth-child(2),
-		:nth-child(3),
 		:nth-child(4) {
 			width: 100px;
+		}
+		:nth-child(3) {
+			width: 130px;
 		}
 	}
 	table {

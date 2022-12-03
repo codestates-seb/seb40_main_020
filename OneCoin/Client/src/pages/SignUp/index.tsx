@@ -15,7 +15,7 @@ import {
 	SubDiv,
 } from './style';
 import Layout from 'components/Layout';
-
+import Alert from 'components/Alert';
 type Inputs = {
 	displayName: string;
 	email: string;
@@ -46,7 +46,7 @@ function SignUp() {
 			.post(`${process.env.REACT_APP_SERVER_URL}/api/users`, { ...userData })
 			.then(() => {
 				navigate('/login');
-				alert('이메일이 전송되었습니다. 이메일을 확인해주세요.');
+				Alert('이메일이 전송되었습니다. 이메일을 확인해주세요.');
 			})
 			.catch((err) => {
 				setError(err.response.data.message);
@@ -65,7 +65,7 @@ function SignUp() {
 			);
 			return res;
 		} catch (err) {
-			alert('닉네임이 중복되었습니다.');
+			Alert('닉네임이 중복되었습니다.');
 		}
 	};
 
@@ -78,7 +78,7 @@ function SignUp() {
 			);
 			return res;
 		} catch (err) {
-			alert('이메일이 중복되었습니다.');
+			Alert('이메일이 중복되었습니다.');
 		}
 	};
 
@@ -152,7 +152,7 @@ function SignUp() {
 						</InputContainer>
 						<InputContainer>
 							<Input
-								placeholder="영문 대소문자/숫자/특수문자 총 3가지 이상 조합 8~16자리로 입력해주세요"
+								placeholder="8~16자리로 입력해주세요"
 								type={'password'}
 								id="password"
 								{...register('password', {
@@ -162,6 +162,7 @@ function SignUp() {
 										/^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/,
 								})}
 							/>
+							<p>영문 대소문자/숫자/특수문자 총 3가지 이상 조합</p>
 							{errors.password && errors.password.type === 'required' && (
 								<Errormsg>⚠ 비밀번호를 입력해주세요</Errormsg>
 							)}

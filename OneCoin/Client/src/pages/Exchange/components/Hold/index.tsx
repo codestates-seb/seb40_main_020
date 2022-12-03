@@ -149,6 +149,7 @@ function Hold({ title }: Props) {
 				<tbody>
 					{title === '보유 코인'
 						? myCoins &&
+						  login &&
 						  myCoins.map((v, i) => (
 								<tr key={i} className="hold-item">
 									<td>{v.code as string}</td>
@@ -178,6 +179,7 @@ function Hold({ title }: Props) {
 						  ))
 						: complete === 'non-trading'
 						? nonTradingOrders &&
+						  login &&
 						  nonTradingOrders.map((v, i) => (
 								<tr key={i} className="hold-item">
 									<td>{v.code as string}</td>
@@ -194,7 +196,6 @@ function Hold({ title }: Props) {
 									<td
 										className={'cancel'}
 										onClick={() => {
-											console.log(v);
 											deleteOrderHandler(v.orderId);
 										}}
 									>

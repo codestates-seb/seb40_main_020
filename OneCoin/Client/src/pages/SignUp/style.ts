@@ -12,15 +12,15 @@ export const SignUpBox = styled.div`
 export const DoubleCheckBox = styled.button`
 	width: 100px;
 	height: 40px;
-	margin-left: 8px;
-	/* color: var(--yellow); */
 	background: white;
-	font-size: 16px;
+	font-size: 15px;
 	border: 1px;
 	border-width: 1px;
-	box-shadow: var(--yellow) 0px 0px 0px 1px;
+	border: 1px solid var(--borderColor);
+	border-left: 0 none;
 	background: white;
 	cursor: pointer;
+	vertical-align: bottom;
 `;
 
 export const Errormsg = styled.p`
@@ -30,7 +30,7 @@ export const Errormsg = styled.p`
 `;
 
 export const Input = styled.input`
-	width: 420px;
+	width: 100%;
 	height: 40px;
 	padding-left: 15px;
 	border: 1px solid var(--borderColor);
@@ -38,31 +38,36 @@ export const Input = styled.input`
 `;
 
 export const Label = styled.label`
-	font-size: 15px;
+	font-size: 16px;
 	font-weight: 500;
 	margin-bottom: 3px;
 `;
 
 export const InputContainer = styled.div`
-	margin: 0 0 5px 0;
+	width: 100%;
+	margin: 0 0 10px 0;
 	display: flex;
 	flex-direction: column;
 	align-self: center;
-	/* margin-bottom: 15px; */
-	height: 60px;
+
+	p {
+		margin: 10px 0 0;
+		font-size: 0.8rem;
+	}
 `;
 
 export const Form = styled.form`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	width: 500px;
-	padding: 30px;
+	width: 350px;
+	padding: 50px 30px;
 	background: white;
+	border: 1px solid var(--borderColor);
 `;
 
 export const SecondInput = styled.input`
-	width: 312px;
+	width: 250px;
 	height: 40px;
 	padding-left: 15px;
 	border: 1px solid var(--borderColor);
@@ -70,13 +75,14 @@ export const SecondInput = styled.input`
 `;
 
 export const SubmitButton = styled.button`
-	width: 420px;
-	height: 44px;
+	width: 100%;
+	height: 50px;
 	background: white;
-	font-size: 16px;
+	font-size: 15px;
 	border: 1px;
 	border-width: 1px;
 	background: var(--yellow);
+
 	cursor: pointer;
 `;
 
@@ -84,15 +90,15 @@ export const StyledDiv = styled.div`
 	display: flex;
 	justify-content: center;
 	font-size: 24px;
-	height: 43px;
+	font-weight: 700;
+	margin-bottom: 20px;
 `;
 
 export const SubDiv = styled.div`
 	display: flex;
 	justify-content: center;
-	font-size: 16px;
+	font-size: 15px;
 	color: #aa9f9f;
-	height: 29px;
 	margin-top: 4px;
-	margin-bottom: 8px;
+	margin-bottom: 20px;
 `;

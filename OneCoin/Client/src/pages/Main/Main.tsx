@@ -7,7 +7,6 @@ import exchangeJson from '../../assets/images/exchange.json';
 import chatJson from '../../assets/images/chat.json';
 
 import { Wrap, SlideWrap, SlideInner, TextWrap } from './style';
-import Button from 'components/Button';
 
 const Main = () => {
 	const settings = {
@@ -17,6 +16,8 @@ const Main = () => {
 		slidesToShow: 1,
 		slidesToScroll: 1,
 		arrows: false,
+		autoplay: true,
+		autoplaySpeed: 5000,
 	};
 	return (
 		<Layout isLeftSidebar={false}>
