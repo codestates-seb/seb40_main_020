@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { isLogin } from '../../store';
+import api from '../../api';
 
 const MyPage = () => {
 	const navigate = useNavigate();
@@ -13,11 +14,7 @@ const MyPage = () => {
 	const [password, setPassword] = useState('');
 	const onClickDelete = async () => {
 		try {
-			await axios
-				.delete(`${process.env.REACT_APP_SERVER_URL}/api/users`, {
-					headers: { Authorization: sessionStorage.getItem('login-token') },
-				})
-				.then((res) => console.log(res));
+			await api.delete('/api/users/123').then((res) => console.log(res));
 			sessionStorage.removeItem('login-token');
 			sessionStorage.removeItem('login-refresh');
 			setIsUseLogin(false);

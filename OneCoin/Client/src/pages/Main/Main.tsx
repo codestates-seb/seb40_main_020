@@ -7,7 +7,6 @@ import exchangeJson from '../../assets/images/exchange.json';
 import chatJson from '../../assets/images/chat.json';
 
 import { Wrap, SlideWrap, SlideInner, TextWrap } from './style';
-import Button from 'components/Button';
 
 const Main = () => {
 	const settings = {

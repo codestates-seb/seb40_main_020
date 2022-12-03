@@ -152,7 +152,7 @@ function SignUp() {
 						</InputContainer>
 						<InputContainer>
 							<Input
-								placeholder="영문 대소문자/숫자/특수문자 총 3가지 이상 조합 8~16자리로 입력해주세요"
+								placeholder="8~16자리로 입력해주세요"
 								type={'password'}
 								id="password"
 								{...register('password', {
@@ -162,6 +162,7 @@ function SignUp() {
 										/^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/,
 								})}
 							/>
+							<p>영문 대소문자/숫자/특수문자 총 3가지 이상 조합</p>
 							{errors.password && errors.password.type === 'required' && (
 								<Errormsg>⚠ 비밀번호를 입력해주세요</Errormsg>
 							)}

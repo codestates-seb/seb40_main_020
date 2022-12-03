@@ -19,6 +19,8 @@ const Swap = lazy(() => import('pages/Swap'));
 const SwapResult = lazy(() => import('pages/SwapResult'));
 const SignUpToken = lazy(() => import('pages/SignUpToken'));
 const PasswordToken = lazy(() => import('pages/PasswordToken'));
+import PrivateRoute from './components/PrivateRouter';
+import Error from 'pages/Error';
 
 function App() {
 	const [isUseLogin, setIsUseLogin] = useRecoilState(isLogin);
@@ -35,19 +37,35 @@ function App() {
 				/>
 				<Route
 					path="/balances"
-					element={<Suspense fallback={<>...</>}>{<Balances />}</Suspense>}
+					element={
+						<PrivateRoute>
+							<Suspense fallback={<>...</>}>{<Balances />}</Suspense>
+						</PrivateRoute>
+					}
 				/>
 				<Route
 					path="/investments/balance"
-					element={<Suspense fallback={<>...</>}>{<Balance />}</Suspense>}
+					element={
+						<PrivateRoute>
+							<Suspense fallback={<>...</>}>{<Balance />}</Suspense>
+						</PrivateRoute>
+					}
 				/>
 				<Route
 					path="/investments/history"
-					element={<Suspense fallback={<>...</>}>{<History />}</Suspense>}
+					element={
+						<PrivateRoute>
+							<Suspense fallback={<>...</>}>{<History />}</Suspense>
+						</PrivateRoute>
+					}
 				/>
 				<Route
 					path="/investments/wait_orders"
-					element={<Suspense fallback={<>...</>}>{<WaitOrders />}</Suspense>}
+					element={
+						<PrivateRoute>
+							<Suspense fallback={<>...</>}>{<WaitOrders />}</Suspense>
+						</PrivateRoute>
+					}
 				/>
 				<Route
 					path="/signup"
@@ -75,7 +93,11 @@ function App() {
 				/>
 				<Route
 					path="/mypage"
-					element={<Suspense fallback={<>...</>}>{<MyPage />}</Suspense>}
+					element={
+						<PrivateRoute>
+							<Suspense fallback={<>...</>}>{<MyPage />}</Suspense>
+						</PrivateRoute>
+					}
 				/>
 				<Route
 					path="/token/oauth2"
@@ -84,6 +106,10 @@ function App() {
 				<Route
 					path="/token/password"
 					element={<Suspense fallback={<>...</>}>{<PasswordToken />}</Suspense>}
+				/>
+				<Route
+					path="/*"
+					element={<Suspense fallback={<>...</>}>{<Error />}</Suspense>}
 				/>
 			</Routes>
 			<Chatting />
