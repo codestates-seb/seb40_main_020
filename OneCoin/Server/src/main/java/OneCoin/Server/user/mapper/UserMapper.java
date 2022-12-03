@@ -7,6 +7,7 @@ import OneCoin.Server.user.entity.Role;
 import OneCoin.Server.user.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.math.BigDecimal;
@@ -14,8 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface UserMapper {
-    default User userPostToUser(UserDto.Post requestBody) {
+public abstract class UserMapper {
+    @Value("${spring.server.ip}")
+    private String ipAddress;
+    public User userPostToUser(UserDto.Post requestBody) {
         User user = new User();
 
         // User 생성 시 Balance 도 같이 생성
@@ -35,7 +38,7 @@ public interface UserMapper {
         return user;
     }
 
-    default User oAuth2UserToUser(OAuth2User requestBody) {
+    public User oAuth2UserToUser(OAuth2User requestBody) {
         Map<String, Object> attributes = requestBody.getAttributes();
 
         User user = new User();
@@ -57,7 +60,7 @@ public interface UserMapper {
         return user;
     }
 
-    default User userPatchToUser(UserDto.Patch requestBody) {
+    public User userPatchToUser(UserDto.Patch requestBody) {
         User user = new User();
 
         user.setDisplayName(requestBody.getDisplayName());
@@ -69,7 +72,7 @@ public interface UserMapper {
         return user;
     }
 
-    default User userPasswordToUser(UserDto.Password requestBody) {
+    public User userPasswordToUser(UserDto.Password requestBody) {
         User user = new User();
 
         user.setDisplayName("");
@@ -81,14 +84,14 @@ public interface UserMapper {
         return user;
     }
 
-    default UserDto.Response userToUserResponse(User user) {
+    public UserDto.Response userToUserResponse(User user) {
         UserDto.Response response = new UserDto.Response();
 
         response.setId(user.getUserId());
         response.setEmail(user.getEmail());
         response.setDisplayName(user.getDisplayName());
         if (user.getPlatform().equals(Platform.ORIGIN)) {
-            response.setImagePath("http://13.209.194.104:8080/api/users/images/" + user.getUserId());
+            response.setImagePath("http://" + ipAddress +  "/api/users/images/" + user.getUserId());
         } else {
             response.setImagePath(user.getImagePath());
         }
@@ -96,5 +99,5 @@ public interface UserMapper {
         return response;
     }
 
-    List<UserDto.Response> usersToUserResponses(List<User> users);
+    public abstract List<UserDto.Response> usersToUserResponses(List<User> users);
 }
