@@ -13,14 +13,14 @@ export const Form = styled.form`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	/* height: 100%;
-	width: 100%; */
-	padding: 60px;
-	background: white;
+	padding: 50px 30px;
+	width: 350px;
+	background: #fff;
+	border: 1px solid var(--borderColor);
 `;
 
 export const Input = styled.input`
-	width: 420px;
+	width: 100%;
 	height: 40px;
 	padding-left: 15px;
 	border: 1px solid var(--borderColor);
@@ -28,30 +28,26 @@ export const Input = styled.input`
 `;
 
 export const InputContainer = styled.div`
-	margin: 0 0 5px 0;
+	margin: 0 0 10px 0;
 	display: flex;
 	flex-direction: column;
 	align-self: center;
-	/* margin-bottom: 15px; */
-	height: 60px;
+	width: 100%;
 `;
 
 export const SubmitButton = styled.button`
-	width: 420px;
-	height: 44px;
-	margin-top: 10px;
-	background: white;
+	width: 100%;
+	height: 50px;
 	font-size: 16px;
-	border: 1px;
-	border-width: 1px;
+	border: 0 none;
 	background: var(--yellow);
 `;
 
 export const StyledDiv = styled.div`
-	display: flex;
-	justify-content: start;
-	width: 400px;
+	text-align: center;
+	line-height: normal;
+	width: 100%;
 	font-size: 24px;
-	height: 50px;
-	margin-bottom: 10px;
+	font-weight: 700;
+	margin-bottom: 20px;
 `;

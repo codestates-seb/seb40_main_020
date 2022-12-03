@@ -20,7 +20,7 @@ export const HeaderComponent = styled.header`
 			display: flex;
 			align-items: center;
 			> div {
-				margin: 0.5rem 0.5rem;
+				margin: 0.5rem 0.9rem;
 				cursor: pointer;
 				display: flex;
 			}

@@ -12,7 +12,7 @@ const backStyles = css`
 export const Wrapper = styled.div`
 	${flexCenter}
 	align-items: flex-start;
-
+	transform: translateY(32%);
 	.side-menu {
 		${backStyles}
 		width: 200px;

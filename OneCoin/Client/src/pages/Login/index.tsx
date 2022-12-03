@@ -2,7 +2,6 @@ import Layout from 'components/Layout';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import {
 	LoginBox,
 	Form,
@@ -16,6 +15,7 @@ import {
 	KakaoButton,
 } from './style';
 import { userLogin } from 'api/user';
+import { RiKakaoTalkFill } from 'react-icons/ri';
 
 type EnterForm = {
 	email: string;
@@ -114,7 +114,12 @@ function Login() {
 						)}
 					</InputContainer>
 					<SubmitButton type="submit">로그인</SubmitButton>
-					{/* {error && <Errormsg>⚠ {error}</Errormsg>} */}
+					<InputContainer>
+						<KakaoButton onClick={onKakaoLogin}>
+							<RiKakaoTalkFill />
+							<span>카카오계정으로 로그인</span>
+						</KakaoButton>
+					</InputContainer>
 					<MentDiv>
 						<MentSpan onClick={() => navigate('/signup')}>회원가입</MentSpan>
 						<MentSpan onClick={() => navigate('/findpassword')}>
@@ -122,14 +127,6 @@ function Login() {
 						</MentSpan>
 					</MentDiv>
 				</Form>
-				<InputContainer>
-					<KakaoButton onClick={onKakaoLogin}>
-						<img
-							src="//k.kakaocdn.net/14/dn/btqCn0WEmI3/nijroPfbpCa4at5EIsjyf0/o.jpg"
-							width="242"
-						/>
-					</KakaoButton>
-				</InputContainer>
 			</LoginBox>
 		</Layout>
 	);

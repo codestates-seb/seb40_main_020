@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { container } from 'styles';
+import { flexCenter } from '../../styles/index';
 
 interface Props {
 	isLeftMargin: boolean;
