@@ -157,9 +157,9 @@ public class StubData {
     }
 
     public static class MockHistory {
-        public static TransactionHistory getMockEntity() {
+        public static TransactionHistory getMockEntity(TransactionType transactionType) {
             return TransactionHistory.builder()
-                    .transactionType(TransactionType.BID)
+                    .transactionType(transactionType)
                     .amount(new BigDecimal("0.01"))
                     .price(new BigDecimal("333333"))
                     .totalAmount(new BigDecimal("12345"))
