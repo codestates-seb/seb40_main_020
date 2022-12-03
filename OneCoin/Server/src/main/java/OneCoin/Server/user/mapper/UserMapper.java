@@ -27,7 +27,6 @@ public interface UserMapper {
         user.setPlatform(Platform.ORIGIN);
         user.setUserRole(Role.ROLE_NOT_AUTH);   // default : ROLE_NOT_AUTH
         user.setBalance(balance);
-        user.setImagePath("/home/ec2-user/profile/default.jpg");    // default path
 
         balance.setBalance(BigDecimal.ZERO);
         balance.setUser(user);
@@ -87,11 +86,6 @@ public interface UserMapper {
         response.setId(user.getUserId());
         response.setEmail(user.getEmail());
         response.setDisplayName(user.getDisplayName());
-        if (user.getPlatform().equals(Platform.ORIGIN)) {
-            response.setImagePath("http://13.209.194.104:8080/api/users/images/" + user.getUserId());
-        } else {
-            response.setImagePath(user.getImagePath());
-        }
 
         return response;
     }
