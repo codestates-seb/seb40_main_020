@@ -56,6 +56,9 @@ dependencies {
 
 	// oauth2
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+	// profile image
+	implementation 'commons-io:commons-io:2.11.0'
 }
 
 tasks.named('test') {

@@ -10,6 +10,7 @@ import OneCoin.Server.user.entity.Platform;
 import OneCoin.Server.user.entity.Role;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.repository.UserRepository;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.internet.MimeMessage;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -424,4 +428,16 @@ public class UserService {
         }
     }
 
+    /**
+     *  프로필 사진 가져오기
+     */
+    @Transactional
+    public byte[] pathToImage(String path) throws IOException {
+
+        InputStream imageStream = new FileInputStream(path);
+        byte[] imageByteArray = IOUtils.toByteArray(imageStream);
+        imageStream.close();
+
+        return imageByteArray;
+    }
 }
