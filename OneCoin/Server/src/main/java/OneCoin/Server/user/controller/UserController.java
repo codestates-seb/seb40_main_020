@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -166,6 +168,19 @@ public class UserController {
         userService.authenticationEmailForPassword(user);
 
         return new ResponseEntity<>("Send Email", HttpStatus.OK);
+    }
+
+    // 프로필 사진
+    @GetMapping(value = "/images/{user-id}",
+            produces={MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
+    public ResponseEntity<byte[]> getProfileImage(@PathVariable("user-id") @Positive int userId) throws IOException {
+        User user = userService.findUser(userId);
+
+        byte[] image = userService.pathToImage(user.getImagePath());
+
+        return new ResponseEntity<byte[]>(
+                image,
+                HttpStatus.OK);
     }
 
     @DeleteMapping
