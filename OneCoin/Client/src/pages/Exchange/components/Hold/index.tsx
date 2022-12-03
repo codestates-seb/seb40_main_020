@@ -106,6 +106,7 @@ function Hold({ title }: Props) {
 	const radioClickHandler = (value: string) => setComplete(value);
 	const deleteOrderHandler = (orderId: number) => {
 		deleteOrder(orderId);
+		getNonTradingData();
 	};
 	return (
 		<HoldComponent>

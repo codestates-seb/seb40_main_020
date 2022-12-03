@@ -15,7 +15,7 @@ import { Wrapper } from './style';
 import { useRecoilValue } from 'recoil';
 import { isLogin } from '../../store';
 import { dateCalc } from '../../utills/calculate';
-import { getNonTrading } from '../../api/exchange';
+import { getNonTrading, deleteOrder } from '../../api/exchange';
 import { NonTradingOders } from '../../utills/types';
 
 const WaitOrders = () => {
@@ -30,6 +30,14 @@ const WaitOrders = () => {
 		try {
 			const res = await getNonTrading();
 			setData(res);
+		} catch (err) {
+			console.log(err);
+		}
+	};
+	const deleteOrderData = async (n: number) => {
+		try {
+			await deleteOrder(n);
+			getNonTradingData();
 		} catch (err) {
 			console.log(err);
 		}
@@ -60,7 +68,7 @@ const WaitOrders = () => {
 									<td>{v.limit}</td>
 									<td>{+v.amount + +v.completedAmount}</td>
 									<td>{v.amount}</td>
-									<td>{'취소'}</td>
+									<td onClick={() => deleteOrderData(v.orderId)}>{'취소'}</td>
 								</tr>
 							))}
 					</tbody>

@@ -19,6 +19,7 @@ export const OrderComponent = styled.div`
 		}
 		.select {
 			color: var(--yellow);
+			border-bottom: 3px solid var(--yellow);
 		}
 	}
 	.order-contents {

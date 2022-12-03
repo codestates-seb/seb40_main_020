@@ -14,7 +14,7 @@ function Footer() {
 				<div>
 					<img src={logo} onClick={() => navigate('/')} />
 					<a href={FOOTER_LIST.repository} target="_blank" rel="noreferrer">
-						Repository
+						Github Repository
 					</a>
 				</div>
 				<div>{FOOTER_LIST.copyright}</div>
