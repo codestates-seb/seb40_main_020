@@ -32,11 +32,8 @@ api.interceptors.response.use(
 			const newAccessToken = err.response.headers.authorization;
 			const newRefreshToken = err.response.headers.refresh;
 			if (newAccessToken) {
-				sessionStorage.setItem('login-token', JSON.stringify(newAccessToken));
-				sessionStorage.setItem(
-					'login-refresh',
-					JSON.stringify(newRefreshToken)
-				);
+				sessionStorage.setItem('login-token', newAccessToken);
+				sessionStorage.setItem('login-refresh', newRefreshToken);
 			}
 			return Promise.reject(err);
 		}
