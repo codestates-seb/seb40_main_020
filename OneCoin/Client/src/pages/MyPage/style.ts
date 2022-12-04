@@ -53,12 +53,12 @@ export const Wrapper = styled.div`
 	}
 
 	.content-wrapper button {
-		margin-top: 60px;
-		display: block;
-		width: 180px;
+		margin-top: 10px;
+		/* display: block; */
+		/* width: 180px; */
 		height: 35px;
 		border: 0 none;
-		margin-left: auto;
+		margin-left: 10px;
 		background: var(--yellow);
 		font-weight: 700;
 		font-size: 1rem;
@@ -70,13 +70,17 @@ export const Wrapper = styled.div`
 		span {
 			display: inline-block;
 			font-size: 0.9rem;
-			width: 120px;
+			width: 90px;
 		}
 		input {
-			width: 180px;
+			/* width: 180px; */
 			height: 30px;
 			border: 1px solid var(--borderColor);
 			padding-left: 10px;
+		}
+		p {
+			margin: 10px 0 0 90px;
+			font-size: 0.8rem;
 		}
 	}
 `;
