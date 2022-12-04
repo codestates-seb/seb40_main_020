@@ -7,8 +7,9 @@ import { isLogin } from '../store';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
 	const login = useRecoilValue(isLogin);
+	const Authorization = sessionStorage.getItem('login-token');
 
-	if (!login)
+	if (!login && !Authorization)
 		Swal.fire({
 			title: '로그인 후 사용하실 수 있습니다.',
 			confirmButtonText: '확인',
@@ -21,7 +22,11 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 		});
 
 	// eslint-disable-next-line react/react-in-jsx-scope
-	return login ? <>{children}</> : <Navigate to="/login"></Navigate>;
+	return login || Authorization ? (
+		<>{children}</>
+	) : (
+		<Navigate to="/login"></Navigate>
+	);
 }
 
 export default PrivateRoute;
