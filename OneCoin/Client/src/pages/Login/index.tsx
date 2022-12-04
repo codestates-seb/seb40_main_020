@@ -116,7 +116,7 @@ function Login() {
 					</InputContainer>
 					<SubmitButton type="submit">로그인</SubmitButton>
 					<InputContainer>
-						<KakaoButton onClick={onKakaoLogin}>
+						<KakaoButton type="button" onClick={onKakaoLogin}>
 							<RiKakaoTalkFill />
 							<span>카카오계정으로 로그인</span>
 						</KakaoButton>
