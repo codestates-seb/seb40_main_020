@@ -70,7 +70,7 @@ public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHand
                 .scheme("http")
 //                .host("localhost")  // 프론트의 ip
                 .host("projectonecoin.s3-website.ap-northeast-2.amazonaws.com")
-                .port(3000)
+//                .port(3000)
                 .path("/token/oauth2")
 //                .path("/main")
                 .queryParams(queryParams)
