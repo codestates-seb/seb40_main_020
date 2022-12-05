@@ -6,6 +6,13 @@
 
 프로젝트 기간 : 2022.11.8 ~ 2022.12.07
 
+## Service Introduction
+
+### 코인 열풍! 나도 해보고 싶은데, 일단 시작해볼까?
+
+암호 화폐에 대한 관심이 갈 수록 증가하여, 많은 사람들이 투자의 수단으로 참여하고 있습니다. 그러나, 잘 준비되지 않은 상태로 무작정 코인 투자를 시작하여 피해를 보는 사람들도 함께 많아지고 있습니다.
+
+그래서 “**`모의 코인 투자`**” 서비스를 준비했습니다. 저희 서비스를 통해 실전처럼 위험 부담 없이 연습을 해보며 코인에 대해 배워갈 수 있습니다. 실제 거래되고 있는 상품과 가격 정보를 그대로 반영하여, 실제 마켓에서 해당 가격에 거래가 일어났을 때 거래가 체결됩니다. 또한, 모의 투자와 동시에 할 수 있는 “**`실시간 채팅`**” 서비스를 통해, 여러 사람들과 코인에 대한 의견을 공유할 수 있습니다. 궁극적으로 저희는 이 서비스를 통해, 실제 투자 이전에 연습을 해봄으로써 더욱 신중히 고민을 할 수 있도록 도울 수 있을 것이라 기대합니다.
 <br><br>
 
 ## Team Members
@@ -19,16 +26,19 @@
 <br><br>
 
 ## ER-Diagram
-<p align="center"><img src="server/StackOverflow_ERD.png" width=800></p>
+![image](https://user-images.githubusercontent.com/99868638/205669986-00876c20-adc6-4dc3-bf5b-70bd0477ef66.png)
 
-<br><br>
+## NoSQL Modeling
+![image](https://user-images.githubusercontent.com/99868638/205670653-76c48084-fcd8-4313-8986-9ecfe991af6b.png)
 
 ## Built With
-<p align="center"><img src="built-with.png"></p>
-<br><br>
+![image](https://user-images.githubusercontent.com/99868638/205670347-2099b735-e0db-4e30-8970-aef59366cc0d.png)
+
+## Service Architecture
+![image](https://user-images.githubusercontent.com/99868638/205670499-f26f01a7-1136-40f7-b17b-6fbb543f1177.png)
 
 ## API Documentation
-__[API 명세서 Spreadsheets](https://docs.google.com/spreadsheets/d/1-iXshYqORqqHqV7H4DwgY6rGc-bIFUwD56sRcG_qjQo/edit?usp=sharing)__
+[API 명세서 Spreadsheets]
 
 <br><br>
 
