@@ -73,6 +73,7 @@ public abstract class TransactionHistoryMapper {
     @Mapping(target = "commission", constant = "0")
     @Mapping(target = "settledAmount", source = "depositAmount")
     @Mapping(target = "user", source = "balance.user")
+    @Mapping(target = "orderTime", expression = "java(java.time.LocalDateTime.now())")
     public abstract TransactionHistory depositToTransactionHistory(Deposit deposit);
 
     private BigDecimal getSettledAmount(TransactionType transactionType, BigDecimal totalAmount, BigDecimal commission) {
