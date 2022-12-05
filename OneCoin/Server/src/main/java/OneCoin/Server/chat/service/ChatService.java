@@ -113,7 +113,7 @@ public class ChatService {
     }
 
     private List<ChatMessage> getMessagesFromRdb(Integer chatRoomId, Long lastSentIndex, String sessionId) {
-        List<ChatMessage> messagesToSend = chatMessageRdbRepository.findTop10ByChatRoomIdAndChatMessageIdLessThanEqualOrderByChatMessageIdDesc(
+        List<ChatMessage> messagesToSend = chatMessageRdbRepository.findTop30ByChatRoomIdAndChatMessageIdLessThanEqualOrderByChatMessageIdDesc(
                 chatRoomId, lastSentIndex);
         if(messagesToSend.size() == 0) {
             lastSentScoreRepository.save(sessionId, NOTHING_LEFT_TO_SEND);

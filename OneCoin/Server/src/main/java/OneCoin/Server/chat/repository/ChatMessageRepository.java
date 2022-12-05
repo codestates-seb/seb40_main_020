@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class ChatMessageRepository {
     @Getter
-    private final Long NUMBER_OF_CHATS_TO_SHOW = 10L;
+    private final Long NUMBER_OF_CHATS_TO_SHOW = 30L;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
     private final int MAX_CHAT_ROOM = 2;
@@ -58,7 +58,7 @@ public class ChatMessageRepository {
         String key = getKey(chatRoomId);
         Set<ZSetOperations.TypedTuple<Object>> scores = operations.reverseRangeByScoreWithScores(
                 key, Double.MIN_VALUE, recentScore, 0L, NUMBER_OF_CHATS_TO_SHOW);
-        if (scores.size() == 0) return null; //RDB에 없다면,
+        if (scores.size() == 0) return null;
         return scores.stream().skip(scores.size() - 1).findFirst().get().getScore();
     }
 

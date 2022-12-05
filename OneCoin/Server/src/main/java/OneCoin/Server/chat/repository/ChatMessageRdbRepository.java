@@ -12,5 +12,5 @@ public interface ChatMessageRdbRepository extends JpaRepository<ChatMessage, Str
     List<ChatMessage> findAllByChatRoomId(Integer chatRoomId);
 
     Optional<ChatMessage> findByMessageAndChatAtAndUserId(String message, String chatAt, Long userId);
-    List<ChatMessage> findTop10ByChatRoomIdAndChatMessageIdLessThanEqualOrderByChatMessageIdDesc(Integer chatRoomId, Long chatMessageId);
+    List<ChatMessage> findTop30ByChatRoomIdAndChatMessageIdLessThanEqualOrderByChatMessageIdDesc(Integer chatRoomId, Long chatMessageId);
 }
