@@ -20,7 +20,7 @@ export const enterRoom = (
 	client.debug = function () {
 		return;
 	};
-	const Authorization = sessionStorage.getItem('login-token') as string;
+	const Authorization = localStorage.getItem('login-token') as string;
 	const headers = { Authorization };
 	client.connect(headers, (frame) => {
 		const headers = frame?.headers;
