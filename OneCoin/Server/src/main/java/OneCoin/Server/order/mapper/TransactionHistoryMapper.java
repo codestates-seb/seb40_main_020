@@ -26,7 +26,7 @@ public abstract class TransactionHistoryMapper {
 
     @Mapping(target = "completedTime", source = "createdAt")
     @Mapping(target = "orderType", source = "transactionType.type")
-    @Mapping(target = "code", source = "coin.code")
+    @Mapping(target = "coinName", source = "coin.coinName")
     public abstract TransactionHistoryDto.GetResponse entityToDto(TransactionHistory transactionHistory);
 
     public TransactionHistory orderToTransactionHistory(Order order, User user, Coin coin) {
