@@ -1,6 +1,5 @@
 package OneCoin.Server.chat.repository;
 
-import OneCoin.Server.chat.entity.ChatMessage;
 import OneCoin.Server.chat.utils.ChatRoomUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -13,24 +12,24 @@ import javax.annotation.PostConstruct;
 @RequiredArgsConstructor
 @Repository
 public class LastSavedRepository {
-    private final RedisTemplate<String, ChatMessage> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
     private final ChatRoomUtils chatRoomUtils;
     private final ObjectMapper objectMapper;
-    private ValueOperations<String, ChatMessage> operations;
+    private ValueOperations<String, String> operations;
 
     @PostConstruct
     private void init() {
         operations = redisTemplate.opsForValue();
     }
 
-    public void save(Integer chatRoomId, ChatMessage chatMessage) {
-        operations.set(chatRoomUtils.makeLastChatMessageKey(chatRoomId), chatMessage);
+    public void save(Integer chatRoomId, String score) {
+        operations.set(chatRoomUtils.makeLastChatMessageKey(chatRoomId), score);
     }
 
-    public ChatMessage get(Integer chatRoomId) {
-        Object chatMessage = operations.get(chatRoomUtils.makeLastChatMessageKey(chatRoomId));
-        if (chatMessage == null) return null;
-        return objectMapper.convertValue(chatMessage, ChatMessage.class);
+    public String get(Integer chatRoomId) {
+        String result = operations.get(chatRoomUtils.makeLastChatMessageKey(chatRoomId));
+        if (result == null) return null;
+        return result;
     }
 
     public void delete(Integer chatRoomId) {
