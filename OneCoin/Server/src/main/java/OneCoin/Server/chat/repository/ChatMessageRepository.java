@@ -1,33 +1,37 @@
 package OneCoin.Server.chat.repository;
 
 import OneCoin.Server.chat.entity.ChatMessage;
+import OneCoin.Server.exception.BusinessLogicException;
+import OneCoin.Server.exception.ExceptionCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Repository
 @RequiredArgsConstructor
 public class ChatMessageRepository {
-    public final long NUMBER_OF_CHATS_TO_SHOW = 50L;
-    private final RedisTemplate<String, ChatMessage> redisTemplate;
+    @Getter
+    private final Long NUMBER_OF_CHATS_TO_SHOW = 10L;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
     private final int MAX_CHAT_ROOM = 2;
     private final int TTL_IN_DAYS = 3;
     // <chatRoomKey, ChatMessage>
-    private ListOperations<String, ChatMessage> operations;
+    private ZSetOperations<String, Object> operations;
 
     //채팅방에 메시지 저장
     @PostConstruct
     private void init() {
-        operations = redisTemplate.opsForList();
+        operations = redisTemplate.opsForZSet();
         for (int chatRoomId = 1; chatRoomId <= MAX_CHAT_ROOM; chatRoomId++) {
             redisTemplate.expire(getKey(chatRoomId), TTL_IN_DAYS, TimeUnit.DAYS);
         }
@@ -35,33 +39,35 @@ public class ChatMessageRepository {
 
     public void save(ChatMessage chatMessage) {
         String key = getKey(chatMessage.getChatRoomId());
-        String id = UUID.randomUUID().toString();
-        chatMessage.setChatMessageId(id);
-        operations.rightPush(key, chatMessage);
+        operations.add(key, chatMessage, System.currentTimeMillis());
     }
 
     public void removeAllInChatRoom(Integer chatRoomId) {
         redisTemplate.delete(getKey(chatRoomId));
     }
 
-    public List<ChatMessage> getMessageFromRoom(Integer chatRoomId) {
+    public List<ChatMessage> getMessagesFromRoomByScore(Integer chatRoomId, double scoreOfLastChat, double recentScore) {
         String key = getKey(chatRoomId);
-        Object results = operations.range(key, 0L, NUMBER_OF_CHATS_TO_SHOW - 1L);
-        return objectToList(results);
+        Set<Object> result = operations.reverseRangeByScore(key, scoreOfLastChat, recentScore);
+        return objectToList(result);
+    }
+
+    public Double getScoreOfLastChatWithLimitN(Integer chatRoomId, double recentScore) {
+        String key = getKey(chatRoomId);
+        Set<ZSetOperations.TypedTuple<Object>> scores = operations.reverseRangeByScoreWithScores(
+                key, Double.MIN_VALUE, recentScore, 0L, NUMBER_OF_CHATS_TO_SHOW);
+        if (scores.size() == 0) return null; //RDB에 없다면,
+        return scores.stream().skip(scores.size() - 1).findFirst().get().getScore();
     }
 
     public List<ChatMessage> findAll(Integer chatRoomId) {
-        Object results = operations.range(getKey(chatRoomId), 0L, -1L);
-        return objectToList(results);
-    }
-    //인덱스 미포함
-    public List<ChatMessage> findAllAfter(Integer chatRoomId, Long index) {
-        Object results = operations.range(getKey(chatRoomId), index + 1L, Long.MAX_VALUE);
+        Object results = operations.reverseRange(getKey(chatRoomId), 0, -1);
         return objectToList(results);
     }
 
-    public Long getIndex(Integer chatRoomId, ChatMessage chatMessage) {
-        return operations.lastIndexOf(getKey(chatRoomId), chatMessage);
+    public List<ChatMessage> findAllInAscOrder(Integer chatRoomId) {
+        Object results = operations.range(getKey(chatRoomId), 0, -1);
+        return objectToList(results);
     }
 
     private String getKey(Integer chatRoomId) {
@@ -69,8 +75,24 @@ public class ChatMessageRepository {
     }
 
     private List<ChatMessage> objectToList(Object obj) {
-        if(obj == null) return null;
+        if (obj == null) return null;
         return Arrays.asList(objectMapper.convertValue(obj, ChatMessage[].class));
+    }
+
+    public List<ChatMessage> findByScoreInAcsOrder(Integer chatRoomId, double from, double to) {
+        String key = getKey(chatRoomId);
+        Object result =  operations.rangeByScore(key, from + 1, to);
+        return  objectToList(result);
+    }
+
+    public Double getScoreOfLatestChat(Integer chatRoomId, double from) {
+        String key = getKey(chatRoomId);
+        Set<ZSetOperations.TypedTuple<Object>> scores = operations.reverseRangeByScoreWithScores(
+                key, from, Double.MAX_VALUE);
+        if (scores.size() == 0) {
+            throw new BusinessLogicException(ExceptionCode.NO_CHAT_EXIST);
+        }
+        return scores.stream().findFirst().get().getScore();
     }
 
 }
