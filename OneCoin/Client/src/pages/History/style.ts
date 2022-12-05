@@ -12,7 +12,7 @@ export const Wrapper = styled.div`
 	${contentBox}
 	table thead th {
 		:nth-child(1) {
-			width: 150px;
+			width: 80px;
 		}
 		:nth-child(4) {
 			width: 100px;
@@ -21,7 +21,7 @@ export const Wrapper = styled.div`
 			width: 100px;
 		}
 		:nth-child(3) {
-			width: 120px;
+			width: 80px;
 		}
 	}
 	table {
