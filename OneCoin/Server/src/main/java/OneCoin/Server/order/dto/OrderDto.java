@@ -24,7 +24,7 @@ public class OrderDto {
         @Price
         private String stopLimit;
 
-        @NotNull
+        @NotNull(message = "빈 필드는 허용하지 않습니다.")
         @Amount
         private String amount;
 
