@@ -28,7 +28,7 @@ public class TransactionHistory extends CreatedOnlyAuditable {
     @Column(nullable = false, updatable = false, scale = 15, precision = 30)
     private BigDecimal amount; // 수량
 
-    @Column(nullable = false, updatable = false, scale = 15, precision = 30)
+    @Column(nullable = false, updatable = false, scale = 2, precision = 30)
     private BigDecimal price; // 가격
 
     @Column(nullable = false, updatable = false, scale = 15, precision = 30)
@@ -44,7 +44,7 @@ public class TransactionHistory extends CreatedOnlyAuditable {
     private LocalDateTime orderTime; // 주문 시간, ASK와 BID에서 사용
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", updatable = false)
+    @JoinColumn(name = "user_id", updatable = false, nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
