@@ -36,10 +36,10 @@ const MyPage = () => {
 			const result = confirm('정말로 회원탈퇴 하시겠습니까?');
 			if (result) {
 				api.delete('/api/users').then(() => {
-					sessionStorage.removeItem('login-token');
-					sessionStorage.removeItem('login-refresh');
+					localStorage.removeItem('login-token');
+					localStorage.removeItem('login-refresh');
 					setIsUseLogin(false);
-					Alert('회원탈퇴가 완료되었습니다.');
+					Alert('회원탈퇴가 완료되었습니다');
 					navigate('/');
 				});
 			}
@@ -53,7 +53,7 @@ const MyPage = () => {
 			await api.patch('/api/users/display-name', { displayName }).then(() => {
 				confirm('정말로 닉네임을 바꾸시겠습니까?');
 				navigate('/');
-				Alert('닉네임 수정이 완료되었습니다.');
+				Alert('닉네임 수정이 완료되었습니다');
 			});
 		} catch (err) {
 			console.log(err);
@@ -66,7 +66,7 @@ const MyPage = () => {
 			await api.patch('/api/users/reset-passwords', { password }).then(() => {
 				confirm('정말로 비밀번호를 바꾸시겠습니까?');
 				navigate('/');
-				Alert('비밀번호 수정이 완료되었습니다.');
+				Alert('비밀번호 수정이 완료되었습니다');
 			});
 		} catch (err) {
 			console.log(err);

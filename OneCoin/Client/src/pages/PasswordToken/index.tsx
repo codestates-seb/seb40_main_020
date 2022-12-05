@@ -8,9 +8,9 @@ function PasswordToken() {
 		const authorization = url.searchParams.get('authorization');
 		const refresh = url.searchParams.get('refresh');
 		if (authorization && refresh) {
-			sessionStorage.setItem('login-token', `Bearer ${authorization}`);
-			sessionStorage.setItem('login-refresh', refresh);
-			navigate('/resetpassword');
+			localStorage.setItem('login-token', `Bearer ${authorization}`);
+			localStorage.setItem('login-refresh', refresh);
+			navigate('/mypage');
 		}
 	});
 	return <></>;

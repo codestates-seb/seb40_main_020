@@ -7,7 +7,7 @@ import { isLogin } from '../store';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
 	const login = useRecoilValue(isLogin);
-	const Authorization = sessionStorage.getItem('login-token');
+	const Authorization = localStorage.getItem('login-token');
 
 	if (!login && !Authorization)
 		Swal.fire({
