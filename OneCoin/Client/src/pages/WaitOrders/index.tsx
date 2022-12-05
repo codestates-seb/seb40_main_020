@@ -1,30 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import {
-	INVERSTMENTS_LIST,
-	WAIT_ORDERS_TBODY,
-} from 'utills/constants/investments';
+import { INVERSTMENTS_LIST } from 'utills/constants/investments';
 import TabsLink from '../Balance/components/TabsLink/index';
 import Layout from 'components/Layout';
 import { WAIT_ORDERS_THEAD } from '../../utills/constants/investments';
-import Table from '../../components/Table/index';
-import Pagination, {
-	OnPageChangeCallback,
-} from 'pages/Balance/components/Pagination';
 
 import { Wrapper } from './style';
 import { useRecoilValue } from 'recoil';
-import { isLogin } from '../../store';
+import { isLogin, coinDataState } from '../../store';
 import { dateCalc } from '../../utills/calculate';
 import { getNonTrading, deleteOrder } from '../../api/exchange';
 import { NonTradingOders } from '../../utills/types';
+import Alert from 'components/Alert';
+import Button from 'components/Button';
+import { codeCoin } from 'utills/coinCode';
 
 const WaitOrders = () => {
+	const coinData = useRecoilValue(coinDataState);
 	const login = useRecoilValue(isLogin);
-	const [jumpToPage, setJumpToPage] = useState(0);
-	const onPageChanged: OnPageChangeCallback = (selectedItem) => {
-		const newPage = selectedItem.selected;
-		setJumpToPage(newPage);
-	};
 	const [data, setData] = useState<NonTradingOders[]>([]);
 	const getNonTradingData = async () => {
 		try {
@@ -38,18 +30,19 @@ const WaitOrders = () => {
 		try {
 			await deleteOrder(n);
 			getNonTradingData();
+			Alert('주문이 취소되었습니다');
 		} catch (err) {
-			console.log(err);
+			Alert('주문 취소가 실패했습니다');
 		}
 	};
 	useEffect(() => {
 		if (login) getNonTradingData();
 	}, []);
+
 	return (
 		<Layout>
 			<Wrapper>
 				<TabsLink array={INVERSTMENTS_LIST} />
-				{/* <Table headerGroups={WAIT_ORDERS_THEAD} bodyDatas={data} /> */}
 				<table>
 					<thead>
 						<tr>
@@ -63,21 +56,20 @@ const WaitOrders = () => {
 							data.map((v, i) => (
 								<tr key={i}>
 									<td>{dateCalc(v.orderTime)}</td>
-									<td>-</td>
+									<td>{codeCoin(coinData, v.code, 'coin')}</td>
 									<td>{v.orderType === 'ASK' ? '매도' : '매수'}</td>
-									<td>{v.limit}</td>
+									<td>{(+v.limit).toLocaleString()}</td>
 									<td>{+v.amount + +v.completedAmount}</td>
 									<td>{v.amount}</td>
-									<td onClick={() => deleteOrderData(v.orderId)}>{'취소'}</td>
+									<td onClick={() => deleteOrderData(v.orderId)}>
+										<Button style={{ border: 'none', borderRadius: '5px' }}>
+											취소
+										</Button>
+									</td>
 								</tr>
 							))}
 					</tbody>
 				</table>
-				{/* <Pagination
-					currentPage={jumpToPage}
-					pageCount={WAIT_ORDERS_TBODY.pageInfo.totalPages}
-					onPageChange={onPageChanged}
-				/> */}
 			</Wrapper>
 		</Layout>
 	);

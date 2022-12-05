@@ -7,6 +7,7 @@ import {
 	nonTradingOdersTitleMenu,
 } from '../../../../utills/constants/exchange';
 import { MyCoins, CompleteOrders } from '../../../../utills/types';
+import Alert from 'components/Alert';
 
 import {
 	getNonTrading,
@@ -27,6 +28,8 @@ import {
 	myCoinsState,
 	isLogin,
 } from '../../../../store';
+import Button from 'components/Button';
+import { codeCoin } from 'utills/coinCode';
 
 interface Props {
 	title: string;
@@ -78,6 +81,7 @@ function Hold({ title }: Props) {
 			const obj = {
 				...v,
 				change,
+				coin: codeCoin(coinData, v.code as string, 'coin'),
 				changePrice: proceeds ? proceeds.toLocaleString() : '0',
 				changeRate: rate + '%',
 				priceEvaluation: priceEvaluation
@@ -104,10 +108,17 @@ function Hold({ title }: Props) {
 
 	const drawTitle = (v: string, i: number) => <td key={i}>{v}</td>;
 	const radioClickHandler = (value: string) => setComplete(value);
-	const deleteOrderHandler = (orderId: number) => {
-		deleteOrder(orderId);
-		getNonTradingData();
+	const deleteOrderHandler = async (orderId: number) => {
+		try {
+			await deleteOrder(orderId);
+			await getNonTradingData();
+			await Alert('주문이 취소되었습니다');
+		} catch (err) {
+			console.log(err);
+			Alert('주문 취소가 실패했습니다');
+		}
 	};
+
 	return (
 		<HoldComponent>
 			<table>
@@ -152,7 +163,7 @@ function Hold({ title }: Props) {
 						  login &&
 						  myCoins.map((v, i) => (
 								<tr key={i} className="hold-item">
-									<td>{v.code as string}</td>
+									<td>{v.coin as string}</td>
 
 									<td>
 										{Math.round(
@@ -182,7 +193,7 @@ function Hold({ title }: Props) {
 						  login &&
 						  nonTradingOrders.map((v, i) => (
 								<tr key={i} className="hold-item">
-									<td>{v.code as string}</td>
+									<td>{codeCoin(coinData, v.code, 'coin')}</td>
 									<td>{dateCalc(v.orderTime as string)}</td>
 									<td
 										className={
@@ -194,20 +205,28 @@ function Hold({ title }: Props) {
 									<td>{(+(v.limit as string)).toLocaleString()}</td>
 									<td>{v.amount as string}</td>
 									<td
-										className={'cancel'}
 										onClick={() => {
 											deleteOrderHandler(v.orderId);
 										}}
 									>
-										취소
+										<Button
+											style={{
+												border: 'none',
+												borderRadius: '5px',
+												width: 105,
+												height: 35,
+											}}
+										>
+											취소
+										</Button>
 									</td>
 								</tr>
 						  ))
 						: completeOrders &&
 						  completeOrders.map((v, i) => (
 								<tr key={i}>
-									<td>{v.code as string}</td>
-									<td>{dateCalc(v.completedTime)}</td>
+									<td>{codeCoin(coinData, v.code as string, 'coin')}</td>
+									<td>{dateCalc(v.completedTime as string)}</td>
 									<td
 										className={
 											(v.orderType as string) === 'BID' ? 'bid' : 'ask'

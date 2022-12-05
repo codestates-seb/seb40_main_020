@@ -21,9 +21,14 @@ const SignUpToken = lazy(() => import('pages/SignUpToken'));
 const PasswordToken = lazy(() => import('pages/PasswordToken'));
 import PrivateRoute from './components/PrivateRouter';
 import Error from 'pages/Error';
+import { getBalance } from 'api/balance';
 
 function App() {
 	const [isUseLogin, setIsUseLogin] = useRecoilState(isLogin);
+	const Authorization = localStorage.getItem('login-token');
+	if (Authorization) {
+		getBalance().then(() => setIsUseLogin(true));
+	}
 	return (
 		<>
 			<Routes>

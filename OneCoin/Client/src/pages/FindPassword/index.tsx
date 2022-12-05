@@ -15,17 +15,16 @@ function FindPassword() {
 	const [email, setEmail] = useState('');
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setEmail(e.target.value);
-		console.log(email);
 	};
 	const onSubmit = async () => {
 		try {
 			const res = await axios.get(
 				`${process.env.REACT_APP_SERVER_URL}/api/users/find-password?email=${email}`
 			);
-			Alert('이메일을 확인해주세요.');
+			Alert('이메일을 확인해주세요');
 			return res;
 		} catch (err) {
-			Alert('이메일을 확인해주세요.');
+			Alert('이메일을 확인해주세요');
 		}
 	};
 	return (

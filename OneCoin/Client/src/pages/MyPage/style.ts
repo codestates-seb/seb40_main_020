@@ -28,7 +28,7 @@ export const Wrapper = styled.div`
 
 	.content-wrapper {
 		${backStyles}
-		width: 450px;
+		width: 500px;
 		border-left: 0 none;
 	}
 
@@ -63,6 +63,7 @@ export const Wrapper = styled.div`
 		font-weight: 700;
 		font-size: 1rem;
 		color: #fff;
+		cursor: pointer;
 	}
 
 	.content-wrapper .input-box {
@@ -70,7 +71,7 @@ export const Wrapper = styled.div`
 		span {
 			display: inline-block;
 			font-size: 0.9rem;
-			width: 90px;
+			width: 100px;
 		}
 		input {
 			/* width: 180px; */

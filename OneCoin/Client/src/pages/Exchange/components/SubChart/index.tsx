@@ -140,7 +140,8 @@ function SubChart({ code, time, chartSelector }: Props) {
 						close: updateData.close,
 					});
 				} else {
-					newSeries.update(updateData);
+					if (updateData.time > data[data.length - 1].time)
+						newSeries.update(updateData);
 				}
 			}
 			chart.timeScale({

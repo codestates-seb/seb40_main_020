@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import Layout from 'components/Layout';
-import Table from 'components/Table';
-import {
-	HISTORY_TBODY,
-	HISTORY_THEAD,
-	INVERSTMENTS_LIST,
-} from 'utills/constants/investments';
+import { HISTORY_THEAD, INVERSTMENTS_LIST } from 'utills/constants/investments';
 import Pagination, {
 	OnPageChangeCallback,
 } from 'pages/Balance/components/Pagination';
@@ -15,6 +10,9 @@ import HistoryHeader from './components/HistoryHeader';
 import { getCompleteTradePage } from '../../api/exchange';
 import { dateCalc } from '../../utills/calculate';
 import { Wrapper } from './style';
+import { coinDataState } from 'store';
+import { useRecoilValue } from 'recoil';
+import { codeCoin } from 'utills/coinCode';
 interface Data {
 	amount: string;
 	code: string;
@@ -37,6 +35,7 @@ interface T {
 }
 
 const History = () => {
+	const coinData = useRecoilValue(coinDataState);
 	const [jumpToPage, setJumpToPage] = useState(0);
 	const onPageChanged: OnPageChangeCallback = (selectedItem) => {
 		const newPage = selectedItem.selected;
@@ -76,6 +75,13 @@ const History = () => {
 	useEffect(() => {
 		getCompleteTradeData();
 	}, [jumpToPage, period, type]);
+	function ordertype(str: string) {
+		if (str === 'BID') return '매수';
+		else if (str === 'ASK') return '매도';
+		else if (str === 'SWAP') return '스왑';
+		else if (str === 'DEPOSIT') return '입금';
+	}
+
 	return (
 		<Layout>
 			<Wrapper>
@@ -85,7 +91,6 @@ const History = () => {
 					typeHandler={typeHandler}
 					getCompleteTradeData={getCompleteTradeData}
 				/>
-				{/* <Table headerGroups={HISTORY_THEAD} bodyDatas={HISTORY_TBODY.data} /> */}
 				<table>
 					<thead>
 						<tr>
@@ -99,9 +104,23 @@ const History = () => {
 							data.data.map((v, i) => (
 								<tr key={i}>
 									<td>{dateCalc(v.completedTime)}</td>
-									<td>{v.code}</td>
-									<td>{v.orderType === 'ASK' ? '매도' : '매수'}</td>
-									<td>{(+v.amount).toFixed(8)}</td>
+									<td>{codeCoin(coinData, v.code as string, 'coin')}</td>
+									<td
+										className={
+											v.orderType === 'ASK'
+												? 'ask'
+												: v.orderType === 'BID'
+												? 'bid'
+												: ''
+										}
+									>
+										{ordertype(v.orderType)}
+									</td>
+									<td>
+										{v.orderType === 'DEPOSIT'
+											? (+v.amount).toLocaleString()
+											: (+v.amount).toFixed(8)}
+									</td>
 									<td>{(+v.price).toLocaleString()}</td>
 									<td>{Math.round(+v.totalAmount).toLocaleString()}</td>
 									<td>{Math.round(+v.commission).toLocaleString()}</td>

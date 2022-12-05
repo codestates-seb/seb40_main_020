@@ -1,12 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import {
-	BALANCE_THEAD,
-	INVERSTMENTS_LIST,
-	BALANCE_TBODY,
-} from 'utills/constants/investments';
+import React, { useEffect } from 'react';
+import { BALANCE_THEAD, INVERSTMENTS_LIST } from 'utills/constants/investments';
 import Layout from '../../components/Layout';
-import Table from '../../components/Table';
-import Pagination, { OnPageChangeCallback } from './components/Pagination';
 import TableInfo from './components/TableInfo';
 import TabsLink from './components/TabsLink';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -18,13 +12,8 @@ import { proceedsCalculator, rateCalculator } from '../../utills/calculate';
 
 function Balance() {
 	const login = useRecoilValue(isLogin);
-	const [jumpToPage, setJumpToPage] = useState(0);
 	const [myCoins, setMyCoins] = useRecoilState(myCoinsState);
 	const coinData = useRecoilValue(coinDataState);
-	const onPageChanged: OnPageChangeCallback = (selectedItem) => {
-		const newPage = selectedItem.selected;
-		setJumpToPage(newPage);
-	};
 	const getWalletData = async () => {
 		try {
 			const res = await getWallet();
@@ -45,6 +34,7 @@ function Balance() {
 			const change = rate > 0 ? 'rise' : rate < 0 ? 'fall' : '';
 			const obj = {
 				...v,
+				coin: coinData.filter((c) => c.code === v.code)[0].coin,
 				totalPrice: Math.round(avgPrice * amount).toLocaleString(),
 				priceEvaluation: priceEvaluation
 					? priceEvaluation.toLocaleString()
@@ -70,11 +60,6 @@ function Balance() {
 			<Wrapper>
 				<TabsLink array={INVERSTMENTS_LIST} />
 				<TableInfo />
-				{/* <Table
-					title="보유자산 목록"
-					headerGroups={BALANCE_THEAD}
-					bodyDatas={myCoins}
-				/> */}
 				<div className="title">보유자산 목록</div>
 				<table>
 					<thead>
@@ -88,7 +73,7 @@ function Balance() {
 						{myCoins &&
 							myCoins.map((v, i) => (
 								<tr key={i}>
-									<td>{v.code}</td>
+									<td>{v.coin}</td>
 									<td>{(+v.amount).toFixed(8)}</td>
 									<td>{Math.round(+v.averagePrice).toLocaleString()}</td>
 									<td>{v.priceEvaluation}</td>
@@ -99,11 +84,6 @@ function Balance() {
 							))}
 					</tbody>
 				</table>
-				{/* <Pagination
-					currentPage={jumpToPage}
-					pageCount={BALANCE_TBODY.pageInfo.totalPages}
-					onPageChange={onPageChanged}
-				/> */}
 			</Wrapper>
 		</Layout>
 	);
