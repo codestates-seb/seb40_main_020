@@ -29,7 +29,8 @@ public enum ExceptionCode {
     AUTH_NOT_FOUND(404, "Auth data not found"),
     OCCURRED_NEGATIVE_AMOUNT(500, "Negative amount has occurred."),
     UNDEFINED_PLATFORM(404, "Platform not found"),
-    NOT_VALID_AUTHENTICATION(404, "Unvalid authentication");
+    NOT_VALID_AUTHENTICATION(404, "Unvalid authentication"),
+    NO_CHAT_EXIST(404, "No chat in cache");
 
     private final int code;
     private final String description;

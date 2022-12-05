@@ -6,6 +6,7 @@ import OneCoin.Server.chat.repository.ChatMessageRdbRepository;
 import OneCoin.Server.chat.repository.ChatMessageRepository;
 import OneCoin.Server.chat.constant.MessageType;
 import OneCoin.Server.chat.repository.LastSavedRepository;
+import OneCoin.Server.chat.repository.LastSentScoreRepository;
 import OneCoin.Server.config.auth.utils.UserUtilsForWebSocket;
 import OneCoin.Server.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class ChatService {
     private final ChatMessageRdbRepository chatMessageRdbRepository;
     private final LastSavedRepository lastSavedRepository;
     private final ChatRoomService chatRoomService;
+    private final LastSentScoreRepository lastSentScoreRepository;
 
     public ChatMessage makeEnterOrLeaveChatMessage(MessageType messageType, Integer chatRoomId, User user) {
         ChatMessage chatMessage = ChatMessage.builder()
@@ -72,25 +74,36 @@ public class ChatService {
         return chatMessage;
     }
 
-    public List<ChatMessage> getChatMessages(Integer chatRoomId) {
-        return chatMessageRepository.getMessageFromRoom(chatRoomId);
-    }
+    public List<ChatMessage> getChatMessages(Integer chatRoomId, String sessionId) {
+        double recentScore = lastSentScoreRepository.getNextScoreOfRecentlySent(sessionId);
+        Double scoreOfLastChat = chatMessageRepository.getScoreOfLastChatWithLimitN(chatRoomId, recentScore);
+        if (isNoChatLeftInMemory(scoreOfLastChat)) {
 
+        }
+        lastSentScoreRepository.save(sessionId, scoreOfLastChat.toString());
+        return chatMessageRepository.getMessagesFromRoomByScore(chatRoomId, scoreOfLastChat, recentScore);
+    }
+    public boolean isNoChatLeftInMemory(Double scoreOfLastChat) {
+        if (scoreOfLastChat == null) return true;
+        return false;
+    }
     public void saveInMemoryChatMessagesToRdb() {
         List<ChatRoom> chatRooms = chatRoomService.findAllChatRooms();
         for(ChatRoom chatRoom : chatRooms) {
             Integer chatRoomId = chatRoom.getChatRoomId();
-            ChatMessage lastSaved = lastSavedRepository.get(chatRoomId);
+            String recentScore = lastSavedRepository.get(chatRoomId);
             List<ChatMessage> messages;
-            if(lastSaved == null) {
-                messages = chatMessageRepository.findAll(chatRoomId);
+            if(recentScore == null) {
+                messages = chatMessageRepository.findAllInAscOrder(chatRoomId);
+                Double latestScore = chatMessageRepository.getScoreOfLatestChat(chatRoomId, Double.MIN_VALUE);
+                lastSavedRepository.save(chatRoomId, latestScore.toString());
             } else {
-                Long index = chatMessageRepository.getIndex(chatRoomId, lastSaved);
-                messages = chatMessageRepository.findAllAfter(chatRoomId, index);
+                double recentScoreAsDouble = Double.parseDouble(recentScore);
+                Double latestScore = chatMessageRepository.getScoreOfLatestChat(chatRoomId, recentScoreAsDouble);
+                messages = chatMessageRepository.findByScoreInAcsOrder(chatRoomId, recentScoreAsDouble, latestScore);
+                lastSavedRepository.save(chatRoomId, latestScore.toString());
             }
             if(messages.size() == 0) return;
-            ChatMessage latestMessage = messages.get(messages.size() - 1);
-            lastSavedRepository.save(chatRoomId, latestMessage);
             chatMessageRdbRepository.saveAll(messages);
         }
     }
