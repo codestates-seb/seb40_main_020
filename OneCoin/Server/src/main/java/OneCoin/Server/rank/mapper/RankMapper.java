@@ -27,7 +27,7 @@ public class RankMapper {
             Rank dto = Rank.builder()
                     .rank(i + 1)
                     .displayName(userRoi.getUserDisplayName())
-                    .ROI(roi)
+                    .roi(roi)
                     .build();
             users.add(dto);
         }

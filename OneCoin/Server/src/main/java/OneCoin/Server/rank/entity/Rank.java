@@ -17,5 +17,5 @@ public class Rank {
     @Column(name = "ranks")
     private Integer rank;
     private String displayName;
-    private String ROI;
+    private String roi;
 }
