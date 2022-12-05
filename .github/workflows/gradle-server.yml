@@ -50,6 +50,7 @@ jobs:
         spring.redis.host=${{ secrets.SPRING_REDIS_HOST }}
         spring.mail.username=${{ secrets.SPRING_MAIL_USERNAME }}
         spring.mail.password=${{ secrets.SPRING_MAIL_PASSWORD }}
+        spring.client.ip=${{ secrets.SPRING_CLIENT_IP }}
         spring.server.ip=${{ secrets.SPRING_SERVER_IP }}
         spring.security.oauth2.client.registration.kakao.client-id=${{ secrets.KAKAO_CLIENT_ID }}
         spring.security.oauth2.client.registration.kakao.client-secret=${{ secrets.KAKAO_CLIENT_SECRET }}
