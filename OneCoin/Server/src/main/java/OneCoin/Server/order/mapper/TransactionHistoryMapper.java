@@ -38,7 +38,6 @@ public abstract class TransactionHistoryMapper {
         BigDecimal commission = calculationUtil.calculateOrderCommission(price, completedAmount).setScale(2, RoundingMode.HALF_UP);
         BigDecimal settledAmount = getSettledAmount(transactionType, totalAmount, commission);
 
-
         return TransactionHistory.builder()
                 .transactionType(transactionType)
                 .amount(completedAmount)
