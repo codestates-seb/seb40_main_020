@@ -29,7 +29,6 @@ public class ChatMessageRdbRepositoryTest {
         chatRoomId = 1000;
         for (long i = 1; i <= numberOfChatsToCreate; i++) {
             ChatMessage chatMessage = webSocketTestUtils.makeChatMessage(i, chatRoomId);
-            chatMessage.setChatMessageId(UUID.randomUUID().toString());
             chatMessageRdbRepository.save(chatMessage);
         }
     }
