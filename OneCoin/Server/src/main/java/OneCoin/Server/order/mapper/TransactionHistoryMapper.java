@@ -1,6 +1,7 @@
 package OneCoin.Server.order.mapper;
 
 import OneCoin.Server.coin.entity.Coin;
+import OneCoin.Server.deposit.entity.Deposit;
 import OneCoin.Server.order.dto.TransactionHistoryDto;
 import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.entity.TransactionHistory;
@@ -26,7 +27,7 @@ public abstract class TransactionHistoryMapper {
 
     @Mapping(target = "completedTime", source = "createdAt")
     @Mapping(target = "orderType", source = "transactionType.type")
-    @Mapping(target = "code", source = "coin.code")
+    @Mapping(target = "coinName", source = "coin.coinName")
     public abstract TransactionHistoryDto.GetResponse entityToDto(TransactionHistory transactionHistory);
 
     public TransactionHistory orderToTransactionHistory(Order order, User user, Coin coin) {
@@ -37,7 +38,6 @@ public abstract class TransactionHistoryMapper {
         TransactionType transactionType = TransactionType.valueOf(order.getOrderType());
         BigDecimal commission = calculationUtil.calculateOrderCommission(price, completedAmount).setScale(2, RoundingMode.HALF_UP);
         BigDecimal settledAmount = getSettledAmount(transactionType, totalAmount, commission);
-
 
         return TransactionHistory.builder()
                 .transactionType(transactionType)
@@ -65,6 +65,15 @@ public abstract class TransactionHistoryMapper {
                 .orderTime(LocalDateTime.now())
                 .build();
     }
+
+    @Mapping(target = "transactionType", constant = "DEPOSIT")
+    @Mapping(target = "amount", source = "depositAmount")
+    @Mapping(target = "price", constant = "0")
+    @Mapping(target = "totalAmount", source = "depositAmount")
+    @Mapping(target = "commission", constant = "0")
+    @Mapping(target = "settledAmount", source = "depositAmount")
+    @Mapping(target = "user", source = "balance.user")
+    public abstract TransactionHistory depositToTransactionHistory(Deposit deposit);
 
     private BigDecimal getSettledAmount(TransactionType transactionType, BigDecimal totalAmount, BigDecimal commission) {
         BigDecimal settledAmount = null;
