@@ -33,8 +33,7 @@ public class ChatRoomController {
     }
 
     @GetMapping("/{room-id}/messages")
-    public ResponseEntity getMessagesInRoom(@PathVariable("room-id") Integer chatRoomId, StompHeaderAccessor accessor) {
-        String sessionId = accessor.getSessionId();
+    public ResponseEntity getMessagesInRoom(@PathVariable("room-id") Integer chatRoomId, @RequestParam String sessionId) {
         List<ChatMessage> messages = chatService.getChatMessages(chatRoomId, sessionId);
         List<ChatResponseDto> responses = chatMapper.chatMessagesToResponseDtos(messages);
         return new ResponseEntity<>(new MultiResponseDto<>(responses), HttpStatus.CREATED);
