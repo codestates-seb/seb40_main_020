@@ -8,7 +8,7 @@ public class TransactionHistoryDto {
     @Getter
     @Setter
     public static class GetResponse {
-        private String coinName;
+        private String code;
         private String completedTime;
         private String orderType;
         private String amount;
