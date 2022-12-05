@@ -1,6 +1,5 @@
 package OneCoin.Server.chat.repository;
 
-import OneCoin.Server.chat.entity.ChatMessage;
 import OneCoin.Server.chat.utils.ChatRoomUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
