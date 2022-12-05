@@ -4,6 +4,8 @@ import OneCoin.Server.balance.entity.Balance;
 import OneCoin.Server.balance.service.BalanceService;
 import OneCoin.Server.deposit.entity.Deposit;
 import OneCoin.Server.deposit.repository.DepositRepository;
+import OneCoin.Server.order.service.TransactionHistoryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,16 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class DepositService {
     private final DepositRepository depositRepository;
     private final BalanceService balanceService;
-
-    public DepositService(DepositRepository depositRepository, BalanceService balanceService) {
-        this.depositRepository = depositRepository;
-        this.balanceService = balanceService;
-    }
+    private final TransactionHistoryService transactionHistoryService;
 
     /**
      * 입금
@@ -32,6 +31,7 @@ public class DepositService {
     public Deposit createDeposit(Deposit deposit) {
         deposit.setBalance(balanceService.updateBalance(deposit));
         deposit.setRemainingBalance(deposit.getBalance().getBalance());
+        transactionHistoryService.createTransactionHistoryByDeposit(deposit);
         return depositRepository.save(deposit);
     }
 

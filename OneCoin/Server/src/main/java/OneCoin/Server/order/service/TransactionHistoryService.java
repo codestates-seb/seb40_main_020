@@ -3,6 +3,7 @@ package OneCoin.Server.order.service;
 import OneCoin.Server.coin.entity.Coin;
 import OneCoin.Server.coin.service.CoinService;
 import OneCoin.Server.config.auth.utils.LoggedInUserInfoUtils;
+import OneCoin.Server.deposit.entity.Deposit;
 import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.order.entity.Order;
@@ -46,9 +47,13 @@ public class TransactionHistoryService {
     }
 
     public void createTransactionHistoryBySwap(Swap swap) {
-        User user = userService.findVerifiedUser(swap.getUser().getUserId());
-        Coin coin = coinService.findCoin(swap.getGivenCoin().getCode());
         TransactionHistory transactionHistory = mapper.swapToTransactionHistory(swap);
+
+        transactionHistoryRepository.save(transactionHistory);
+    }
+
+    public void createTransactionHistoryByDeposit(Deposit deposit) {
+        TransactionHistory transactionHistory = mapper.depositToTransactionHistory(deposit);
 
         transactionHistoryRepository.save(transactionHistory);
     }

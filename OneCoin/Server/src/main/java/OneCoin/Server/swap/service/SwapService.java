@@ -2,6 +2,7 @@ package OneCoin.Server.swap.service;
 
 import OneCoin.Server.coin.service.CoinService;
 import OneCoin.Server.order.entity.Wallet;
+import OneCoin.Server.order.entity.enums.Commission;
 import OneCoin.Server.order.mapper.TransactionHistoryMapper;
 import OneCoin.Server.order.service.OrderService;
 import OneCoin.Server.order.service.TransactionHistoryService;
@@ -13,6 +14,7 @@ import OneCoin.Server.swap.repository.SwapRepository;
 import OneCoin.Server.upbit.repository.TickerRepository;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,8 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-@Transactional
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class SwapService {
     private final SwapRepository swapRepository;
     private final TickerRepository tickerRepository;
@@ -32,19 +35,8 @@ public class SwapService {
     private final WalletService walletService;
     private final SwapWalletMapper swapWalletMapper;
     private final TransactionHistoryService transactionHistoryService;
-    private final BigDecimal swapCommission = new BigDecimal("0.0005");    // 수수료
+    private final BigDecimal swapCommission = Commission.SWAP.getRate();    // 수수료
     private final BigDecimal swapAmount = BigDecimal.ONE.subtract(swapCommission);        // 수수료 제외량
-
-    public SwapService(SwapRepository swapRepository, TickerRepository tickerRepository, CoinService coinService, UserService userService, OrderService orderService, WalletService walletService, SwapWalletMapper swapWalletMapper, TransactionHistoryMapper transactionHistoryMapper, TransactionHistoryService transactionHistoryService) {
-        this.swapRepository = swapRepository;
-        this.tickerRepository = tickerRepository;
-        this.coinService = coinService;
-        this.userService = userService;
-        this.orderService = orderService;
-        this.walletService = walletService;
-        this.swapWalletMapper = swapWalletMapper;
-        this.transactionHistoryService = transactionHistoryService;
-    }
 
     /**
      *  코인 환율 계산
