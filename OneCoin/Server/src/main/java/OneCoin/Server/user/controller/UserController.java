@@ -8,6 +8,7 @@ import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.mapper.UserMapper;
 import OneCoin.Server.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,8 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
 //    private final String baseURL = "localhost:3000";
-    private final String baseURL = "projectonecoin.s3-website.ap-northeast-2.amazonaws.com";
+    @Value("${spring.client.ip}")
+    private String baseURL;
     private final JwtTokenizer jwtTokenizer;
 
     public UserController(UserService userService, UserMapper userMapper, JwtTokenizer jwtTokenizer) {
