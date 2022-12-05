@@ -31,11 +31,4 @@ public class LastSentScoreRepository {
     public String delete(String sessionId) {
         return operations.getAndDelete(sessionId);
     }
-    public double getNextScoreOfRecentlySent(String sessionId) {
-        String recentScoreAsString = operations.get(sessionId);
-        if (recentScoreAsString == null) {
-            return Double.MAX_VALUE;
-        }
-        return Double.parseDouble(recentScoreAsString) - 1L;
-    }
 }

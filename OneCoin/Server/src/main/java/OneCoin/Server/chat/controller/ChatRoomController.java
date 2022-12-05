@@ -12,6 +12,7 @@ import OneCoin.Server.dto.SingleResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,8 +36,9 @@ public class ChatRoomController {
     }
 
     @GetMapping("/{room-id}/messages")
-    public ResponseEntity getMessagesInRoom(@PathVariable("room-id") Integer chatRoomId) {
-        List<ChatMessage> messages = chatService.getChatMessages(chatRoomId);
+    public ResponseEntity getMessagesInRoom(@PathVariable("room-id") Integer chatRoomId, StompHeaderAccessor accessor) {
+        String sessionId = accessor.getSessionId();
+        List<ChatMessage> messages = chatService.getChatMessages(chatRoomId, sessionId);
         List<ChatResponseDto> responses = chatMapper.chatMessagesToResponseDtos(messages);
         return new ResponseEntity<>(new MultiResponseDto<>(responses), HttpStatus.CREATED);
     }

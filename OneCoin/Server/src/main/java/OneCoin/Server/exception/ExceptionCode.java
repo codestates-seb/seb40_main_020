@@ -30,7 +30,8 @@ public enum ExceptionCode {
     OCCURRED_NEGATIVE_AMOUNT(500, "Negative amount has occurred."),
     UNDEFINED_PLATFORM(404, "Platform not found"),
     NOT_VALID_AUTHENTICATION(404, "Unvalid authentication"),
-    NO_CHAT_EXIST(404, "No chat in cache");
+    NO_CHAT_IN_CACHE_EXIST(404, "No chat in cache"),
+    NO_CHAT_IN_RDB_EXIST(404, "No chat in RDB");;
 
     private final int code;
     private final String description;

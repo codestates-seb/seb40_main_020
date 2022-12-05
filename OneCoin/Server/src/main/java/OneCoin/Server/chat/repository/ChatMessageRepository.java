@@ -6,6 +6,7 @@ import OneCoin.Server.exception.ExceptionCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class ChatMessageRepository {
     @Getter
     private final Long NUMBER_OF_CHATS_TO_SHOW = 10L;
@@ -89,10 +91,16 @@ public class ChatMessageRepository {
         String key = getKey(chatRoomId);
         Set<ZSetOperations.TypedTuple<Object>> scores = operations.reverseRangeByScoreWithScores(
                 key, from, Double.MAX_VALUE);
-        if (scores.size() == 0) {
-            throw new BusinessLogicException(ExceptionCode.NO_CHAT_EXIST);
+        if (scores == null || scores.size() == 0) {
+            log.info(ExceptionCode.NO_CHAT_IN_CACHE_EXIST.getDescription());
+            return null;
         }
         return scores.stream().findFirst().get().getScore();
+    }
+
+    public List<ChatMessage> getWithScore(Integer chatRoomid, double score) {
+        Object result = operations.rangeByScore(getKey(chatRoomid), score, score);
+        return objectToList(result);
     }
 
 }

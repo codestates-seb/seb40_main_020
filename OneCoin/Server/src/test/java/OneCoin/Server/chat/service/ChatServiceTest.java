@@ -105,46 +105,4 @@ public class ChatServiceTest {
                 .isEqualTo(displayName);
     }
 
-    @DisplayName("최초에 저장하는 경우")
-    @Test
-    void saveInMemoryChatMessagesToRdbTest_최초() {
-        ChatRoom chatRoom1 = ChatRoom.builder().chatRoomId(1).numberOfChatters(10L).build();
-        ChatRoom chatRoom2 = ChatRoom.builder().chatRoomId(2).numberOfChatters(10L).build();
-        List<ChatRoom> chatRooms = List.of(chatRoom1, chatRoom2);
-        ChatMessage chatMessage1 = ChatMessage.builder().message("1").build();
-        ChatMessage chatMessage2 = ChatMessage.builder().message("2").build();
-        ChatMessage chatMessage3 = ChatMessage.builder().message("3").build();
-        List<ChatMessage> chatMessages = List.of(chatMessage1, chatMessage2, chatMessage3);
-        given(chatRoomService.findAllChatRooms())
-                .willReturn(chatRooms);
-        given(lastSavedRepository.get(any(Integer.class)))
-                .willReturn(null);
-        given(chatMessageRepository.findAll(any(Integer.class)))
-                .willReturn(chatMessages);
-        assertThatNoException().isThrownBy(() -> {
-            chatService.saveInMemoryChatMessagesToRdb();
-        });
-    }
-
-    @DisplayName("이후에 저장하는 경우")
-    @Test
-    void saveInMemoryChatMessagesToRdbTest_이후() {
-//        ChatRoom chatRoom1 = ChatRoom.builder().chatRoomId(1).numberOfChatters(10L).build();
-//        ChatRoom chatRoom2 = ChatRoom.builder().chatRoomId(2).numberOfChatters(10L).build();
-//        List<ChatRoom> chatRooms = List.of(chatRoom1, chatRoom2);
-//        ChatMessage chatMessage1 = ChatMessage.builder().message("1").build();
-//        ChatMessage chatMessage2 = ChatMessage.builder().message("2").build();
-//        ChatMessage chatMessage3 = ChatMessage.builder().message("3").build();
-//        List<ChatMessage> chatMessages = List.of(chatMessage1, chatMessage2, chatMessage3);
-//        given(chatRoomService.findAllChatRooms())
-//                .willReturn(chatRooms);
-////        given(lastSavedRepository.get(any(Integer.class)))
-////                .willReturn(chatMessage1);
-//        given(chatMessageRepository.findAllAfter(any(Integer.class), any(Long.class)))
-//                .willReturn(chatMessages);
-//        assertThatNoException().isThrownBy(() -> {
-//            chatService.saveInMemoryChatMessagesToRdb();
-//        });
-    }
-
 }
