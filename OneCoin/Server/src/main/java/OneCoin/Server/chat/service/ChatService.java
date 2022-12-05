@@ -6,7 +6,10 @@ import OneCoin.Server.chat.repository.ChatMessageRdbRepository;
 import OneCoin.Server.chat.repository.ChatMessageRepository;
 import OneCoin.Server.chat.constant.MessageType;
 import OneCoin.Server.chat.repository.LastSavedRepository;
+import OneCoin.Server.chat.repository.LastSentScoreRepository;
 import OneCoin.Server.config.auth.utils.UserUtilsForWebSocket;
+import OneCoin.Server.exception.BusinessLogicException;
+import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,7 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +28,9 @@ public class ChatService {
     private final ChatMessageRdbRepository chatMessageRdbRepository;
     private final LastSavedRepository lastSavedRepository;
     private final ChatRoomService chatRoomService;
+    private final LastSentScoreRepository lastSentScoreRepository;
+    private final String NOTHING_LEFT_TO_SEND = "NOTHING_LEFT_TO_SEND";
+    private final String RDB_PREFIX = "index";
 
     public ChatMessage makeEnterOrLeaveChatMessage(MessageType messageType, Integer chatRoomId, User user) {
         ChatMessage chatMessage = ChatMessage.builder()
@@ -51,7 +58,8 @@ public class ChatService {
 
     private void setUserInfo(ChatMessage chatMessage, Principal user) {
         Map<String, Object> claims = userInfoUtils.extractClaims(user);
-        Long userId = ((Integer) claims.get("id")).longValue();
+        Integer id = (Integer) claims.get("id");
+        Long userId = id.longValue();
         String displayName = (String) claims.get("displayName");
         chatMessage.setUserId(userId);
         chatMessage.setUserDisplayName(displayName);
@@ -72,26 +80,101 @@ public class ChatService {
         return chatMessage;
     }
 
-    public List<ChatMessage> getChatMessages(Integer chatRoomId) {
-        return chatMessageRepository.getMessageFromRoom(chatRoomId);
+    public List<ChatMessage> getChatMessages(Integer chatRoomId, String sessionId) {
+        String scoreAsString = lastSentScoreRepository.get(sessionId);
+        if(isNothingLeftToSend(scoreAsString)) {
+            throw new BusinessLogicException(ExceptionCode.NO_CHAT_IN_RDB_EXIST);
+        }
+        if(isRdbRetrieving(scoreAsString)) {
+            Long lastSentIndex = Long.parseLong(scoreAsString.replace(RDB_PREFIX, ""));
+            return getMessagesFromRdb(chatRoomId, lastSentIndex - 1L, sessionId);
+        }
+        double lastSentScore = getNextScoreOfRecentlySent(scoreAsString);
+        Double oldestScoreToSend = chatMessageRepository.getScoreOfLastChatWithLimitN(chatRoomId, lastSentScore);
+        if (isNoChatLeftInCache(oldestScoreToSend)) {
+            return getMessagesFromRdbFirstTime(chatRoomId, lastSentScore, sessionId);
+        }
+        lastSentScoreRepository.save(sessionId, oldestScoreToSend.toString());
+        return chatMessageRepository.getMessagesFromRoomByScore(chatRoomId, oldestScoreToSend, lastSentScore);
+    }
+    private boolean isRdbRetrieving(String lastSentScoreAsString) {
+        if(lastSentScoreAsString != null && lastSentScoreAsString.startsWith(RDB_PREFIX)) return true;
+        return false;
+    }
+    private boolean isNothingLeftToSend(String lastSentScoreAsString) {
+        if(lastSentScoreAsString != null && lastSentScoreAsString.equals(NOTHING_LEFT_TO_SEND)) return true;
+        return false;
     }
 
+    private List<ChatMessage> getMessagesFromRdbFirstTime(Integer chatRoomId, Double lastSentScore, String sessionId) {
+        List<ChatMessage> lastSentMessage = chatMessageRepository.getWithScore(chatRoomId, lastSentScore + 1L);
+        Long lastSentIndex = getSmallestIndex(lastSentMessage);
+        return getMessagesFromRdb(chatRoomId, lastSentIndex, sessionId);
+    }
+
+    private List<ChatMessage> getMessagesFromRdb(Integer chatRoomId, Long lastSentIndex, String sessionId) {
+        List<ChatMessage> messagesToSend = chatMessageRdbRepository.findTop30ByChatRoomIdAndChatMessageIdLessThanEqualOrderByChatMessageIdDesc(
+                chatRoomId, lastSentIndex);
+        if(messagesToSend.size() == 0) {
+            lastSentScoreRepository.save(sessionId, NOTHING_LEFT_TO_SEND);
+            return null;
+        }
+        Long oldestIndexToSend = messagesToSend.get(messagesToSend.size() - 1).getChatMessageId();
+        lastSentScoreRepository.save(sessionId, RDB_PREFIX + oldestIndexToSend);
+        return messagesToSend;
+    }
+
+    private double getNextScoreOfRecentlySent(String recentScoreAsString) {
+        if (recentScoreAsString == null) {
+            return Double.MAX_VALUE;
+        }
+        return Double.parseDouble(recentScoreAsString) - 1L;
+    }
+
+    private Long getSmallestIndex(List<ChatMessage> messages) {
+        Long index = Long.MAX_VALUE;
+        for(ChatMessage chatMessage : messages) {
+            Optional<ChatMessage> foundMessage = chatMessageRdbRepository.findByMessageAndChatAtAndUserId(chatMessage.getMessage(), chatMessage.getChatAt(), chatMessage.getUserId());
+            if(foundMessage.isPresent() && foundMessage.get().getChatMessageId() < index) {
+                index = foundMessage.get().getChatMessageId();
+            }
+        }
+        if(index != Long.MAX_VALUE && index - 1L != 0L) return index;
+        return Long.MAX_VALUE;
+    }
+    public boolean isNoChatLeftInCache(Double scoreOfLastChat) {
+        if (scoreOfLastChat == null) return true;
+        return false;
+    }
     public void saveInMemoryChatMessagesToRdb() {
         List<ChatRoom> chatRooms = chatRoomService.findAllChatRooms();
         for(ChatRoom chatRoom : chatRooms) {
             Integer chatRoomId = chatRoom.getChatRoomId();
-            ChatMessage lastSaved = lastSavedRepository.get(chatRoomId);
+            String recentScore = lastSavedRepository.get(chatRoomId);
             List<ChatMessage> messages;
-            if(lastSaved == null) {
-                messages = chatMessageRepository.findAll(chatRoomId);
+            if(recentScore == null) {
+                messages = chatMessageRepository.findAllInAscOrder(chatRoomId);
+                Double latestScore = chatMessageRepository.getScoreOfLatestChat(chatRoomId, Double.MIN_VALUE);
+                if(latestScore == null) return;
+                lastSavedRepository.save(chatRoomId, latestScore.toString());
             } else {
-                Long index = chatMessageRepository.getIndex(chatRoomId, lastSaved);
-                messages = chatMessageRepository.findAllAfter(chatRoomId, index);
+                double recentScoreAsDouble = Double.parseDouble(recentScore);
+                Double latestScore = chatMessageRepository.getScoreOfLatestChat(chatRoomId, recentScoreAsDouble);
+                if(latestScore == null) return;
+                messages = chatMessageRepository.findByScoreInAcsOrder(chatRoomId, recentScoreAsDouble, latestScore);
+                lastSavedRepository.save(chatRoomId, latestScore.toString());
             }
             if(messages.size() == 0) return;
-            ChatMessage latestMessage = messages.get(messages.size() - 1);
-            lastSavedRepository.save(chatRoomId, latestMessage);
             chatMessageRdbRepository.saveAll(messages);
         }
+    }
+
+    public void deleteInMemory() {
+        chatMessageRepository.removeAllInChatRoom(1);
+        chatMessageRepository.removeAllInChatRoom(2);
+    }
+
+    public void deleteLastSentInfo(String sessionId) {
+        lastSentScoreRepository.delete(sessionId);
     }
 }

@@ -2,6 +2,7 @@ package OneCoin.Server.user.entity;
 
 import OneCoin.Server.audit.Auditable;
 import OneCoin.Server.balance.entity.Balance;
+import OneCoin.Server.order.entity.TransactionHistory;
 import lombok.*;
 
 import javax.persistence.*;
@@ -34,6 +35,9 @@ public class User extends Auditable {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Balance balance;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<TransactionHistory> transactionHistories;
+    
     // 추후 Attribute Converter 사용 고려 -> 사용
     @Column
     @Enumerated(EnumType.STRING)
