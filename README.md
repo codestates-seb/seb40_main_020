@@ -1,6 +1,6 @@
 #  One Coin (모의 코인 투자 서비스)
 
-배포 링크 : <http://projectonecoin.s3-website.ap-northeast-2.amazonaws.com/>
+배포 링크 : [ONECOIN](<http://projectonecoin.s3-website.ap-northeast-2.amazonaws.com/>)
 
 데모 영상 : <https://youtu.be/j2MjyMpPnfo/>
 
