@@ -42,6 +42,7 @@ public class RegisterController {
 
     public void unregisterUserAndSendLeaveMessage(String sessionId) {
         UserInfoInChatRoom user = chatRoomService.deleteUserFromChatRoom(sessionId);
+        chatService.deleteLastSentInfo(sessionId);
         if (user.getUser() != null) { //로그인한 유저인 경우
             ChatMessage messageToUse = chatService.makeEnterOrLeaveChatMessage(MessageType.LEAVE, user.getChatRoomId(), user.getUser());
             ChatResponseDto chatResponseDto = chatMapper.chatMessageToResponseDto(messageToUse);

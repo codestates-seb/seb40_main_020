@@ -168,4 +168,13 @@ public class ChatService {
             chatMessageRdbRepository.saveAll(messages);
         }
     }
+
+    public void deleteInMemory() {
+        chatMessageRepository.removeAllInChatRoom(1);
+        chatMessageRepository.removeAllInChatRoom(2);
+    }
+
+    public void deleteLastSentInfo(String sessionId) {
+        lastSentScoreRepository.delete(sessionId);
+    }
 }
