@@ -19,8 +19,8 @@ public class SchedulerTest {
         Thread.sleep(2000);
         List<Rank> top10 = rankService.getTop10();
 
-        double firstRoi = Double.valueOf(top10.get(0).getROI().replace("%",""));
-        double secondRoi = Double.valueOf(top10.get(1).getROI().replace("%",""));
+        double firstRoi = Double.valueOf(top10.get(0).getRoi().replace("%",""));
+        double secondRoi = Double.valueOf(top10.get(1).getRoi().replace("%",""));
         double diff = firstRoi - secondRoi;
         assertThat(diff)
                 .isPositive();
