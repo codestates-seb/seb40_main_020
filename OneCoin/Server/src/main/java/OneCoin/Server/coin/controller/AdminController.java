@@ -1,4 +1,4 @@
-package OneCoin.Server.coin;
+package OneCoin.Server.coin.controller;
 
 import OneCoin.Server.coin.entity.Coin;
 import OneCoin.Server.coin.repository.CoinRepository;
@@ -21,5 +21,5 @@ public class AdminController {
     @DeleteMapping("/wallet")
     public void deleteWallet() {
         walletRepository.deleteAll();
-    }
+    } // 테스트용, 배포 시 제거
 }
