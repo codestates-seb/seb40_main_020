@@ -80,6 +80,7 @@ public class RankService {
         for (Wallet wallet : wallets) {
             Long userId = wallet.getUserId();
             UserRoi userROI = allRoi.get(userId);
+            if(userROI == null) continue;
             TickerDto ticker = tickerRepository.findTickerByCode(wallet.getCode());
 
             double currentValueOfCoinOfUser = wallet.getAmount().doubleValue() * Double.valueOf(ticker.getTradePrice());
