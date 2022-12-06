@@ -9,6 +9,7 @@ type SetUserId = React.Dispatch<React.SetStateAction<number | null>>;
 
 let client: StompJs.Client;
 let subscriptions: StompJs.Subscription;
+let sessionId: string;
 export const enterRoom = (
 	room: number,
 	addMsgData: AddMsg,
@@ -23,6 +24,8 @@ export const enterRoom = (
 	const Authorization = localStorage.getItem('login-token') as string;
 	const headers = { Authorization };
 	client.connect(headers, (frame) => {
+		const transport = Object.values(sock)[21].url;
+		sessionId = transport.split('/')[6];
 		const headers = frame?.headers;
 		if (headers) {
 			const userName = Object.values(headers)[0] as string;
@@ -70,7 +73,9 @@ export const sendMsg = (data: ChatMsg) => {
 
 export const getChatHistory = async (room: number) => {
 	try {
-		const res = await api.get(`/ws/chat/rooms/${room}/messages`);
+		const res = await api.get(
+			`/ws/chat/rooms/${room}/messages?sessionId=${sessionId}`
+		);
 		return res.data.data;
 	} catch (err) {
 		console.log(err);

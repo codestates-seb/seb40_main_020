@@ -44,8 +44,8 @@ function Rank() {
 										<tr>
 											<td>{user.rank}</td>
 											<td>{user.displayName}</td>
-											<td className={user.ROI[0] === '-' ? 'fall' : 'rise'}>
-												<span>{user.ROI}</span>
+											<td className={user.roi[0] === '-' ? 'fall' : 'rise'}>
+												<span>{user.roi}</span>
 											</td>
 										</tr>
 									</tbody>

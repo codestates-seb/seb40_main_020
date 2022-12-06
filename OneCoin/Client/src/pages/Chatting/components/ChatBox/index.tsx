@@ -29,10 +29,11 @@ function ChatBox({ chatClickHandler }: Props) {
 	const [room, setRoom] = useState(1);
 	const rooms = [1, 2];
 	useEffect(() => {
-		getChat(room);
-		if (!userId) {
-			enterRoom(room, addMsgData, setRoomsInfo, setUserId);
-		}
+		const t = async () => {
+			await enterRoom(room, addMsgData, setRoomsInfo, setUserId);
+			await getChat(room);
+		};
+		t();
 	}, []);
 	useEffect(() => {
 		scrollRef?.current?.scrollIntoView(false);
@@ -51,7 +52,8 @@ function ChatBox({ chatClickHandler }: Props) {
 	const getChat = async (ch: number) => {
 		try {
 			const res = await getChatHistory(ch);
-			setMsgData([...res].reverse());
+			if (res) setMsgData([...res].reverse());
+			else getChat(ch);
 		} catch (err) {
 			console.log(err);
 		}
@@ -71,11 +73,11 @@ function ChatBox({ chatClickHandler }: Props) {
 		sendMsg(newMsg);
 	};
 
-	const roomsChangeHandler = (ch: number) => {
+	const roomsChangeHandler = async (ch: number) => {
 		if (room !== ch) {
 			setRoom(ch);
-			getChat(ch);
-			changeRoom(room, ch, addMsgData);
+			await changeRoom(room, ch, addMsgData);
+			await getChat(ch);
 		}
 	};
 	const closeBtnHandler = () => {
