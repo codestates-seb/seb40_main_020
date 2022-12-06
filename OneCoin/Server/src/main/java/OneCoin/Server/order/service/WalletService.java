@@ -20,7 +20,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class WalletService {
-
     private final WalletRepository walletRepository;
     private final OrderRepository orderRepository;
     private final WalletMapper mapper;
@@ -56,7 +55,7 @@ public class WalletService {
         BigDecimal orderAmount = order.getAmount();
 
         int comparison = orderAmount.compareTo(tradeVolume);
-        if (comparison <= 0) { // 전부 체결된 주문
+        if (comparison <= 0) {
             order.setCompletedAmount(order.getCompletedAmount().add(orderAmount));
             deleteCompletedOrder(order);
             return orderAmount;

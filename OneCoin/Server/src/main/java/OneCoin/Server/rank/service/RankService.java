@@ -1,6 +1,8 @@
 package OneCoin.Server.rank.service;
 
+import OneCoin.Server.order.entity.Order;
 import OneCoin.Server.order.entity.Wallet;
+import OneCoin.Server.order.repository.OrderRepository;
 import OneCoin.Server.order.repository.TransactionHistoryRepository;
 import OneCoin.Server.order.repository.WalletRepository;
 import OneCoin.Server.rank.dao.UserRoi;
@@ -8,6 +10,8 @@ import OneCoin.Server.rank.entity.Rank;
 import OneCoin.Server.rank.repository.RankRepository;
 import OneCoin.Server.upbit.dto.ticker.TickerDto;
 import OneCoin.Server.upbit.repository.TickerRepository;
+import OneCoin.Server.user.entity.User;
+import OneCoin.Server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,17 +30,52 @@ public class RankService {
     private final TickerRepository tickerRepository;
     private final WalletRepository walletRepository;
     private final RankRepository rankRepository;
+    private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
+
+
+    /** 수익률 = (판가격 - 산가격) / 산가격
+     * 판가격 = 실제로 판 거 + 아직 안 판 거의 현재 가격
+     * 산가격 = 실제로 산 거 + 거래내역에는 없지만 월렛에는 있는 거( = Order를 보면 알 수 있다.)
+     *
+     * 실제 산 거 : transaction history bid 총합 + (Order의 부분체결된 레코드의 => 체결수량 * 매수가)
+     * 실제 판 거 : transaction history ask 총합
+     * 아직 안 판 거 : wallet * 수량 * 코인 현재가의 총합
+     *
+     * @return
+     */
+
+
 
     public List<UserRoi> calculateAllRois() {
         Map<Long, UserRoi> allRoi = new HashMap<>();
         //유저별 매수가격 총액 O(n)
         setUserBids(allRoi);
+        //유저별 부분체결의 체결 총액
+        setPartialBids(allRoi);
         //유저별 매도가격 총액 O(n)
         setUserAsks(allRoi);
         // 유저별 현재 코인 가격 총액 O(n)
         setCurrentCoinValues(allRoi);
         // 계산 : ROI  = {(매도가격 총액 + 현재 가격 총액) - 매수가격 총액 } / 매수가격 총액 O(n)
         return calculateAll(allRoi);
+    }
+
+    private void setPartialBids(Map<Long, UserRoi> allRoi) {
+        List<Order> orders = (List<Order>) orderRepository.findAll();
+        for(Order order : orders) {
+            Long userId = order.getUserId();
+            double bid = order.getCompletedAmount().multiply(order.getLimit()).doubleValue();
+            UserRoi userRoi = allRoi.get(userId);
+            if(userRoi == null) {
+                User user = userRepository.findById(userId).get();
+                UserRoi userRoiCreated = new UserRoi();
+                userRoiCreated.setUserId(userId);
+                userRoiCreated.setUserDisplayName(user.getDisplayName());
+                userRoi = allRoi.put(userId, userRoiCreated);
+            }
+            userRoi.addSumOfBids(bid);
+        }
     }
 
     public List<UserRoi> calculateTop10() {
@@ -82,7 +121,10 @@ public class RankService {
             UserRoi userROI = allRoi.get(userId);
             if(userROI == null) continue;
             TickerDto ticker = tickerRepository.findTickerByCode(wallet.getCode());
-
+            if(userId == 90L) {
+                log.info("amount = " + wallet.getAmount().doubleValue());
+                log.info("value = " + Double.valueOf(ticker.getTradePrice()));
+            }
             double currentValueOfCoinOfUser = wallet.getAmount().doubleValue() * Double.valueOf(ticker.getTradePrice());
             userROI.addSumOfCurrentCoinValues(currentValueOfCoinOfUser);
         }

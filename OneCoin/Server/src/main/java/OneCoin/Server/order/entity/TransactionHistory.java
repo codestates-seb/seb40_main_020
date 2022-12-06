@@ -35,13 +35,13 @@ public class TransactionHistory extends CreatedOnlyAuditable {
     private BigDecimal totalAmount; // 총 거래 금액
 
     @Column(nullable = false, updatable = false)
-    private double commission; // 수수료, 소수점 둘째 자리에서 반올림
+    private double commission;
 
     @Column(nullable = false, updatable = false, scale = 15, precision = 30)
     private BigDecimal settledAmount; // 정산 금액
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime orderTime; // 주문 시간, ASK와 BID에서 사용
+    private LocalDateTime orderTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", updatable = false, nullable = false)

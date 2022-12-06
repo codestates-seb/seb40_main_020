@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class TransactionHistoryDto {
-
     @Getter
     @Setter
     public static class GetResponse {

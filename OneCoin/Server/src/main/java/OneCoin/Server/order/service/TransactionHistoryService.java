@@ -63,20 +63,20 @@ public class TransactionHistoryService {
         User user = loggedInUserInfoUtils.extractUser();
         LocalDateTime searchPeriod = getSearchPeriod(period);
 
-        if (code == null && !type.equals(defaultType)) { // 타입 지정
+        if (code == null && !type.equals(defaultType)) {
             TransactionType transactionType = getTransactionType(type);
             return transactionHistoryRepository.findByUserAndTransactionTypeAndCreatedAtAfter(user, transactionType, searchPeriod, pageRequest);
         }
-        if (code != null && type.equals(defaultType)) { // 코인 지정
+        if (code != null && type.equals(defaultType)) {
             Coin coin = coinService.findCoin(code);
             return transactionHistoryRepository.findByUserAndCoinAndCreatedAtAfter(user, coin, searchPeriod, pageRequest);
         }
-        if (code != null) { // 타입, 코인 지정
+        if (code != null) {
             TransactionType transactionType = getTransactionType(type);
             Coin coin = coinService.findCoin(code);
             return transactionHistoryRepository.findByUserAndTransactionTypeAndCoinAndCreatedAtAfter(user, transactionType, coin, searchPeriod, pageRequest);
         }
-        return transactionHistoryRepository.findByUserAndCreatedAtAfter(user, searchPeriod, pageRequest); // 지정 x
+        return transactionHistoryRepository.findByUserAndCreatedAtAfter(user, searchPeriod, pageRequest);
     }
 
     private LocalDateTime getSearchPeriod(String period) {
