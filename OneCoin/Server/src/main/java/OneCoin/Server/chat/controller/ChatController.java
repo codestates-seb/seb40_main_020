@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Controller;
 public class ChatController {
     private final ChatService chatService;
     private final ChatMapper chatMapper;
-    private final SimpMessagingTemplate messagingTemplate;
     private final RedisTemplate<Object, Object> redisTemplate;
     private final ChannelTopic channelTopic;
 
