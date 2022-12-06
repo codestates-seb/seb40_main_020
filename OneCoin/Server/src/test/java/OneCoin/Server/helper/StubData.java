@@ -160,14 +160,14 @@ public class StubData {
         public static TransactionHistory getMockEntity(TransactionType transactionType) {
             return TransactionHistory.builder()
                     .transactionType(transactionType)
-                    .amount(new BigDecimal("0.01"))
-                    .price(new BigDecimal("333333"))
-                    .totalAmount(new BigDecimal("12345"))
-                    .commission(32.2)
-                    .settledAmount(new BigDecimal("151525252"))
+                    .amount(new BigDecimal("0.05"))
+                    .price(new BigDecimal("1600000"))
+                    .totalAmount(new BigDecimal("80000"))
+                    .commission(0)
+                    .settledAmount(new BigDecimal("80000"))
                     .orderTime(LocalDateTime.now())
                     .user(MockUser.getMockEntity())
-                    .coin(MockCoin.getMockEntity(1L, "KRW-BTC", "비트코인"))
+                    .coin(MockCoin.getMockEntity(2L, "KRW-ETH", "이더리움"))
                     .build();
         }
     }
