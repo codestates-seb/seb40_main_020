@@ -1,7 +1,8 @@
-import React from 'react';
+import api from '../index';
 
-function index() {
-	return <div>index</div>;
-}
-
-export default index;
+export const userLogin = {
+	login: async (data: any) => {
+		const response = await api.post('/api/auth/login', data);
+		return response.headers;
+	},
+};
