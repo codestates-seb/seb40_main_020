@@ -53,10 +53,4 @@ public class RegisterController {
     public void authenticate(StompHeaderAccessor accessor) {
         webSocketAuthService.authenticate(accessor);
     }
-
-    @EventListener
-    public void onDisconnectEvent(SessionDisconnectEvent event) {
-        String sessionId = event.getSessionId();
-        unregisterUserAndSendLeaveMessage(sessionId);
-    }
 }
