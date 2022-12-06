@@ -1,5 +1,6 @@
-# 💸 One Coin (모의 코인 투자 서비스)
-<p align="center"><img width="600px" src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F98d9f203-908f-41a7-b277-88e56c3fb7ae%2Fone.png?id=737f09a3-df54-4684-9b7e-f615fbc2d00c&table=block&spaceId=82d63a72-8254-4cde-bf1e-b2597b7c099c&width=2000&userId=8551cd99-d6ef-45e1-b0fd-76c17a8c615b&cache=v2"></p>
+# 💸 One Coin (코인 모의 투자 서비스)
+<p align="center"><img width="600px" src="https://user-images.githubusercontent.com/101033262/205873035-38b5904b-7c31-4cf7-a8bd-a580948902c3.png"></p>
+
 
 배포 링크 : **[ONECOIN 바로가기](<http://projectonecoin.s3-website.ap-northeast-2.amazonaws.com/>)**
 
