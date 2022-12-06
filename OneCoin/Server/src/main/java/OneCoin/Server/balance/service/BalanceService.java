@@ -22,7 +22,9 @@ public class BalanceService {
     }
 
     /**
-     * 입금으로 Balance 변경
+     * <pre>
+     *     입금으로 Balance 변경
+     * </pre>
      */
     public Balance updateBalance(Deposit deposit) {
         Balance findBalance = findBalance(deposit.getBalance().getBalanceId());
@@ -34,7 +36,9 @@ public class BalanceService {
     }
 
     /**
-     * userId로 balance 찾기
+     * <pre>
+     *     userId로 balance 찾기
+     * </pre>
      */
     public Balance findBalanceByUserId(long userId) {
         Optional<Balance> optionalBalance = balanceRepository.findByUser_UserId(userId);
@@ -43,7 +47,9 @@ public class BalanceService {
     }
 
     /**
-     * balanceId로 balance 찾기
+     * <pre>
+     *     balanceId로 balance 찾기
+     * </pre>
      */
     public Balance findBalance(long balanceId) {
         Optional<Balance> optionalBalance = balanceRepository.findById(balanceId);
@@ -52,7 +58,9 @@ public class BalanceService {
     }
 
     /**
-     * 매수(BID) 체결 출금
+     * <pre>
+     *     매수(BID) 체결 출금
+     * </pre>
      */
     public void updateBalanceByBid(long userId, @Positive BigDecimal price) {
         Balance balance = findBalanceByUserId(userId);
@@ -66,7 +74,9 @@ public class BalanceService {
     }
 
     /**
-     * 매도(ASK) 체결 입금, 미체결된 매수(BID) 취소 입금
+     * <pre>
+     *     매도(ASK) 체결 입금, 미체결된 매수(BID) 취소 입금
+     * </pre>
      */
     public void updateBalanceByAskOrCancelBid(long userId, @Positive BigDecimal price) {
         Balance balance = findBalanceByUserId(userId);

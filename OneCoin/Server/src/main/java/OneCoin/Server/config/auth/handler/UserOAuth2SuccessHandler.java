@@ -18,6 +18,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 
+/**
+ * <pre>
+ *     OAuth2 인증 성공 후 추가 핸들러
+ * </pre>
+ */
 public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils customAuthorityUtils;
@@ -46,7 +51,9 @@ public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHand
     }
 
     /**
-     *  소셜로그인 전용 redirect
+     *  <pre>
+     *      소셜로그인 전용 redirect
+     *  </pre>
      */
     public void redirect(HttpServletRequest request, HttpServletResponse response, User user) throws IOException {
         String accessToken = userService.delegateAccessToken(user, jwtTokenizer);
@@ -57,7 +64,9 @@ public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHand
     }
 
     /**
-     *  소셜로그인 전용 redirect URI
+     *  <pre>
+     *      소셜로그인 전용 redirect URI
+     *  </pre>
      */
     public URI createURI(String accessToken, String refreshToken) {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();

@@ -23,12 +23,12 @@ public class Swap extends CreatedOnlyAuditable {
     @JoinColumn(name = "swap_user_id", updatable = false, nullable = false)
     private User user;
 
-    // 코인0 : 현재 가지고 있는 코인
+    // 현재 가지고 있는 코인
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "swap_given_coin_id", updatable = false, nullable = false)
     private Coin givenCoin;
 
-    // 코인1 : 얻고 싶은 코인
+    // 얻고 싶은 코인
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "swap_taken_coin_id", updatable = false, nullable = false)
     private Coin takenCoin;

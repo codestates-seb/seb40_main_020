@@ -12,13 +12,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * <pre>
+ *     권한 인증 실패 엔트리포인트
+ * </pre>
+ */
 @Slf4j
 public class UserAuthenticationFailureHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request,
                                         HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
-        // 인증 실패 시, 에러 로그를 기록하거나 error response 를 전송할 수 있다.
+        // 인증 실패 시, 에러 로그를 기록하고 error response 를 전송
         log.error("# Authentication failed: {}", exception.getMessage());
 
         sendErrorResponse(response);

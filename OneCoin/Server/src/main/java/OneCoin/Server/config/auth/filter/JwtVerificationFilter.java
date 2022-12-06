@@ -51,7 +51,6 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
                 // 리프레시 토큰 체크
                 Map<String, Object> claims = verifyRefreshJws(request);
 
-                // DB에 리프레시를 저장하여 판단하는 경우도 있지만, 일단 이렇게 구현
                 User user = userService.findVerifiedUserByEmail(claims.get("sub").toString());
 
                 String accessToken = userService.delegateAccessToken(user, jwtTokenizer);
@@ -71,7 +70,9 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * true 면 해당 필터 동작을 수행하지 않고 다음 필터로 건너뜀
+     * <pre>
+     *     true 면 해당 필터 동작을 수행하지 않고 다음 필터로 건너뜀
+     * </pre>
      */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -81,7 +82,9 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Access Token 검증
+     * <pre>
+     *     Access Token 검증
+     * </pre>
      */
     private Map<String, Object> verifyJws(HttpServletRequest request) {
         String jws = request.getHeader("Authorization").replace("Bearer ", "");
@@ -92,7 +95,9 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Refresh Token 검증
+     * <pre>
+     *     Refresh Token 검증
+     * </pre>
      */
     private Map<String, Object> verifyRefreshJws(HttpServletRequest request) {
         String jws = request.getHeader("Refresh");
@@ -103,7 +108,9 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Authentication(인증) 객체를 SecurityContext 에 저장
+     * <pre>
+     *     Authentication(인증) 객체를 SecurityContext 에 저장
+     * </pre>
      */
     private void setAuthenticationToContext(Map<String, Object> claims) {
         List<GrantedAuthority> authorities = customAuthorityUtils.createAuthorities(Role.valueOf((String) claims.get("roles")));
