@@ -5,19 +5,20 @@ import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.mapper.UserMapper;
 import OneCoin.Server.user.service.UserService;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtTokenizer jwtTokenizer;
@@ -34,6 +35,7 @@ public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHand
         this.userMapper = userMapper;
     }
 
+    @SneakyThrows
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         OAuth2User oAuth2User = (OAuth2User)authentication.getPrincipal();
@@ -49,7 +51,7 @@ public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHand
     /**
      *  소셜로그인 전용 redirect
      */
-    public void redirect(HttpServletRequest request, HttpServletResponse response, User user) throws IOException {
+    public void redirect(HttpServletRequest request, HttpServletResponse response, User user) throws IOException, URISyntaxException {
         String accessToken = userService.delegateAccessToken(user, jwtTokenizer);
         String refreshToken = userService.delegateRefreshToken(user, jwtTokenizer);
 
@@ -60,18 +62,13 @@ public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHand
     /**
      *  소셜로그인 전용 redirect URI
      */
-    public URI createURI(String accessToken, String refreshToken) {
+    public URI createURI(String accessToken, String refreshToken) throws URISyntaxException {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("authorization", accessToken);
         queryParams.add("refresh", refreshToken);
 
-        return UriComponentsBuilder
-                .newInstance()
-                .scheme("http")
-//                .host(clientURL)
-                .path(clientURL + "/token/oauth2")
-                .queryParams(queryParams)
-                .build()
-                .toUri();
+        return new URI("http://" + clientURL + "/token/password?authorization="
+                + accessToken + "&refresh="
+                + refreshToken);
     }
 }
