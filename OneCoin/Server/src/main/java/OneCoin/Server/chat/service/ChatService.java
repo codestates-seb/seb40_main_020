@@ -12,6 +12,7 @@ import OneCoin.Server.exception.BusinessLogicException;
 import OneCoin.Server.exception.ExceptionCode;
 import OneCoin.Server.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final UserUtilsForWebSocket userInfoUtils;
@@ -150,20 +152,26 @@ public class ChatService {
     }
     public void saveInMemoryChatMessagesToRdb() {
         List<ChatRoom> chatRooms = chatRoomService.findAllChatRooms();
+        log.debug("chatRooms size : " + chatRooms.size());
         for(ChatRoom chatRoom : chatRooms) {
             Integer chatRoomId = chatRoom.getChatRoomId();
             String recentScore = lastSavedRepository.get(chatRoomId);
+            log.debug("lastSavedScore : " + (recentScore == null ? "null" : recentScore));
             List<ChatMessage> messages;
             if(recentScore == null) {
                 messages = chatMessageRepository.findAllInAscOrder(chatRoomId);
+                log.debug("messages found size : " + messages.size());
                 Double latestScore = chatMessageRepository.getScoreOfLatestChat(chatRoomId, Double.MIN_VALUE);
+                log.debug("latestScore to save" + (latestScore == null ? "null" : latestScore));
                 if(latestScore == null) return;
                 lastSavedRepository.save(chatRoomId, latestScore.toString());
             } else {
                 double recentScoreAsDouble = Double.parseDouble(recentScore);
                 Double latestScore = chatMessageRepository.getScoreOfLatestChat(chatRoomId, recentScoreAsDouble);
                 if(latestScore == null) return;
+                log.debug("latestScore to save" + (latestScore == null ? "null" : latestScore));
                 messages = chatMessageRepository.findByScoreInAcsOrder(chatRoomId, recentScoreAsDouble, latestScore);
+                log.debug("messages found size : " + messages.size());
                 lastSavedRepository.save(chatRoomId, latestScore.toString());
             }
             if(messages.size() == 0) return;
