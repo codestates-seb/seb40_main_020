@@ -25,7 +25,6 @@ const MyPage = () => {
 		try {
 			const res = await api.get('/api/users/my-information');
 			setUser(res.data.data);
-			console.log(res.data.data.imagePath);
 		} catch (error) {
 			console.log(error);
 		}

@@ -18,7 +18,7 @@ export const Wrapper = styled.div`
 			width: 100px;
 		}
 		:nth-child(2) {
-			width: 100px;
+			width: 90px;
 		}
 		:nth-child(3) {
 			width: 80px;

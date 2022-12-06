@@ -12,8 +12,8 @@ function Chat({ data, userId }: Props) {
 	const date = new Date(chatAt);
 	const hours = date.getHours();
 	const minutes = date.getMinutes();
-	const time = `${hours > 10 ? hours : `0${hours}`}:${
-		minutes > 10 ? minutes : `0${minutes}`
+	const time = `${hours >= 10 ? hours : `0${hours}`}:${
+		minutes >= 10 ? minutes : `0${minutes}`
 	}`;
 	const me = data.userId === userId;
 	return (
