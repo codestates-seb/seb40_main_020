@@ -1,20 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { HeaderComponent } from './style';
 import { useNavigate, useLocation } from 'react-router-dom';
 import logo from '../../assets/images/one.png';
 import { HEADER_LIST } from '../../utills/constants/header';
 import { useRecoilState } from 'recoil';
-import { isLogin } from '../../store';
+import { isLogin, sessionIdState } from '../../store';
 import Alert from 'components/Alert';
-
+import { userIdState } from 'store';
+import { exitClient } from 'api/socket';
 function Header() {
 	const navigate = useNavigate();
 	const { pathname } = useLocation();
 	const [isUseLogin, setIsUseLogin] = useRecoilState(isLogin);
+	const [userId, setUserId] = useRecoilState(userIdState);
+	const [sessionId, setSessionId] = useRecoilState(sessionIdState);
 	const navClickHandler = (path: string) => navigate(path);
 
 	const LoginHanddler = () => {
-		const token = sessionStorage.getItem('login-token');
+		const token = localStorage.getItem('login-token');
 		if (token === null) {
 			setIsUseLogin(false);
 		} else {
@@ -34,7 +37,9 @@ function Header() {
 					{HEADER_LIST.page.map((v, i) => (
 						<div
 							key={i}
-							className={pathname === v.path ? 'select' : ''}
+							className={
+								pathname.split('/')[1] === v.path.split('/')[1] ? 'select' : ''
+							}
 							onClick={() => {
 								navClickHandler(v.path);
 							}}
@@ -59,11 +64,14 @@ function Header() {
 						<div
 							className="nav-member nav"
 							onClick={() => {
-								sessionStorage.removeItem('login-token');
-								sessionStorage.removeItem('login-refresh');
+								localStorage.removeItem('login-token');
+								localStorage.removeItem('login-refresh');
 								navigate('/');
 								setIsUseLogin(false);
-								Alert('로그아웃이 되었습니다.');
+								setUserId(null);
+								exitClient();
+								setSessionId('');
+								Alert('로그아웃 되었습니다');
 							}}
 						>
 							로그아웃

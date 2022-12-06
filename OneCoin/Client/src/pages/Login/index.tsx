@@ -38,14 +38,14 @@ function Login() {
 			.login(data)
 			.then((res) => {
 				if (res.authorization && res.refresh) {
-					sessionStorage.setItem('login-token', res.authorization);
-					sessionStorage.setItem('login-refresh', res.refresh);
+					localStorage.setItem('login-token', res.authorization);
+					localStorage.setItem('login-refresh', res.refresh);
 					navigate('/');
 				}
 			})
 			.catch(() => {
 				setTimeout(() => {
-					Alert('아이디, 비밀번호를 확인해주세요.');
+					Alert('아이디, 비밀번호를 확인해주세요');
 				}, 1000);
 			});
 	};
@@ -54,15 +54,6 @@ function Login() {
 		window.location.assign(
 			`${process.env.REACT_APP_SERVER_URL}/oauth2/authorization/kakao`
 		);
-		// try {
-		// 	const res = await axios.post(
-		// 		`${process.env.REACT_APP_SERVER_URL}/oauth2/authorization/kakao`
-		// 	);
-		// 	console.log(res);
-		// 	return res;
-		// } catch (err) {
-		// 	console.log(err);
-		// }
 	};
 
 	return (

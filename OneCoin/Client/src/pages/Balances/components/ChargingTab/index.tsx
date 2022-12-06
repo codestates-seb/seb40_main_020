@@ -19,22 +19,23 @@ const ChargingTab = () => {
 			const data = { depositAmount: p };
 			const res = await postDeposit(data);
 			setMyBalance(res.remainingBalance);
-			Alert('입금 완료.');
+			Alert('입금이 완료되었습니다');
 		} catch (err) {
+			Alert('입금이 실패했습니다');
 			console.log(err);
 		}
 	};
 	const max = 100000000;
 	const btnHandler = () => {
 		if (login) {
-			if (p < 5000) Alert('5,000 KRW이상 입금 가능합니다.');
+			if (p < 5000) Alert('5,000 KRW이상 입금 가능합니다');
 			else if (p > max)
-				Alert(`${max.toLocaleString()} KRW이하 입금 가능합니다.`);
+				Alert(`${max.toLocaleString()} KRW이하 입금 가능합니다`);
 			else {
 				postDepositHandler();
 			}
 		} else {
-			Alert('로그인이 필요한 서비스입니다.');
+			Alert('로그인이 필요한 서비스입니다');
 		}
 	};
 	return (

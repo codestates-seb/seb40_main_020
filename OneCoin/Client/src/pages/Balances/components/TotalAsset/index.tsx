@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
-import Table from 'components/Table';
-import { BALANCES_THEAD, BALANCES_TBODY } from 'utills/constants/balances';
+import { BALANCES_THEAD } from 'utills/constants/balances';
 import { Wrapper } from './style';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import {
@@ -10,8 +9,8 @@ import {
 	coinDataState,
 	isLogin,
 } from '../../../../store';
-import { getWallet } from '../../../../api/exchange';
 import { getBalance } from 'api/balance';
+import { codeCoin } from 'utills/coinCode';
 
 interface T {
 	code: string;
@@ -67,6 +66,7 @@ const TotalAsset = () => {
 			return result && result !== Infinity ? result.toFixed(2) + '%' : 0;
 		} else return 0;
 	};
+
 	return (
 		<Wrapper>
 			<div className="title">
@@ -79,7 +79,6 @@ const TotalAsset = () => {
 				<AiOutlineSearch className="icon" />
 				<input type="text" placeholder="코인명/심볼검색" />
 			</div>
-			{/* <Table headerGroups={BALANCES_THEAD} bodyDatas={BALANCES_TBODY.data} /> */}
 
 			<table>
 				<thead>
@@ -98,7 +97,7 @@ const TotalAsset = () => {
 					{data &&
 						data.map((v) => (
 							<tr key={v.id}>
-								<td>{v.code}</td>
+								<td>{codeCoin(coinData, v.code as string, 'coin')}</td>
 								<td>{ratio(v.rtp)}</td>
 								<td>
 									<div>{v.amount}</div>

@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { HISTORY_PERIOD, HISTORY_TYPE } from 'utills/constants/investments';
 import ButtonList from '../ButtonList';
 import { Wrapper, SearchBox } from './style';
-
 import { AiOutlineSearch } from 'react-icons/ai';
+import { useRecoilValue } from 'recoil';
+import { codeCoin } from 'utills/coinCode';
+import { coinDataState } from 'store';
 type F = (s: string) => void;
 interface T {
 	periodHandler: F;
@@ -19,6 +21,7 @@ const HistoryHeader = ({
 	const codeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setCode(e.target.value);
 	};
+	const coinData = useRecoilValue(coinDataState);
 	return (
 		<Wrapper>
 			<ButtonList
@@ -32,7 +35,9 @@ const HistoryHeader = ({
 				<div>
 					<AiOutlineSearch
 						className="icon"
-						onClick={() => getCompleteTradeData(code)}
+						onClick={() =>
+							getCompleteTradeData(codeCoin(coinData, code, 'code'))
+						}
 					/>
 					<input type="text" placeholder="전체" onChange={codeHandler} />
 				</div>

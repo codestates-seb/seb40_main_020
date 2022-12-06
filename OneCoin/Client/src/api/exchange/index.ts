@@ -1,51 +1,7 @@
-import StompJs from 'stompjs';
-import SockJS from 'sockjs-client';
-import { Ticker, OrderBook, CoinDataType, Trade } from '../../utills/types';
+import { Trade } from '../../utills/types';
 import axios from 'axios';
 import api from '..';
 
-type T = (
-	coinData: CoinDataType[],
-	setCoinData: React.Dispatch<React.SetStateAction<CoinDataType[]>>
-) => void;
-
-let client: StompJs.Client;
-
-export const getTradeData: T = (coinData, setCoinData) => {
-	const socket = new SockJS(
-		`${process.env.REACT_APP_SERVER_URL}/ws/upbit-info`
-	);
-	client = StompJs.over(socket);
-	client.debug = function () {
-		return;
-	};
-	client.connect({}, () => {
-		setTimeout(() => {
-			client.subscribe('/info/upbit', (msg) => {
-				const data = JSON.parse(msg.body).data;
-				const newCoinData = [...coinData].map((v) => {
-					const ticker = data.ticker.filter(
-						(tic: Ticker) => tic.code === v.code
-					)[0];
-					const orderBook = data.orderBook.filter(
-						(order: OrderBook) => order.code === v.code
-					)[0];
-					const obj = { ...v, ticker, orderBook };
-					return obj;
-				});
-				setCoinData(newCoinData);
-			});
-		}, 500);
-	});
-};
-
-export const disconnection = () => {
-	client.disconnect(() => console.log('disconnect'));
-};
-
-export const stopTradeData = () => {
-	client.unsubscribe('/info/upbit');
-};
 export async function getChartData(time: number, code: string, date: string) {
 	try {
 		const res = await axios.get(

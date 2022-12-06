@@ -109,7 +109,8 @@ function Order({ inputPrice, setInputPrice }: Props) {
 		const m = myCoins !== undefined && myCoins.length;
 		const n = nonTradingOrders !== undefined && nonTradingOrders.length;
 		if (m && n && isLogin) {
-			const c = myCoins.filter((v) => v.code === coinInfo.code)[0].amount;
+			const c = myCoins.filter((v) => v.code === coinInfo.code)[0]
+				?.amount as string;
 			const non = nonTradingOrders
 				.filter((v) => v.code === coinInfo.code)
 				.reduce((a, b) => {
@@ -118,8 +119,9 @@ function Order({ inputPrice, setInputPrice }: Props) {
 				}, 0);
 			setCoin(+c - non);
 		} else if (m && isLogin) {
-			const c = myCoins.filter((v) => v.code === coinInfo.code)[0].amount;
-			setCoin(+c);
+			const c = myCoins.filter((v) => v.code === coinInfo.code)[0]
+				?.amount as string;
+			if (!Number.isNaN(+c)) setCoin(+c);
 		}
 	}, [nonTradingOrders, myCoins, order]);
 	const tradeHandler = () => {
@@ -130,7 +132,9 @@ function Order({ inputPrice, setInputPrice }: Props) {
 					await postOrder(coinInfo.code, data);
 					await getNonTradingData();
 					await getMyBalance();
+					await Alert('주문 신청이 완료되었습니다');
 				} catch (err) {
+					Alert('주문 신청이 실패했습니다');
 					console.log(err);
 				}
 			};

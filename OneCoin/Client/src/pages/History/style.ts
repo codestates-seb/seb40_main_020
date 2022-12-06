@@ -11,16 +11,17 @@ const rowHeight = css`
 export const Wrapper = styled.div`
 	${contentBox}
 	table thead th {
-		width: 12%;
 		:nth-child(1) {
-			width: 150px;
+			width: 80px;
 		}
-		:nth-child(2),
 		:nth-child(4) {
 			width: 100px;
 		}
+		:nth-child(2) {
+			width: 90px;
+		}
 		:nth-child(3) {
-			width: 130px;
+			width: 80px;
 		}
 	}
 	table {
@@ -38,5 +39,11 @@ export const Wrapper = styled.div`
 		td {
 			${rowHeight}
 		}
+	}
+	.ask {
+		color: var(--blue);
+	}
+	.bid {
+		color: var(--red);
 	}
 `;

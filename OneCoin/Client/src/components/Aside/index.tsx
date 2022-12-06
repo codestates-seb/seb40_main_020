@@ -13,7 +13,11 @@ export interface Props {
 function Aside({ coinInfoHandler, isLeftSidebar }: Props) {
 	const menu = ['코인', '랭킹'];
 	const el = [
-		<CoinList coinInfoHandler={coinInfoHandler} key={menu[0]} />,
+		<CoinList
+			coinInfoHandler={coinInfoHandler}
+			key={menu[0]}
+			isLeftSidebar={isLeftSidebar}
+		/>,
 		<Rank key={menu[1]} />,
 	];
 

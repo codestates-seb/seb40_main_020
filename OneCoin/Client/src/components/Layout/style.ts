@@ -10,7 +10,7 @@ export const Wapper = styled.main<Props>`
 	${container}
 	min-height: calc(100vh - 270px);
 	aside {
-		margin-left: ${(props) => (props.isLeftMargin ? '30px' : '0')};
+		margin-left: ${(props) => (props.isLeftMargin ? '12px' : '0')};
 	}
 `;
 

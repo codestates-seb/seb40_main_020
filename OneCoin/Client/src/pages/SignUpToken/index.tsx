@@ -9,8 +9,8 @@ function SignUpToken() {
 		const refresh = url.searchParams.get('refresh');
 		if (authorization && refresh) {
 			console.log(authorization);
-			sessionStorage.setItem('login-token', `Bearer ${authorization}`);
-			sessionStorage.setItem('login-refresh', refresh);
+			localStorage.setItem('login-token', `Bearer ${authorization}`);
+			localStorage.setItem('login-refresh', refresh);
 			navigate('/');
 		}
 	});

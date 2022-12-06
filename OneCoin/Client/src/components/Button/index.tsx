@@ -10,6 +10,7 @@ export interface StyleProps {
 		border?: string;
 		fontSize?: number;
 		fontWeight?: number;
+		borderRadius?: string;
 	};
 	onClick?: () => void;
 }

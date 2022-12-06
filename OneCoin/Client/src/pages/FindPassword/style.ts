@@ -41,6 +41,7 @@ export const SubmitButton = styled.button`
 	font-size: 16px;
 	border: 0 none;
 	background: var(--yellow);
+	cursor: pointer;
 `;
 
 export const StyledDiv = styled.div`

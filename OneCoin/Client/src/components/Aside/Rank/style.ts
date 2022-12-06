@@ -59,26 +59,23 @@ export const CoinListComponent = styled.div`
 				:not(.sub-title) {
 					height: 54px;
 				}
-				> td,
-				th {
+				> td {
 					display: flex;
 					justify-content: center;
 					align-items: center;
 					flex: 1;
-					> div {
-						span {
-							display: block;
-							text-align: center;
-							margin: 3px 0;
-						}
-					}
 				}
-				> tr {
+				.tdd {
 					display: flex;
 					flex-direction: column;
-					flex: 1;
 					justify-content: center;
-					align-items: center;
+					padding-top: 11px;
+					align-content: center;
+					> p {
+						font-size: 3px;
+						color: gray;
+						margin-top: 3px;
+					}
 				}
 			}
 		}

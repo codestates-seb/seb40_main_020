@@ -31,8 +31,10 @@ export const dateCalc = (t: string) => {
 	const hours = date.getHours();
 	const minutes = date.getMinutes();
 
-	const d = `${year}.${month}.${day}`;
-	const d2 = `${hours >= 10 ? hours : `0${hours}`}.${
+	const d = `${year}.${month >= 10 ? month : `0${month}`}.${
+		day >= 10 ? day : `0${day}`
+	}`;
+	const d2 = `${hours >= 10 ? hours : `0${hours}`}:${
 		minutes >= 10 ? minutes : `0${minutes}`
 	}`;
 	return `${d}.${d2}`;

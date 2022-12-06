@@ -6,8 +6,8 @@ const api = axios.create({
 
 //요청시 AccessToken 계속 보내주기
 api.interceptors.request.use(function (config: any) {
-	const accessToken = sessionStorage.getItem('login-token');
-	const refreshToken = sessionStorage.getItem('login-refresh');
+	const accessToken = localStorage.getItem('login-token');
+	const refreshToken = localStorage.getItem('login-refresh');
 
 	if (!accessToken && !refreshToken) {
 		config.headers['Authorization'] = null;
@@ -32,8 +32,8 @@ api.interceptors.response.use(
 			const newAccessToken = err.response.headers.authorization;
 			const newRefreshToken = err.response.headers.refresh;
 			if (newAccessToken) {
-				sessionStorage.setItem('login-token', newAccessToken);
-				sessionStorage.setItem('login-refresh', newRefreshToken);
+				localStorage.setItem('login-token', newAccessToken);
+				localStorage.setItem('login-refresh', newRefreshToken);
 			}
 			return Promise.reject(err);
 		}

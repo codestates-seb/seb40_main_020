@@ -31,7 +31,10 @@ function Rank() {
 							<tr>
 								<td>순위</td>
 								<td>닉네임</td>
-								<td>수익률</td>
+								<td className="tdd">
+									<span>수익률</span>
+									<p>3시간마다 업데이트됩니다</p>
+								</td>
 							</tr>
 						</thead>
 						{users &&
@@ -41,8 +44,8 @@ function Rank() {
 										<tr>
 											<td>{user.rank}</td>
 											<td>{user.displayName}</td>
-											<td className={user.ROI[0] === '-' ? 'fall' : 'rise'}>
-												<span>{user.ROI}</span>
+											<td className={user.roi[0] === '-' ? 'fall' : 'rise'}>
+												<span>{user.roi}</span>
 											</td>
 										</tr>
 									</tbody>
