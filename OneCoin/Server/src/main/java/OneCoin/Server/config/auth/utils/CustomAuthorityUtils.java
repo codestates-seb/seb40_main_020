@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * 권한 정보 생성, 저장
+ * <pre>
+ *     권한 정보 생성, 저장
+ * </pre>
  */
 @Service
 public class CustomAuthorityUtils {
@@ -19,11 +21,8 @@ public class CustomAuthorityUtils {
     private final List<GrantedAuthority> ADMIN_ROLES = AuthorityUtils.createAuthorityList("ROLE_ADMIN", "ROLE_USER", "ROLE_NOT_AUTH");
     private final List<GrantedAuthority> USER_ROLES = AuthorityUtils.createAuthorityList("ROLE_NOT_AUTH", "ROLE_USER");
     private final List<GrantedAuthority> NOT_AUTH_ROLES = AuthorityUtils.createAuthorityList("ROLE_NOT_AUTH");
-    // List 지정 방식은 일단 보류
-//    private final List<String> ADMIN_ROLES_STRING = List.of("ADMIN", "USER");
-//    private final List<String> USER_ROLES_STRING = List.of("USER");
 
-    // 메모리 상의 Role 을 기반으로 권한 정보 생성.
+    // 메모리 상의 Role 을 기반으로 권한 정보 생성
     public List<GrantedAuthority> createAuthorities(String email) {
         if (email.equals(adminMailAddress)) {
             return ADMIN_ROLES;
@@ -40,13 +39,6 @@ public class CustomAuthorityUtils {
         } else return NOT_AUTH_ROLES;
     }
 
-//    public List<GrantedAuthority> createAuthorities(List<String> roles) {
-//        List<GrantedAuthority> authorities = roles.stream()
-//                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-//                .collect(Collectors.toList());
-//        return authorities;
-//    }
-
     // DB 저장 용
     public Role createRoles(String email) {
         if (email.equals(adminMailAddress)) {
@@ -55,10 +47,4 @@ public class CustomAuthorityUtils {
         return Role.ROLE_NOT_AUTH;
     }
 
-//    public List<String> createRoles(String email) {
-//        if (email.equals(adminMailAddress)) {
-//            return ADMIN_ROLES_STRING;
-//        }
-//        return USER_ROLES_STRING;
-//    }
 }

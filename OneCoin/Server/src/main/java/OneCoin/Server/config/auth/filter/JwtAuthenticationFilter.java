@@ -50,7 +50,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     /**
-     * 인증에 성공할 경우 호출
+     * <pre>
+     *     인증에 성공할 경우 호출
+     * </pre>
      */
     @Override
     protected void successfulAuthentication(HttpServletRequest request,

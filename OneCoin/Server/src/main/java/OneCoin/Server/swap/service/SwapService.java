@@ -3,7 +3,6 @@ package OneCoin.Server.swap.service;
 import OneCoin.Server.coin.service.CoinService;
 import OneCoin.Server.order.entity.Wallet;
 import OneCoin.Server.order.entity.enums.Commission;
-import OneCoin.Server.order.mapper.TransactionHistoryMapper;
 import OneCoin.Server.order.service.OrderService;
 import OneCoin.Server.order.service.TransactionHistoryService;
 import OneCoin.Server.order.service.WalletService;
@@ -39,12 +38,14 @@ public class SwapService {
     private final BigDecimal swapAmount = BigDecimal.ONE.subtract(swapCommission);        // 수수료 제외량
 
     /**
-     *  코인 환율 계산
+     * <pre>
+     *     코인 환율 계산
+     *  </pre>
      */
     public ExchangeRate calculateExchangeRate(String givenCoinCode, String takenCoinCode, BigDecimal amount) {
         // 코인 이름 체크
-//        coinService.verifyCoinExists(givenCoinCode);
-//        coinService.verifyCoinExists(takenCoinCode);
+        coinService.verifyCoinExists(givenCoinCode);
+        coinService.verifyCoinExists(takenCoinCode);
 
         ExchangeRate exchangeRate = new ExchangeRate();
         
@@ -63,7 +64,9 @@ public class SwapService {
     }
 
     /**
-     *  코인 스왑
+     * <pre>
+     *      코인 스왑
+     * </pre>
      */
 
     public Swap createSwap(Swap swap, Long userId) {
