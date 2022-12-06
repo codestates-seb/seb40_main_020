@@ -26,7 +26,7 @@ public class ChatMessageRepository {
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
     private final int MAX_CHAT_ROOM = 2;
-    private final int TTL_IN_DAYS = 3;
+    private final int TTL_IN_DAYS = 2;
     // <chatRoomKey, ChatMessage>
     private ZSetOperations<String, Object> operations;
 
@@ -35,7 +35,7 @@ public class ChatMessageRepository {
     private void init() {
         operations = redisTemplate.opsForZSet();
         for (int chatRoomId = 1; chatRoomId <= MAX_CHAT_ROOM; chatRoomId++) {
-            redisTemplate.expire(getKey(chatRoomId), TTL_IN_DAYS, TimeUnit.DAYS);
+            redisTemplate.expire(getKey(chatRoomId), TTL_IN_DAYS, TimeUnit.MINUTES);
         }
     }
 
