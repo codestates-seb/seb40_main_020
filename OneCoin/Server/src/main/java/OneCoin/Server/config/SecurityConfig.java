@@ -8,8 +8,10 @@ import OneCoin.Server.config.auth.userdetails.Oauth2UserDetailService;
 import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
 import OneCoin.Server.user.mapper.UserMapper;
 import OneCoin.Server.user.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -34,6 +36,8 @@ public class SecurityConfig {
     private final CustomAuthorityUtils customAuthorityUtils;
     private final UserService userService;
     private final UserMapper userMapper;
+    @Value("${spring.client.ip}")
+    private String clientURL;
 
     public SecurityConfig(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils, UserService userService, UserMapper userMapper) {
         this.jwtTokenizer = jwtTokenizer;
@@ -63,10 +67,6 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.GET, "/api/order/**").hasRole("USER")
                         .antMatchers(HttpMethod.POST, "/api/order/**").hasRole("USER")
                         .antMatchers(HttpMethod.GET, "/ws/chat/**").permitAll()
-//                        .antMatchers(HttpMethod.GET, "/api/users/duplicate-display-name").permitAll()
-//                        .antMatchers(HttpMethod.GET, "/api/users/find-password").permitAll()
-//                        .antMatchers(HttpMethod.GET, "/api/users/duplicate-email").permitAll()
-//                        .antMatchers(HttpMethod.GET, "/api/users/authentication-email/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .antMatchers(HttpMethod.PATCH, "/api/users/**").hasRole("USER")
                         .antMatchers(HttpMethod.GET, "/api/users").permitAll()
@@ -77,10 +77,15 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .oauth2Login()
-                .successHandler(new UserOAuth2SuccessHandler(jwtTokenizer, customAuthorityUtils, userService, userMapper))
+                .successHandler(new UserOAuth2SuccessHandler(jwtTokenizer, customAuthorityUtils, userService, userMapper, clientURL))
                 .userInfoEndpoint()     // Oauth2 로그인 성공 후 userInfo 엔드포인트(userInfo 받아옴)
                 .userService(new Oauth2UserDetailService(userService, jwtTokenizer, customAuthorityUtils, userMapper));  // 리소스 서버에서 사용자 정보를 가져온 상태에서 추가로 진행
         return http.build();
+    }
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
     }
 
     @Bean
@@ -92,8 +97,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*"));   // 일단 테스트, 공식 문서에서는 좀 더 유연하다고 하는데... 뭔차이지?
-//        configuration.setAllowedOrigins(List.of("*"));   // 모든 origin 허용
+        configuration.setAllowedOriginPatterns(List.of("*"));   // 오리진 허용
         configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));  // 허용 메소드 설정
         configuration.setAllowedHeaders(List.of("*", "connection", "upgrade"));     // 요청 헤더 허용 설정
         configuration.setAllowCredentials(true);        // 크레덴셜 지원 설정
