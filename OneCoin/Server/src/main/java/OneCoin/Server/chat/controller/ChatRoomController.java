@@ -38,8 +38,4 @@ public class ChatRoomController {
         List<ChatResponseDto> responses = chatMapper.chatMessagesToResponseDtos(messages);
         return new ResponseEntity<>(new MultiResponseDto<>(responses), HttpStatus.CREATED);
     }
-    @DeleteMapping()
-    public void deleteInMemory() {
-        chatService.deleteInMemory();
-    }
 }
