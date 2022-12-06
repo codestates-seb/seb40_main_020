@@ -19,7 +19,7 @@ public class RankScheduler {
     private final RankService rankService;
     private final RankMapper mapper;
 
-    @Scheduled(fixedDelay = 10, initialDelay = 1, timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedDelay = 1, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
     public void updateTop10() {
         List<UserRoi> top10Roi = rankService.calculateTop10();
         if(top10Roi == null) {
