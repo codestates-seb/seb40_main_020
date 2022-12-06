@@ -108,11 +108,6 @@ public class ChatService {
         }
     }
 
-    public void deleteInMemory() {
-        chatMessageRepository.removeAllInChatRoom(1);
-        chatMessageRepository.removeAllInChatRoom(2);
-    }
-
     public void deleteLastSentInfo(String sessionId) {
         lastSentScoreRepository.delete(makeLastSentKey(1, sessionId));
         lastSentScoreRepository.delete(makeLastSentKey(2, sessionId));
