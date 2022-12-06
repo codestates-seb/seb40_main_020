@@ -14,7 +14,8 @@ import java.util.Set;
 public class ChatRoomRepository {
     private final ChatRoomUtils chatRoomUtils;
     private final RedisTemplate<String, String> redisTemplate;
-    private SetOperations<String, String> setOperations;// <KEY_FOR_CHAT_ROOMS, ChatRoomIdKey>
+    // key-value : <KEY_FOR_CHAT_ROOMS, ChatRoomIdKey>
+    private SetOperations<String, String> setOperations;
 
 
     @PostConstruct

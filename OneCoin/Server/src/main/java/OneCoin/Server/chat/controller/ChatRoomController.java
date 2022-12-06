@@ -1,18 +1,17 @@
 package OneCoin.Server.chat.controller;
 
 import OneCoin.Server.chat.dto.ChatResponseDto;
-import OneCoin.Server.chat.entity.ChatMessage;
-import OneCoin.Server.chat.mapper.ChatMapper;
-import OneCoin.Server.chat.service.ChatService;
 import OneCoin.Server.chat.dto.UsersInRoomResponseDto;
+import OneCoin.Server.chat.entity.ChatMessage;
 import OneCoin.Server.chat.entity.UserInChatRoom;
+import OneCoin.Server.chat.mapper.ChatMapper;
 import OneCoin.Server.chat.service.ChatRoomService;
+import OneCoin.Server.chat.service.ChatService;
 import OneCoin.Server.dto.MultiResponseDto;
 import OneCoin.Server.dto.SingleResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

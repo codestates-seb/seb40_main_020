@@ -27,10 +27,9 @@ public class ChatMessageRepository {
     private final ObjectMapper objectMapper;
     private final int MAX_CHAT_ROOM = 2;
     private final int TTL_IN_DAYS = 2;
-    // <chatRoomKey, ChatMessage>
+    // key-value : <chatRoomKey, ChatMessage>
     private ZSetOperations<String, Object> operations;
 
-    //채팅방에 메시지 저장
     @PostConstruct
     private void init() {
         operations = redisTemplate.opsForZSet();
