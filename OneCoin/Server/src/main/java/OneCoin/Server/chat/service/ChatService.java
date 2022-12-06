@@ -31,6 +31,8 @@ public class ChatService {
     private final LastSentScoreRepository lastSentScoreRepository;
     private final String NOTHING_LEFT_TO_SEND = "NOTHING_LEFT_TO_SEND";
     private final String RDB_PREFIX = "index";
+    private final String CHATROOM_PREFIX = "ChatRoom";
+    private final String SESSION_PREFIX = "SessionId";
 
     public ChatMessage makeEnterOrLeaveChatMessage(MessageType messageType, Integer chatRoomId, User user) {
         ChatMessage chatMessage = ChatMessage.builder()
@@ -81,7 +83,7 @@ public class ChatService {
     }
 
     public List<ChatMessage> getChatMessages(Integer chatRoomId, String sessionId) {
-        String scoreAsString = lastSentScoreRepository.get(sessionId);
+        String scoreAsString = lastSentScoreRepository.get(makeLastSentKey(chatRoomId, sessionId));
         if(isNothingLeftToSend(scoreAsString)) {
             throw new BusinessLogicException(ExceptionCode.NO_CHAT_IN_RDB_EXIST);
         }
@@ -94,7 +96,7 @@ public class ChatService {
         if (isNoChatLeftInCache(oldestScoreToSend)) {
             return getMessagesFromRdbFirstTime(chatRoomId, lastSentScore, sessionId);
         }
-        lastSentScoreRepository.save(sessionId, oldestScoreToSend.toString());
+        lastSentScoreRepository.save(makeLastSentKey(chatRoomId, sessionId), oldestScoreToSend.toString());
         return chatMessageRepository.getMessagesFromRoomByScore(chatRoomId, oldestScoreToSend, lastSentScore);
     }
     private boolean isRdbRetrieving(String lastSentScoreAsString) {
@@ -116,11 +118,11 @@ public class ChatService {
         List<ChatMessage> messagesToSend = chatMessageRdbRepository.findTop30ByChatRoomIdAndChatMessageIdLessThanEqualOrderByChatMessageIdDesc(
                 chatRoomId, lastSentIndex);
         if(messagesToSend.size() == 0) {
-            lastSentScoreRepository.save(sessionId, NOTHING_LEFT_TO_SEND);
+            lastSentScoreRepository.save(makeLastSentKey(chatRoomId, sessionId), NOTHING_LEFT_TO_SEND);
             return null;
         }
         Long oldestIndexToSend = messagesToSend.get(messagesToSend.size() - 1).getChatMessageId();
-        lastSentScoreRepository.save(sessionId, RDB_PREFIX + oldestIndexToSend);
+        lastSentScoreRepository.save(makeLastSentKey(chatRoomId, sessionId), RDB_PREFIX + oldestIndexToSend);
         return messagesToSend;
     }
 
@@ -175,6 +177,11 @@ public class ChatService {
     }
 
     public void deleteLastSentInfo(String sessionId) {
-        lastSentScoreRepository.delete(sessionId);
+        lastSentScoreRepository.delete(makeLastSentKey(1, sessionId));
+        lastSentScoreRepository.delete(makeLastSentKey(2, sessionId));
+    }
+
+    private String makeLastSentKey(Integer chatRoomId, String sessionId) {
+        return CHATROOM_PREFIX + chatRoomId + SESSION_PREFIX + sessionId;
     }
 }
