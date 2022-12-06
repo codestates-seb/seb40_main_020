@@ -9,6 +9,7 @@ import OneCoin.Server.rank.repository.RankRepository;
 import OneCoin.Server.upbit.dto.ticker.TickerDto;
 import OneCoin.Server.upbit.repository.TickerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RankService {
     private final TransactionHistoryRepository transactionHistoryRepository;
     private final TickerRepository tickerRepository;
@@ -54,6 +56,7 @@ public class RankService {
 
     private void setUserBids(Map<Long, UserRoi> allRoi) {
         List<UserRoi> bids = transactionHistoryRepository.findAllSumOfBidSettledAmount();
+        log.info("======Bids Size : " + bids.size());
         if(bids.size() == 0) return;
         for (UserRoi roi : bids) {
             allRoi.put(roi.getUserId(), roi);
@@ -62,6 +65,7 @@ public class RankService {
 
     private void setUserAsks(Map<Long, UserRoi> allRoi) {
         List<UserRoi> asks = transactionHistoryRepository.findAllSumOfAskSettledAmount();
+        log.info("======asks Size : " + asks.size());
         if(asks.size() == 0) return;
         for (UserRoi roi : asks) {
             Long userId = roi.getUserId();
@@ -71,6 +75,7 @@ public class RankService {
 
     private void setCurrentCoinValues(Map<Long, UserRoi> allRoi) {
         List<Wallet> wallets = (List<Wallet>) walletRepository.findAll();
+        log.info("======wallet Size : " + wallets.size());
         if(wallets.size() == 0) return;
         for (Wallet wallet : wallets) {
             Long userId = wallet.getUserId();
