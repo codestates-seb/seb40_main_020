@@ -1,25 +1,55 @@
 import React, { useState, useEffect, memo } from 'react';
 import { CoinListComponent } from './style';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { coinDataState } from '../../../store';
+import {
+	coinDataState,
+	sessionIdState,
+	userIdState,
+	isCoinSocket,
+} from '../../../store';
 import { useRecoilState } from 'recoil';
 import { Props } from '../index';
 import { CoinDataType } from '../../../utills/types';
-import { getTradeData } from '../../../api/exchange';
+import { connect, coinDataSubscribe } from 'api/socket';
+import { useLocation } from 'react-router-dom';
 
-function CoinList({ coinInfoHandler }: Props) {
+function CoinList({ coinInfoHandler, isLeftSidebar }: Props) {
 	const [coinData, setCoinData] = useRecoilState(coinDataState);
 	const subTitleMenu = ['코인명', '현재가', '전일대비'];
 	const [searchResult, setSearchResult] = useState<CoinDataType[]>([]);
+	const [sessionId, setSessionId] = useRecoilState(sessionIdState);
+	const [userId, setUserId] = useRecoilState(userIdState);
+	const [isCoinSocketConnect, setIsCoinSocketConnect] =
+		useRecoilState(isCoinSocket);
 	const searchInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const newSearchResult = coinData.filter((v) =>
 			v.coin.includes(e.target.value)
 		);
 		setSearchResult(newSearchResult);
 	};
+	const { pathname } = useLocation();
+	const log = ['/login', '/signup', '/findpassword'].includes(pathname);
+	const socketConnect = () => {
+		if (!sessionId && !log) {
+			connect(setSessionId, setUserId);
+		}
+	};
+	const socketSub = () => {
+		if (isLeftSidebar && !isCoinSocketConnect && sessionId) {
+			coinDataSubscribe(coinData, setCoinData);
+			setIsCoinSocketConnect(true);
+		}
+	};
 	useEffect(() => {
-		getTradeData(coinData, setCoinData);
+		socketConnect();
 	}, []);
+	useEffect(() => {
+		const t = async () => {
+			await socketConnect();
+			await socketSub();
+		};
+		t();
+	}, [sessionId]);
 
 	const isShow = (v: CoinDataType, i: number) => {
 		const ticker = v?.ticker;

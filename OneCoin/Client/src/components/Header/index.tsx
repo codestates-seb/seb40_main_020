@@ -4,13 +4,16 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import logo from '../../assets/images/one.png';
 import { HEADER_LIST } from '../../utills/constants/header';
 import { useRecoilState } from 'recoil';
-import { isLogin } from '../../store';
+import { isLogin, sessionIdState } from '../../store';
 import Alert from 'components/Alert';
-
+import { userIdState } from 'store';
+import { exitClient } from 'api/socket';
 function Header() {
 	const navigate = useNavigate();
 	const { pathname } = useLocation();
 	const [isUseLogin, setIsUseLogin] = useRecoilState(isLogin);
+	const [userId, setUserId] = useRecoilState(userIdState);
+	const [sessionId, setSessionId] = useRecoilState(sessionIdState);
 	const navClickHandler = (path: string) => navigate(path);
 
 	const LoginHanddler = () => {
@@ -65,6 +68,9 @@ function Header() {
 								localStorage.removeItem('login-refresh');
 								navigate('/');
 								setIsUseLogin(false);
+								setUserId(null);
+								exitClient();
+								setSessionId('');
 								Alert('로그아웃 되었습니다');
 							}}
 						>

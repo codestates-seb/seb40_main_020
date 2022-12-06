@@ -4,36 +4,38 @@ import logo from '../../../../assets/images/one.png';
 import { IoCloseOutline } from 'react-icons/io5';
 import Chat from '../Chat';
 import { ChatData, RoomsInfo } from '../../../../utills/types';
+import { isLogin, sessionIdState, userIdState } from '../../../../store';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import {
-	getChatHistory,
 	enterRoom,
-	sendMsg,
+	unSubscribeRoom,
 	changeRoom,
-	exitChat,
-} from '../../../../api/chat';
-import { isLogin } from '../../../../store';
-import { useRecoilValue } from 'recoil';
+	sendMsg,
+	getChatHistory,
+} from 'api/socket';
 
 interface Props {
 	chatClickHandler: () => void;
+	isChat: boolean;
 }
 
-function ChatBox({ chatClickHandler }: Props) {
+function ChatBox({ chatClickHandler, isChat }: Props) {
 	const login = useRecoilValue(isLogin);
 	const scrollRef = useRef<null | HTMLDivElement>(null);
 	const [msgData, setMsgData] = useState<ChatData[]>([]);
 	const [roomsInfo, setRoomsInfo] = useState<RoomsInfo[]>([]);
-	const [userId, setUserId] = useState<number | null>(null);
+	const userId = useRecoilValue(userIdState);
 	const [users, setUsers] = useState(0);
 	const [msg, setMsg] = useState('');
 	const [room, setRoom] = useState(1);
 	const rooms = [1, 2];
+	const [sessionId, setSessionId] = useRecoilState(sessionIdState);
 	useEffect(() => {
-		const t = async () => {
-			await enterRoom(room, addMsgData, setRoomsInfo, setUserId);
-			await getChat(room);
-		};
-		t();
+		if (isChat) {
+			enterRoom(room, addMsgData, setRoomsInfo);
+			getChatHistory(room, sessionId, setMsgData);
+		}
+		return () => unSubscribeRoom();
 	}, []);
 	useEffect(() => {
 		scrollRef?.current?.scrollIntoView(false);
@@ -47,16 +49,6 @@ function ChatBox({ chatClickHandler }: Props) {
 
 	const addMsgData = (chatData: ChatData[]) => {
 		setMsgData((msgData) => [...msgData, ...chatData]);
-	};
-
-	const getChat = async (ch: number) => {
-		try {
-			const res = await getChatHistory(ch);
-			if (res) setMsgData([...res].reverse());
-			else getChat(ch);
-		} catch (err) {
-			console.log(err);
-		}
 	};
 
 	const msgOnChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,12 +68,12 @@ function ChatBox({ chatClickHandler }: Props) {
 	const roomsChangeHandler = async (ch: number) => {
 		if (room !== ch) {
 			setRoom(ch);
-			await changeRoom(room, ch, addMsgData);
-			await getChat(ch);
+			await changeRoom(ch, addMsgData);
+			await getChatHistory(ch, sessionId, setMsgData);
 		}
 	};
 	const closeBtnHandler = () => {
-		exitChat();
+		unSubscribeRoom();
 		chatClickHandler();
 	};
 	return (
@@ -108,10 +100,13 @@ function ChatBox({ chatClickHandler }: Props) {
 				</div>
 			</header>
 			<div className="chat-body">
-				{msgData.length &&
+				{msgData.length ? (
 					msgData.map((v, i) => (
 						<Chat key={i} data={v} userId={userId as number} />
-					))}
+					))
+				) : (
+					<></>
+				)}
 				<div ref={scrollRef}></div>
 			</div>
 			{login ? (
