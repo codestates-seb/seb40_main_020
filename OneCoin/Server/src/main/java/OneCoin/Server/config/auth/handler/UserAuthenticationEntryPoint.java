@@ -12,6 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * <pre>
+ *     권한 인증 절차 엔트리포인트
+ * </pre>
+ */
 @Slf4j
 @Component
 public class UserAuthenticationEntryPoint implements AuthenticationEntryPoint {

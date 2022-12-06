@@ -17,7 +17,7 @@ public class UserDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Post {
-        // 닉네임 : 영어로만 가능하고, 2글자 이상 최대 길이 16자 이하
+        // 닉네임 : 영어, 한글로만 가능하고, 2글자 이상 최대 길이 16자 이하
         @NotBlank
         @Pattern(regexp = "^[A-Za-zㄱ-ㅎ가-힣\\d]{2,16}$")
         private String displayName;

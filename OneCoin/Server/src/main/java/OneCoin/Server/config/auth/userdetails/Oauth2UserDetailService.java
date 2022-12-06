@@ -29,7 +29,9 @@ public class Oauth2UserDetailService implements OAuth2UserService<OAuth2UserRequ
     }
 
     /**
-     * UserInfo 저장
+     * <pre>
+     *     UserInfo 저장
+     * </pre>
      */
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {

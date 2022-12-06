@@ -25,7 +25,9 @@ public class DepositService {
     private final TransactionHistoryService transactionHistoryService;
 
     /**
-     * 입금
+     * <pre>
+     *     입금
+     * </pre>
      */
     @Transactional
     public Deposit createDeposit(Deposit deposit) {
@@ -36,7 +38,9 @@ public class DepositService {
     }
 
     /**
-     * balanceId 로 입금 목록 조회
+     * <pre>
+     *     balanceId 로 입금 목록 조회
+     * </pre>
      */
     public Page<Deposit> findDepositsByBalanceId(Balance balance, int page, int size) {
         List<Deposit> depositList = depositRepository.findByBalance_BalanceId(balance.getBalanceId());
