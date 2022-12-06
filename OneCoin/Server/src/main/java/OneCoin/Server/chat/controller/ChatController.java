@@ -31,7 +31,6 @@ public class ChatController {
         ChatMessage chatMessage = chatService.setInfoAndSaveMessage(convertedChatMessage, headerAccessor.getUser());
         ChatResponseDto chatResponseDto = chatMapper.chatMessageToResponseDto(chatMessage);
         redisTemplate.convertAndSend(channelTopic.getTopic(), chatResponseDto);
-//        messagingTemplate.convertAndSend("/topic/rooms/" + chatResponseDto.getChatRoomId(), chatResponseDto);
         log.info("[SEND] complete {}", headerAccessor.getSessionId());
     }
 }
