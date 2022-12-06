@@ -83,7 +83,7 @@ public class ChatMessageRdbRepositoryTest {
         List<ChatMessage> messagesa = chatMessageRdbRepository.findAll();
         //when
         List<ChatMessage> messages = chatMessageRdbRepository
-                .findTop10ByChatRoomIdAndChatMessageIdLessThanEqualOrderByChatMessageIdDesc(chatRoomId, 15L);
+                .findTop30ByChatRoomIdAndChatMessageIdLessThanEqualOrderByChatMessageIdDesc(chatRoomId, 15L);
         //then
         assertThat(messages.size())
                 .isEqualTo(10);

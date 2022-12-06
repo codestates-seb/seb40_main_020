@@ -7,6 +7,8 @@ import OneCoin.Server.chat.mapper.ChatMapper;
 import OneCoin.Server.chat.service.ChatService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -19,14 +21,16 @@ public class ChatController {
     private final ChatService chatService;
     private final ChatMapper chatMapper;
     private final SimpMessagingTemplate messagingTemplate;
+    private final RedisTemplate<Object, Object> redisTemplate;
+    private final ChannelTopic channelTopic;
 
-    @MessageMapping("/rooms")//여기에는 @Payload가 생략되어 있음. body를 객체로 mapping시켜줌
+    @MessageMapping("/rooms")
     public void sendMessage(ChatRequestDto requestMessage, StompHeaderAccessor headerAccessor) {
         log.info("[SEND] start {}", headerAccessor.getSessionId());
         ChatMessage convertedChatMessage = chatMapper.requestDtoToChatMessage(requestMessage);
         ChatMessage chatMessage = chatService.setInfoAndSaveMessage(convertedChatMessage, headerAccessor.getUser());
         ChatResponseDto chatResponseDto = chatMapper.chatMessageToResponseDto(chatMessage);
-        messagingTemplate.convertAndSend("/topic/rooms/" + chatResponseDto.getChatRoomId(), chatResponseDto);
+        redisTemplate.convertAndSend(channelTopic.getTopic(), chatResponseDto);
         log.info("[SEND] complete {}", headerAccessor.getSessionId());
     }
 }

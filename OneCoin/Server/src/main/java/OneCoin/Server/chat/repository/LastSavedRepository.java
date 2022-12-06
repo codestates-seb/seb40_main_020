@@ -1,7 +1,6 @@
 package OneCoin.Server.chat.repository;
 
 import OneCoin.Server.chat.utils.ChatRoomUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -14,7 +13,6 @@ import javax.annotation.PostConstruct;
 public class LastSavedRepository {
     private final RedisTemplate<String, String> redisTemplate;
     private final ChatRoomUtils chatRoomUtils;
-    private final ObjectMapper objectMapper;
     private ValueOperations<String, String> operations;
 
     @PostConstruct
