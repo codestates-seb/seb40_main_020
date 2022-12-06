@@ -34,7 +34,7 @@ public class ChatMessageRepository {
     private void init() {
         operations = redisTemplate.opsForZSet();
         for (int chatRoomId = 1; chatRoomId <= MAX_CHAT_ROOM; chatRoomId++) {
-            redisTemplate.expire(getKey(chatRoomId), TTL_IN_DAYS, TimeUnit.MINUTES);
+            redisTemplate.expire(getKey(chatRoomId), TTL_IN_DAYS, TimeUnit.DAYS);
         }
     }
 
