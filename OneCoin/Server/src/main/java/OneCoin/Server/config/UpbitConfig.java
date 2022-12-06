@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class UpbitConfig {
-
     @Bean
     public OkHttpClient okHttpClient(JsonUtil jsonUtil, UpbitHandlingService upbitHandlingService) {
         OkHttpClient okHttpClient = new OkHttpClient();

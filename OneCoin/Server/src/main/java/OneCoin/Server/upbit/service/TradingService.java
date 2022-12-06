@@ -16,7 +16,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TradingService {
-
     private final OrderRepository orderRepository;
     private final WalletService walletService;
 
@@ -51,7 +50,7 @@ public class TradingService {
         for (Order order : orders) {
             Wallet findWallet = walletService.findMyWallet(order.getUserId(), order.getCode());
 
-            if (findWallet != null) { // 지갑에 이미 존재할 때
+            if (findWallet != null) {
                 walletService.updateWalletByBid(findWallet, order, tradeVolume);
             } else {
                 walletService.createWallet(order, tradeVolume);

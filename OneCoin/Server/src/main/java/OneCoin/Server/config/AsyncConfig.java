@@ -11,13 +11,12 @@ import java.util.concurrent.Executor;
 @Configuration
 @EnableAsync
 public class AsyncConfig {
-
     @Bean
     public Executor upbitExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(3); // 기본 쓰레드 수
-        executor.setMaxPoolSize(10); // 최대 쓰레드 수
-        executor.setQueueCapacity(30); // Queue 사이즈
+        executor.setCorePoolSize(3);
+        executor.setMaxPoolSize(10);
+        executor.setQueueCapacity(30);
         executor.setThreadNamePrefix("OneCoin-");
         executor.initialize();
         return executor;

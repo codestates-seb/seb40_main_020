@@ -14,7 +14,6 @@ public class OrderDto {
     @Setter
     @MustHavePrice(limit = "limit", market = "market")
     public static class Post {
-
         @Price
         private String limit;
 

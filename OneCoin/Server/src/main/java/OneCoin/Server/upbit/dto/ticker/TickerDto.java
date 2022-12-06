@@ -5,7 +5,6 @@ import lombok.Getter;
 
 @Getter
 public class TickerDto {
-
     private String code;
 
     @JsonProperty("high_price")

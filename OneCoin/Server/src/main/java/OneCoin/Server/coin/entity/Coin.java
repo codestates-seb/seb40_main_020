@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 public class Coin {
-
     @Id
     private Long coinId;
 

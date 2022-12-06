@@ -10,7 +10,6 @@ import javax.validation.ConstraintViolationException;
 
 @RestControllerAdvice
 public class ExceptionAdvice {
-
     @ExceptionHandler
     public ResponseEntity handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         return new ResponseEntity(ErrorResponse.of(e), HttpStatus.BAD_REQUEST);
@@ -21,7 +20,6 @@ public class ExceptionAdvice {
         return new ResponseEntity(ErrorResponse.of(e.getConstraintViolations()), HttpStatus.BAD_REQUEST);
     }
 
-    //다양한 비즤니스 에러
     @ExceptionHandler
     public ResponseEntity handleBusinessLogicException(BusinessLogicException e) {
         return new ResponseEntity(ErrorResponse.of(e), HttpStatus.valueOf(e.getExceptionCode().getCode()));
