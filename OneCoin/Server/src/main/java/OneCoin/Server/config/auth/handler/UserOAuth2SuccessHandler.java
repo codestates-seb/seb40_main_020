@@ -64,10 +64,6 @@ public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHand
         queryParams.add("authorization", accessToken);
         queryParams.add("refresh", refreshToken);
 
-        System.out.println("CLIENT URL");
-        System.out.println(clientURL);
-        System.out.println("CLIENT URL");
-
         return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
