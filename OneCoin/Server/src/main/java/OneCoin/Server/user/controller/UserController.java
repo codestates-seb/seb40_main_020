@@ -33,7 +33,6 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
-//    private final String baseURL = "localhost:3000";
     @Value("${spring.client.ip}")
     private String baseURL;
     private final JwtTokenizer jwtTokenizer;

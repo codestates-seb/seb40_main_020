@@ -68,8 +68,8 @@ public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHand
         return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
-                .host(clientURL)
-                .path("/token/oauth2")
+//                .host(clientURL)
+                .path(clientURL + "/token/oauth2")
                 .queryParams(queryParams)
                 .build()
                 .toUri();
