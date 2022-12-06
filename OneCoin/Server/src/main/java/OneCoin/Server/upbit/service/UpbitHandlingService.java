@@ -50,7 +50,7 @@ public class UpbitHandlingService {
     @SneakyThrows
     private void handleTrade(JsonNode jsonNode) {
         Trade trade = objectMapper.readValue(jsonNode.toString(), Trade.class);
-        publisher.publishEvent(trade); // 체결 이벤트 발행
+        publisher.publishEvent(trade);
     }
 
     @SneakyThrows

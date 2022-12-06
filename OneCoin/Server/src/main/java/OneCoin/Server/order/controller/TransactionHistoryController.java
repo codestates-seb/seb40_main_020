@@ -23,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class TransactionHistoryController {
-
     private final int size = 10;
     private final TransactionHistoryService transactionHistoryService;
     private final TransactionHistoryMapper mapper;
@@ -33,10 +32,10 @@ public class TransactionHistoryController {
                                                           @RequestParam(name = "type", required = false, defaultValue = "ALL") String type,
                                                           @RequestParam(name = "code", required = false) String code,
                                                           @Positive @RequestParam(name = "page", required = false, defaultValue = "1") int page) {
-
         Page<TransactionHistory> transactionHistoryPage = transactionHistoryService.findTransactionHistory(period, type, code, PageRequest.of(page - 1, size, Sort.by("createdAt").descending()));
         List<TransactionHistory> transactionHistories = transactionHistoryPage.getContent();
         List<TransactionHistoryDto.GetResponse> responseDto = mapper.transactionHistoryToGetResponse(transactionHistories);
+
         return new ResponseEntity(new PageResponseDto<>(responseDto, transactionHistoryPage), HttpStatus.OK);
     }
 
@@ -44,6 +43,7 @@ public class TransactionHistoryController {
     public ResponseEntity getTransactionHistoryByCode(@PathVariable("code") String code) {
         List<TransactionHistory> transactionHistories = transactionHistoryService.findTransactionHistoryByCoin(code);
         List<TransactionHistoryDto.GetResponse> responseDto = mapper.transactionHistoryToGetResponse(transactionHistories);
+
         return new ResponseEntity(new MultiResponseDto<>(responseDto), HttpStatus.OK);
     }
 }
