@@ -24,6 +24,7 @@
 |(팀장)서재홍|김민상|민다영|김기홍|남기범|김지환|
 |<img src="https://avatars.githubusercontent.com/u/107832252?v=4" width=150>|<img src="https://avatars.githubusercontent.com/u/64800318?v=4" width=150>|<img src="https://avatars.githubusercontent.com/u/32324401?v=4" width=150>|<img src="https://avatars.githubusercontent.com/u/99868638?v=4" width=150>|<img src="https://avatars.githubusercontent.com/u/101033262?v=4t" width=150>|<img src="https://avatars.githubusercontent.com/u/66046153?v=4" width=150>|
 |[@jaehongg](https://github.com/jaehongg)|[@minsang98](https://github.com/minsang98)|[@MINDA01](https://github.com/MINDA01)|[@broaden-horizon](https://github.com/broaden-horizon)|[@GIVEN53](https://github.com/GIVEN53)|[@kjh42447](https://github.com/kjh42447)|
+
 <br><br>
 
 ## ER-Diagram
