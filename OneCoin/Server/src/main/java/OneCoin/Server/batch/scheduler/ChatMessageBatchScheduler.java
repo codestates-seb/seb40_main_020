@@ -17,7 +17,7 @@ public class ChatMessageBatchScheduler {
     private final Job job;
     private final JobLauncher jobLauncher;
 
-    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.DAYS)
+    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES)
     public void executeJob() {
         try {
             jobLauncher.run(
