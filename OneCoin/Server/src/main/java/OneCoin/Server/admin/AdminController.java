@@ -67,4 +67,10 @@ public class AdminController {
     public void postCoin(@RequestBody Coin coin) {
         coinRepository.save(coin);
     }
+
+    @DeleteMapping("/userInChatRoom")
+    public void deleteUserInChatRoom(){
+        userInChatRoomRepository.removeAllInChatRoom(1);
+        userInChatRoomRepository.removeAllInChatRoom(2);
+    }
 }
