@@ -5,12 +5,9 @@ import OneCoin.Server.config.auth.utils.CustomAuthorityUtils;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.mapper.UserMapper;
 import OneCoin.Server.user.service.UserService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -21,21 +18,19 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 
-@Slf4j
-@Component
 public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils customAuthorityUtils;
     private final UserService userService;
     private final UserMapper userMapper;
-    @Value("${spring.client.ip}")
-    private String clientURL;
+    private final String clientURL;
 
-    public UserOAuth2SuccessHandler(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils, UserService userService, UserMapper userMapper) {
+    public UserOAuth2SuccessHandler(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils, UserService userService, UserMapper userMapper, String clientURL) {
         this.jwtTokenizer = jwtTokenizer;
         this.customAuthorityUtils = customAuthorityUtils;
         this.userService = userService;
         this.userMapper = userMapper;
+        this.clientURL = clientURL;
     }
 
     @Override
@@ -69,11 +64,15 @@ public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHand
         queryParams.add("authorization", accessToken);
         queryParams.add("refresh", refreshToken);
 
+        System.out.println("CLIENT URL");
+        System.out.println(clientURL);
+        System.out.println("CLIENT URL");
+
         return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
-//                .host(clientURL)
-                .path(clientURL + "/token/oauth2")
+                .host(clientURL)
+                .path("/token/oauth2")
                 .queryParams(queryParams)
                 .build()
                 .toUri();
