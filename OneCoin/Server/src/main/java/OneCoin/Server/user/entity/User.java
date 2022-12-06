@@ -37,13 +37,11 @@ public class User extends Auditable {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<TransactionHistory> transactionHistories;
-    
-    // 추후 Attribute Converter 사용 고려 -> 사용
+
     @Column
     @Enumerated(EnumType.STRING)
     private Platform platform;
 
-    // 추후 Attribute Converter 사용하거나 테이블 분리도 고려 -> 테이블 병합, 컨버터 사용
     @Column
     @Enumerated(EnumType.STRING)
     private Role userRole;

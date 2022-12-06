@@ -16,7 +16,9 @@ import java.util.Collection;
 import java.util.Optional;
 
 /**
- * SpringSecurity 에서 User 관리할 수 있도록 하는 Service 단
+ * <pre>
+ *     SpringSecurity 에서 User 관리할 수 있도록 하는 Service 
+ * </pre>
  */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -33,7 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Optional<User> optionalUser = userRepository.findByEmail(username);
         User findUser = optionalUser.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
-        // 이메일 인증이 이루어지지 않은 계정이라면 로그인 못함
+        // 이메일 인증이 이루어지지 않은 계정이라면 로그인 불가
         if (findUser.getUserRole() == Role.ROLE_NOT_AUTH) {
             throw new BusinessLogicException(ExceptionCode.NO_AUTHENTICATION_EMAIL);
         }
@@ -62,9 +64,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
 
         /**
-         * 계정 만료 여부
-         * true : 만료 안됨
-         * false : 만료
+         * <pre>
+         *     계정 만료 여부
+         *      true : 만료 안됨
+         *      false : 만료
+         * </pre>
          */
         @Override
         public boolean isAccountNonExpired() {
@@ -72,9 +76,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
 
         /**
-         * 계정 잠김 여부
-         * true : 잠기지 않음
-         * false : 잠김
+         * <pre>
+         *     계정 잠김 여부
+         *     true : 잠기지 않음
+         *     false : 잠김
+         * </pre>
          */
         @Override
         public boolean isAccountNonLocked() {
@@ -82,9 +88,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
 
         /**
-         * 크리덴셜 만료 여부
-         * true : 만료 안됨
-         * false : 만료
+         * <pre>
+         *     크리덴셜 만료 여부
+         *     true : 만료 안됨
+         *     false : 만료
+         * </pre>
          */
         @Override
         public boolean isCredentialsNonExpired() {
@@ -92,9 +100,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
 
         /**
-         * 사용자 활성화 여부
-         * ture : 활성화
-         * false : 비활성화
+         * <pre>
+         *     사용자 활성화 여부
+         *     ture : 활성화
+         *     false : 비활성화
+         * </pre>
          */
         @Override
         public boolean isEnabled() {

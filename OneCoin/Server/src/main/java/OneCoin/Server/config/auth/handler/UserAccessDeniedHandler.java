@@ -12,6 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * <pre>
+ *     접근 거부 후 추가 처리 핸들러
+ * </pre>
+ */
 @Slf4j
 @Component
 public class UserAccessDeniedHandler implements AccessDeniedHandler {

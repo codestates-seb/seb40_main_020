@@ -30,7 +30,7 @@ public abstract class UserMapper {
         user.setPlatform(Platform.ORIGIN);
         user.setUserRole(Role.ROLE_NOT_AUTH);   // default : ROLE_NOT_AUTH
         user.setBalance(balance);
-        user.setImagePath("/home/ec2-user/profile/default.jpg");    // default path
+        user.setImagePath("/home/ec2-user/profile/default.jpg");    // default image path
 
         balance.setBalance(BigDecimal.ZERO);
         balance.setUser(user);
