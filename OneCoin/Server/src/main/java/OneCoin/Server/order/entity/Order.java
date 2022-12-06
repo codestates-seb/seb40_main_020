@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @RedisHash("order")
 public class Order {
-
     @Id
     private Integer orderId;
 

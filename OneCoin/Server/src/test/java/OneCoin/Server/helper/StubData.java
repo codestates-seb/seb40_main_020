@@ -102,6 +102,17 @@ public class StubData {
                     "}";
         }
 
+        public static String getJsonTrade() {
+            return "{" +
+                    "\"type\":\"trade\"," +
+                    "\"code\":\"KRW-BTC\"," +
+                    "\"trade_price\":10000000," +
+                    "\"trade_volume\":5," +
+                    "\"ask_bid\":\"ASK\"," +
+                    "\"trade_time\":12345" +
+                    "}";
+        }
+
         public static String getJsonOrderBook() {
             return "{" +
                     "\"type\":\"orderbook\"," +

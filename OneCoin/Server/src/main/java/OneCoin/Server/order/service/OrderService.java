@@ -23,7 +23,6 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class OrderService {
-
     private final OrderRepository orderRepository;
     private final CoinService coinService;
     private final WalletService walletService;

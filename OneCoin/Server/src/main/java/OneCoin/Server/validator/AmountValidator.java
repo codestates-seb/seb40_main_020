@@ -4,7 +4,6 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public class AmountValidator implements ConstraintValidator<Amount, String> {
-
     @Override
     public void initialize(Amount constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
