@@ -9,7 +9,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
-
     @Mapping(target = "completedAmount", expression = "java(BigDecimal.ZERO)")
     @Mapping(target = "orderTime", expression = "java(java.time.LocalDateTime.now())")
     Order postDtoToOrder(OrderDto.Post postDto);

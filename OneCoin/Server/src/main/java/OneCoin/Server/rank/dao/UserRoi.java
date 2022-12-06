@@ -27,12 +27,18 @@ public class UserRoi implements Comparable<UserRoi> {
         this.sumOfAsks = sumOfBids.doubleValue();
     }
 
+    public UserRoi() {}
+
     public void addSumOfCurrentCoinValues(double coinValue) {
         this.sumOfCurrentCoinValues += coinValue;
     }
 
     public void calculate() {
         this.totalRoi = (this.sumOfAsks + this.sumOfCurrentCoinValues - this.sumOfBids) / this.sumOfBids;
+    }
+
+    public void addSumOfBids(double bids) {
+        this.sumOfBids += bids;
     }
 
     @Override

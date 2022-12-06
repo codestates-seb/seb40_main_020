@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @RedisHash("wallet")
 public class Wallet {
-
     @Id
     private Long walletId;
 

@@ -19,7 +19,6 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class UpbitWebSocketListener extends WebSocketListener {
-
     private final JsonUtil jsonUtil;
     private final UpbitHandlingService upbitHandlingService;
     private String parameter;
