@@ -34,7 +34,9 @@ function Header() {
 					{HEADER_LIST.page.map((v, i) => (
 						<div
 							key={i}
-							className={pathname === v.path ? 'select' : ''}
+							className={
+								pathname.split('/')[1] === v.path.split('/')[1] ? 'select' : ''
+							}
 							onClick={() => {
 								navClickHandler(v.path);
 							}}
