@@ -40,12 +40,9 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-//        Map<String, Object> claims = verifyJws(request);
-//        setAuthenticationToContext(claims);
 
         try {
             Map<String, Object> claims = verifyJws(request);
-            System.out.println("Claim : " + claims.get("roles"));
             setAuthenticationToContext(claims);
         } catch (SignatureException se) {
             request.setAttribute("exception", se);
@@ -56,7 +53,6 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
                 // DB에 리프레시를 저장하여 판단하는 경우도 있지만, 일단 이렇게 구현
                 User user = userService.findVerifiedUserByEmail(claims.get("sub").toString());
-
 
                 String accessToken = userService.delegateAccessToken(user, jwtTokenizer);
                 String refreshToken = userService.delegateRefreshToken(user, jwtTokenizer);
@@ -110,11 +106,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
      * Authentication(인증) 객체를 SecurityContext 에 저장
      */
     private void setAuthenticationToContext(Map<String, Object> claims) {
-//        String username = (String) claims.get("username");
         List<GrantedAuthority> authorities = customAuthorityUtils.createAuthorities(Role.valueOf((String) claims.get("roles")));
-        System.out.println("Auth : " + authorities.get(0));
-        System.out.println("Auth : " + authorities.get(1));
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
         Authentication authentication = new UsernamePasswordAuthenticationToken(claims, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication); // SecurityContext 에 Authentication 저장
     }
