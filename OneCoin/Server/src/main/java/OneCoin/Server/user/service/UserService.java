@@ -161,10 +161,10 @@ public class UserService {
             body.append("<div><a href=\"" + link + "\" target=\"_blank\">인증 완료하기</a></div> </body></html>");
 
             // MimeMessageHelper 설정
-            mimeMessageHelper.setFrom(authEmail);    // 보내는 사람
-            mimeMessageHelper.setTo(user.getEmail());   // 받는 사람
-            mimeMessageHelper.setSubject("OneCoin 이메일 인증");     // 제목
-            mimeMessageHelper.setText(body.toString(), true);       // 내용, html true
+            mimeMessageHelper.setFrom(authEmail);
+            mimeMessageHelper.setTo(user.getEmail());
+            mimeMessageHelper.setSubject("OneCoin 이메일 인증");
+            mimeMessageHelper.setText(body.toString(), true);
 
             // 전송
             javaMailSender.send(mimeMessage);

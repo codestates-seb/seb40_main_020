@@ -17,7 +17,9 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * 토큰 생성 서비스
+ * <pre>
+ *     토큰 생성 서비스
+ * </pre>
  */
 @Service
 public class JwtTokenizer {
@@ -38,7 +40,9 @@ public class JwtTokenizer {
     }
 
     /**
-     * AccessToken 생성
+     * <pre>
+     *     AccessToken 생성
+     * </pre>
      */
     public String generateAccessToken(Map<String, Object> claims,
                                       String subject,
@@ -56,7 +60,9 @@ public class JwtTokenizer {
     }
 
     /**
-     * RefreshToken 생성
+     * <pre>
+     *     RefreshToken 생성
+     * </pre>
      */
     public String generateRefreshToken(String subject, Date expiration, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
@@ -70,8 +76,10 @@ public class JwtTokenizer {
     }
 
     /**
-     * JWT 에서 Claim 추출(JWT 검증 수행)
-     * jws : JWT + Signature
+     * <pre>
+     *     JWT 에서 Claim 추출(JWT 검증 수행)
+     *     jws : JWT + Signature
+     * </pre>
      */
     public Jws<Claims> getClaims(String jws, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
@@ -83,7 +91,9 @@ public class JwtTokenizer {
     }
 
     /**
-     * JWT 검증(getClaims 에서 값을 가져오지 않고 검사만 수행)
+     * <pre>
+     *     JWT 검증(getClaims 에서 값을 가져오지 않고 검사만 수행)
+     * </pre>
      */
     public void verifySignature(String jws, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
@@ -95,7 +105,9 @@ public class JwtTokenizer {
     }
 
     /**
-     * 토큰 만료일 지정
+     * <pre>
+     *     토큰 만료일 지정
+     * </pre>
      */
     public Date getTokenExpiration(int expirationMinutes) {
         Calendar calendar = Calendar.getInstance();
@@ -106,11 +118,13 @@ public class JwtTokenizer {
     }
 
     /**
-     * 인코딩 된 키를 가지고 HMAC 적용한 SecretKey 생성
+     * <pre>
+     *     인코딩 된 키를 가지고 HMAC 적용한 SecretKey 생성
+     * </pre>
      */
     private Key getKeyFromBase64EncodedKey(String base64EncodedSecretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(base64EncodedSecretKey);   // Secret 키 디코딩
 
-        return Keys.hmacShaKeyFor(keyBytes);    // jjwt 에서 적절한 HMAC 알고리즘 지정해줌
+        return Keys.hmacShaKeyFor(keyBytes);    // jjwt 에서 적절한 HMAC 알고리즘 자동 지정
     }
 }
