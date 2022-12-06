@@ -152,26 +152,22 @@ public class ChatService {
     }
     public void saveInMemoryChatMessagesToRdb() {
         List<ChatRoom> chatRooms = chatRoomService.findAllChatRooms();
-        log.info("======================chatRooms size : " + chatRooms.size());
         for(ChatRoom chatRoom : chatRooms) {
             Integer chatRoomId = chatRoom.getChatRoomId();
             String recentScore = lastSavedRepository.get(chatRoomId);
-            log.info("======================lastSavedScore : " + (recentScore == null ? "null" : recentScore));
             List<ChatMessage> messages;
             if(recentScore == null) {
                 messages = chatMessageRepository.findAllInAscOrder(chatRoomId);
-                log.info("======================messages found size : " + messages.size());
                 Double latestScore = chatMessageRepository.getScoreOfLatestChat(chatRoomId, Double.MIN_VALUE);
-                log.info("======================latestScore to save" + (latestScore == null ? "null" : latestScore));
-                if(latestScore == null) return;
+                if(latestScore == null) continue;
                 lastSavedRepository.save(chatRoomId, latestScore.toString());
             } else {
                 double recentScoreAsDouble = Double.parseDouble(recentScore);
                 Double latestScore = chatMessageRepository.getScoreOfLatestChat(chatRoomId, recentScoreAsDouble);
-                if(latestScore == null) return;
-                log.info("======================latestScore to save" + (latestScore == null ? "null" : latestScore));
+                if(latestScore == null) {
+                    continue;
+                }
                 messages = chatMessageRepository.findByScoreInAcsOrder(chatRoomId, recentScoreAsDouble, latestScore);
-                log.info("======================messages found size : " + messages.size());
                 lastSavedRepository.save(chatRoomId, latestScore.toString());
             }
             if(messages.size() == 0) return;
