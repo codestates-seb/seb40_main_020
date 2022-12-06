@@ -25,7 +25,7 @@ public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHand
     private final UserService userService;
     private final UserMapper userMapper;
     @Value("${spring.client.ip}")
-    private String baseURL;
+    private String clientURL;
 
     public UserOAuth2SuccessHandler(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils, UserService userService, UserMapper userMapper) {
         this.jwtTokenizer = jwtTokenizer;
@@ -53,9 +53,6 @@ public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHand
         String accessToken = userService.delegateAccessToken(user, jwtTokenizer);
         String refreshToken = userService.delegateRefreshToken(user, jwtTokenizer);
 
-//        response.setHeader("Authorization", "Bearer " + accessToken);
-//        response.setHeader("Refresh", refreshToken);
-
         String uri = createURI(accessToken, refreshToken).toString();
         getRedirectStrategy().sendRedirect(request, response, uri);
     }
@@ -71,11 +68,8 @@ public class UserOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHand
         return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
-//                .host("localhost")  // 프론트의 ip
-                .host(baseURL)
-//                .port(3000)
+                .host(clientURL)
                 .path("/token/oauth2")
-//                .path("/main")
                 .queryParams(queryParams)
                 .build()
                 .toUri();
