@@ -32,7 +32,7 @@
 ![image](https://user-images.githubusercontent.com/99868638/205670653-76c48084-fcd8-4313-8986-9ecfe991af6b.png)
 
 ## Built With
-<img width="800px" src="https://user-images.githubusercontent.com/99868638/205670347-2099b735-e0db-4e30-8970-aef59366cc0d.png">
+<img width="600px" src="https://user-images.githubusercontent.com/99868638/205670347-2099b735-e0db-4e30-8970-aef59366cc0d.png">
 
 ## Service Architecture
 <img src="https://user-images.githubusercontent.com/99868638/205670499-f26f01a7-1136-40f7-b17b-6fbb543f1177.png">
