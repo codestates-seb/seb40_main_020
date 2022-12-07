@@ -64,11 +64,9 @@ public class RankService {
     private void setPartialBids(Map<Long, UserRoi> allRoi) {
         List<Order> orders = (List<Order>) orderRepository.findAll();
         for(Order order : orders) {
-            log.info("{orderId : }", order.getOrderId());
-
             Long userId = order.getUserId();
             double bid = order.getCompletedAmount().multiply(order.getLimit()).doubleValue();
-            log.info("userbid: {}" , bid);
+            if(bid == 0.0) continue;
             UserRoi userRoi = allRoi.get(userId);
             if(userRoi == null) {
                 User user = userRepository.findById(userId).get();
@@ -78,8 +76,6 @@ public class RankService {
                 allRoi.put(userId, userRoiCreated);
                 userRoi = allRoi.get(userId);
             }
-            log.info("====rank: userRoi : {}", userRoi);
-            log.info("====rank: bid : {}", bid);
             userRoi.addSumOfBids(bid);
         }
     }
@@ -101,7 +97,6 @@ public class RankService {
 
     private void setUserBids(Map<Long, UserRoi> allRoi) {
         List<UserRoi> bids = transactionHistoryRepository.findAllSumOfBidSettledAmount();
-        log.info("======Bids Size : " + bids.size());
         if(bids.size() == 0) return;
         for (UserRoi roi : bids) {
             allRoi.put(roi.getUserId(), roi);
@@ -110,7 +105,6 @@ public class RankService {
 
     private void setUserAsks(Map<Long, UserRoi> allRoi) {
         List<UserRoi> asks = transactionHistoryRepository.findAllSumOfAskSettledAmount();
-        log.info("======asks Size : " + asks.size());
         if(asks.size() == 0) return;
         for (UserRoi roi : asks) {
             Long userId = roi.getUserId();
@@ -120,17 +114,12 @@ public class RankService {
 
     private void setCurrentCoinValues(Map<Long, UserRoi> allRoi) {
         List<Wallet> wallets = (List<Wallet>) walletRepository.findAll();
-        log.info("======wallet Size : " + wallets.size());
         if(wallets.size() == 0) return;
         for (Wallet wallet : wallets) {
             Long userId = wallet.getUserId();
             UserRoi userROI = allRoi.get(userId);
             if(userROI == null) continue;
             TickerDto ticker = tickerRepository.findTickerByCode(wallet.getCode());
-            if(userId == 90L) {
-                log.info("amount = " + wallet.getAmount().doubleValue());
-                log.info("value = " + Double.valueOf(ticker.getTradePrice()));
-            }
             double currentValueOfCoinOfUser = wallet.getAmount().doubleValue() * Double.valueOf(ticker.getTradePrice());
             userROI.addSumOfCurrentCoinValues(currentValueOfCoinOfUser);
         }
