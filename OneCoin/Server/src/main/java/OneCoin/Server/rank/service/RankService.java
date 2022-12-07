@@ -64,8 +64,11 @@ public class RankService {
     private void setPartialBids(Map<Long, UserRoi> allRoi) {
         List<Order> orders = (List<Order>) orderRepository.findAll();
         for(Order order : orders) {
+            log.info("{orderId : }", order.getOrderId());
+
             Long userId = order.getUserId();
             double bid = order.getCompletedAmount().multiply(order.getLimit()).doubleValue();
+            log.info("userbid: {}" , bid);
             UserRoi userRoi = allRoi.get(userId);
             if(userRoi == null) {
                 User user = userRepository.findById(userId).get();
@@ -74,6 +77,8 @@ public class RankService {
                 userRoiCreated.setUserDisplayName(user.getDisplayName());
                 userRoi = allRoi.put(userId, userRoiCreated);
             }
+            log.info("====rank: userRoi : {}", userRoi);
+            log.info("====rank: bid : {}", bid);
             userRoi.addSumOfBids(bid);
         }
     }
