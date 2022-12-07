@@ -75,7 +75,8 @@ public class RankService {
                 UserRoi userRoiCreated = new UserRoi();
                 userRoiCreated.setUserId(userId);
                 userRoiCreated.setUserDisplayName(user.getDisplayName());
-                userRoi = allRoi.put(userId, userRoiCreated);
+                allRoi.put(userId, userRoiCreated);
+                userRoi = allRoi.get(userId);
             }
             log.info("====rank: userRoi : {}", userRoi);
             log.info("====rank: bid : {}", bid);
