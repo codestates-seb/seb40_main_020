@@ -22,6 +22,12 @@ public class UserRoi implements Comparable<UserRoi> {
         this.sumOfBids = sumOfAsks.doubleValue();
     }
 
+    public UserRoi(Long userId, double sumOfBids, double sumOfAsks) {
+        this.userId = userId;
+        this.sumOfBids = sumOfBids;
+        this.sumOfAsks = sumOfAsks;
+    }
+
     public UserRoi(Long userId, BigDecimal sumOfBids) {
         this.userId = userId;
         this.sumOfAsks = sumOfBids.doubleValue();

@@ -12,6 +12,8 @@ import OneCoin.Server.order.entity.enums.Period;
 import OneCoin.Server.order.entity.enums.TransactionType;
 import OneCoin.Server.order.mapper.TransactionHistoryMapper;
 import OneCoin.Server.order.repository.TransactionHistoryRepository;
+import OneCoin.Server.rank.repository.RankHistoryRepository;
+import OneCoin.Server.rank.service.RankService;
 import OneCoin.Server.swap.entity.Swap;
 import OneCoin.Server.user.entity.User;
 import OneCoin.Server.user.service.UserService;
@@ -36,6 +38,7 @@ public class TransactionHistoryService {
     private final CoinService coinService;
     private final LoggedInUserInfoUtils loggedInUserInfoUtils;
     private final String defaultType = "ALL";
+    private final RankService rankService;
 
     @Async("upbitExecutor")
     public void createTransactionHistoryByOrder(Order order) {
@@ -44,6 +47,8 @@ public class TransactionHistoryService {
         TransactionHistory transactionHistory = mapper.orderToTransactionHistory(order, user, coin);
 
         transactionHistoryRepository.save(transactionHistory);
+
+        rankService.accumulateTransaction(transactionHistory);
     }
 
     public void createTransactionHistoryBySwap(Swap swap) {
